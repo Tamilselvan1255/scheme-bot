@@ -5,7 +5,7 @@ require('dotenv').config;
 
 const app = express().use(body_parser.json());
 
-const token = process.env.TOKEN; // for sending request
+const token = process.env.TOKEN; // for sending message to user
 const myToken = process.env.MYTOKEN; // for verify
 
 app.listen(process.env.PORT, () => {
@@ -36,8 +36,8 @@ app.post("/webhook", (req, res) => {
  if(body_param.object){
     if(body_param.entry && 
         body_param.entry[0].changes && 
-        body_param.entry[0].changes[0].value.message &&
-        body_param.entry[0].changes[0].value.message[0]
+        body_param.entry[0].changes[0].value.messages &&
+        body_param.entry[0].changes[0].value.messages[0]
         ){
             let phone_number_id = body_param.entry[0].changes[0].value.metadata.phone_number_id;
             let from = body_param.entry[0].changes[0].value.messages[0].from;
