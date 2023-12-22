@@ -48,83 +48,13 @@ app.post("/webhook", (req, res) => {
                 method: "POST",
                 url: "https://graph.facebook.com/v17.0/" + phone_number_id + "/messages?access_token=" + token,
                 data: 
-                // {
-                //     messaging_product: "whatsapp",
-                //     to: from,
-                //     text: {
-                //         body: "Hello, This is Tamil"
-                //     }
-                // },
                 {
-                    "messaging_product": "whatsapp",
-                    "recipient_type": "individual",
-                    "to": from,
-                    "type": "template",
-                    "template": {
-                      "name": "TEMPLATE_NAME",
-                      "language": {
-                        "code": "LANGUAGE_AND_LOCALE_CODE"
-                      },
-                      "components": [
-                        {
-                          "type": "header",
-                          "parameters": [
-                            {
-                              "type": "image",
-                              "image": {
-                                "link": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/800px-Good_Food_Display_-_NCI_Visuals_Online.jpg"
-                              }
-                            }
-                          ]
-                        },
-                        {
-                          "type": "body",
-                          "parameters": [
-                            {
-                              "type": "text",
-                              "text": "TEXT_STRING"
-                            },
-                            {
-                              "type": "currency",
-                              "currency": {
-                                "fallback_value": "VALUE",
-                                "code": "USD",
-                                "amount_1000": NUMBER// *1000
-                              }
-                            },
-                            {
-                              "type": "date_time",
-                              "date_time": {
-                                "fallback_value": "MONTH DAY, YEAR"
-                              }
-                            }
-                          ]
-                        },
-                        {
-                          "type": "button",
-                          "sub_type": "quick_reply",
-                          "index": "0",
-                          "parameters": [
-                            {
-                              "type": "payload",
-                              "payload": "PAYLOAD"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "button",
-                          "sub_type": "quick_reply",
-                          "index": "1",
-                          "parameters": [
-                            {
-                              "type": "payload",
-                              "payload": "PAYLOAD"
-                            }
-                          ]
-                        }
-                      ]
+                    messaging_product: "whatsapp",
+                    to: from,
+                    text: {
+                        body: "Hello, This is Tamil"
                     }
-                  },
+                },
                 Headers: {
                     "Content_Type": "application/json"
                 }
