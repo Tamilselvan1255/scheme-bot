@@ -43,7 +43,6 @@ app.post("/webhook", async (req, res) => {
             body_param.entry[0].changes[0].value.messages[0]
         ) {
             let phone_number_id = body_param.entry[0].changes[0].value.metadata.phone_number_id;
-            let from = body_param.entry[0].changes[0].value.messages[0].from;
             let msg_body = body_param.entry[0].changes[0].value.messages[0].text.body;
 
             let responseMessage;
@@ -76,15 +75,14 @@ app.post("/webhook", async (req, res) => {
             };
 
             try {
-                // Use async/await or handle the Promise with .then()
                 await axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, body);
                 res.sendStatus(200);
             } catch (error) {
                 console.error("Error sending message:", error);
-                res.sendStatus(500); // or handle the error appropriately
+                res.sendStatus(500);
             }
         } else {
-            res.sendStatus(404)
+            res.sendStatus(404);
         }
     }
 });
