@@ -31,7 +31,7 @@ app.get("/webhook", (req, res) => {
     }
 });
 
-app.post("/webhook", async (req, res) => {
+app.post("/webhook", (req, res) => {
     let body_param = req.body;
     console.log(JSON.stringify(body_param, null, 2));
 
@@ -43,86 +43,31 @@ app.post("/webhook", async (req, res) => {
             body_param.entry[0].changes[0].value.messages[0]
         ) {
             let phone_number_id = body_param.entry[0].changes[0].value.metadata.phone_number_id;
+            let from = body_param.entry[0].changes[0].value.messages[0].from;
             let msg_body = body_param.entry[0].changes[0].value.messages[0].text.body;
 
-            let responseMessage;
-
-            // Check if the user sent a message about a cat
-            if (msg_body.toLowerCase().includes("cat")) {
-                responseMessage = "I love cats!";
-            }
-            // Check if the user sent a message about a dog
-            else if (msg_body.toLowerCase().includes("dog")) {
-                responseMessage = "I love dogs!";
-            }
-            // Default response for other messages
-            else {
-                responseMessage = "Hi there! Thanks for reaching out. Your message is important to us.";
-            }
+            let newTemplateMessage = "Hi there! Thanks for reaching out. Your message is important to us.";
 
             const body = {
                 "messaging_product": "whatsapp",
                 "to": "+919788825633",
                 "type": "template",
                 "template": {
-                    "text": {
-                        "body": responseMessage
-                    },
+                    "name": "new",
                     "language": {
                         "code": "en_US"
                     }
                 }
             };
 
-            try {
-                await axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, body);
-                res.sendStatus(200);
-            } catch (error) {
-                console.error("Error sending message:", error);
-                res.sendStatus(500);
-            }
+            axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, body);
+
+            res.sendStatus(200);
         } else {
-            res.sendStatus(404);
+            res.sendStatus(404)
         }
     }
 });
-// app.post("/webhook", (req, res) => {
-//     let body_param = req.body;
-//     console.log(JSON.stringify(body_param, null, 2));
-
-//     if (body_param.object) {
-//         console.log("inside body_param");
-//         if (body_param.entry &&
-//             body_param.entry[0].changes &&
-//             body_param.entry[0].changes[0].value.messages &&
-//             body_param.entry[0].changes[0].value.messages[0]
-//         ) {
-//             let phone_number_id = body_param.entry[0].changes[0].value.metadata.phone_number_id;
-//             let from = body_param.entry[0].changes[0].value.messages[0].from;
-//             let msg_body = body_param.entry[0].changes[0].value.messages[0].text.body;
-
-//             let newTemplateMessage = "Hi there! Thanks for reaching out. Your message is important to us.";
-
-//             const body = {
-//                 "messaging_product": "whatsapp",
-//                 "to": "+919788825633",
-//                 "type": "template",
-//                 "template": {
-//                     "name": "new",
-//                     "language": {
-//                         "code": "en_US"
-//                     }
-//                 }
-//             };
-
-//             axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, body);
-
-//             res.sendStatus(200);
-//         } else {
-//             res.sendStatus(404)
-//         }
-//     }
-// });
 
 app.get("/", (req, res) => {
     res.status(200).send("Hello, this is Webhook setup!!")
