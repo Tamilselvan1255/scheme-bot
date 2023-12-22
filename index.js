@@ -89,20 +89,6 @@ app.post("/webhook", (req, res) => {
                         {
                           "type": "text",
                           "text": "Grab your dishes for the best prices at today's deal."
-                        },
-                        {
-                          "type": "currency",
-                          "currency": {
-                            "fallback_value": "VALUE",
-                            "code": "USD",
-                            "amount_1000": 1000
-                          }
-                        },
-                        {
-                          "type": "date_time",
-                          "date_time": {
-                            "fallback_value": "MONTH DAY, YEAR"
-                          }
                         }
                       ]
                     },
