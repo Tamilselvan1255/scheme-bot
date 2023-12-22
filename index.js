@@ -1,20 +1,19 @@
 const express = require('express');
 const body_parser = require('body-parser');
 const axios = require('axios');
-const fs = require('fs');
 const FormData = require('form-data');
 require('dotenv').config();
 
 const app = express().use(body_parser.json());
 
-const token = process.env.TOKEN; // for sending message to user
-const myToken = process.env.MYTOKEN; // for verify
+const token = process.env.TOKEN; // for sending a message to the user
+const myToken = process.env.MYTOKEN; // for verification
 
 app.listen(process.env.PORT, () => {
     console.log("Webhook is listening!!");
 });
 
-// to verify the callback url from dashboard side - cloud api side
+// to verify the callback URL from the dashboard side - cloud API side
 app.get("/webhook", (req, res) => {
     let mode = req.query["hub.mode"];
     let challenge = req.query["hub.challenge"];
@@ -47,52 +46,31 @@ app.post("/webhook", async (req, res) => {
 
             let newTemplateMessage = "Hi there! Thanks for reaching out. Your message is important to us.";
 
-            // Upload media file
-            let mediaData = new FormData();
-            mediaData.append('file', fs.createReadStream('/local/path/file.jpg'), { filename: 'file.jpg' });
-            mediaData.append('messaging_product', 'whatsapp');
-            mediaData.append('url', 'https://example.com'); // Replace with your desired URL
+            // URL of the image
+            let imageUrl = 'https://example.com/path/to/image.jpg'; // Replace with your image URL
 
-            try {
-                // Send media file
-                const mediaResponse = await axios.post(
-                    `https://graph.facebook.com/v17.0/${phone_number_id}/media?access_token=${token}`,
-                    mediaData,
-                    {
-                        headers: {
-                            "Content-Type": "multipart/form-data",
-                            ...mediaData.getHeaders(),
-                        },
-                    }
-                );
-
-                // Reply with the uploaded media and URL
-                await axios.post(
-                    `https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`,
-                    {
-                        messaging_product: "whatsapp",
-                        to: from,
-                        text: {
-                            body: newTemplateMessage,
-                        },
-                        media: {
-                            media_type: "image",
-                            attachment_id: mediaResponse.data.id,
-                            url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Hamburger_%2812164386105%29.jpg/1200px-Hamburger_%2812164386105%29.jpg', // Replace with your desired URL
-                        },
+            // Reply with the image URL
+            await axios.post(
+                `https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`,
+                {
+                    messaging_product: "whatsapp",
+                    to: from,
+                    text: {
+                        body: newTemplateMessage,
                     },
-                    {
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    }
-                );
+                    media: {
+                        media_type: "image",
+                        url: imageUrl,
+                    },
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
 
-                res.sendStatus(200);
-            } catch (error) {
-                console.error("Error uploading media file:", error);
-                res.sendStatus(500);
-            }
+            res.sendStatus(200);
         } else {
             res.sendStatus(404);
         }
@@ -102,6 +80,7 @@ app.post("/webhook", async (req, res) => {
 app.get("/", (req, res) => {
     res.status(200).send("Hello, this is Webhook setup!!");
 });
+
 
 
 // const express = require('express');
