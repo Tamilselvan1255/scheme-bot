@@ -47,10 +47,18 @@ app.post("/webhook", (req, res) => {
             axios({
                 method: "POST",
                 url: "https://graph.facebook.com/v17.0/" + phone_number_id + "/messages?access_token=" + token,
-                data: {
+                data: 
+                // {
+                //     messaging_product: "whatsapp",
+                //     to: from,
+                //     text: {
+                //         body: "Hello, This is Tamil"
+                //     }
+                // },
+                {
                     "messaging_product": "whatsapp",
                     "recipient_type": "individual",
-                    "to": "PHONE_NUMBER",
+                    "to": from,
                     "type": "template",
                     "template": {
                       "name": "TEMPLATE_NAME",
@@ -64,7 +72,7 @@ app.post("/webhook", (req, res) => {
                             {
                               "type": "image",
                               "image": {
-                                "link": "http(s)://URL"
+                                "link": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/800px-Good_Food_Display_-_NCI_Visuals_Online.jpg"
                               }
                             }
                           ]
