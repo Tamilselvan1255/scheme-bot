@@ -62,7 +62,7 @@ app.post("/webhook", (req, res) => {
                 "to": from,
                 "type": "template",
                 "template": {
-                  "name": "TEMPLATE01",
+                  "name": "deals",
                   "language": {
                     "code": "LANGUAGE_AND_LOCALE_CODE"
                   },
