@@ -74,7 +74,6 @@ const express = require('express');
 const body_parser = require('body-parser');
 const axios = require('axios');
 require('dotenv').config;
-const PORT = process.env.PORT || 3000;
 
 
 const app = express().use(body_parser.json());
@@ -82,8 +81,8 @@ const app = express().use(body_parser.json());
 const token = process.env.TOKEN; // for sending message to user
 const myToken = process.env.MYTOKEN; // for verify
 
-app.listen(PORT, () => {
-    console.log(`Webhook is listening on port ${PORT}!!`);
+app.listen(process.env.PORT, () => {
+    console.log("Webhook is listening!!");
 });
 
 app.get("/webhook", (req, res) => {
@@ -105,6 +104,7 @@ app.get("/webhook", (req, res) => {
 app.post("/webhook", (req, res) => {
 
         let bodyParam = req.body;
+        console.log(JSON.stringify(body_param, null, 2));
 
         if (bodyParam.object === "page" &&
             bodyParam.entry &&
@@ -142,7 +142,7 @@ app.post("/webhook", (req, res) => {
 
             axios({
                 method: "POST",
-                url: "https://graph.facebook.com/v17.0/" + phone_number_id + "/messages?access_token=" + token,
+                url: "https://graph.facebook.com/v17.0/" + phoneNumberId + "/messages?access_token=" + token,
                 data: {
                     messaging_product: "whatsapp",
                     to: from,
