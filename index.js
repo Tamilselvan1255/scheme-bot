@@ -64,7 +64,7 @@ app.post("/webhook", (req, res) => {
                 "template": {
                     "name": "deals",
                     "language": {
-                        "code": "en_US"
+                        "code": "en"
                       },                      
                   "components": [
                     {
