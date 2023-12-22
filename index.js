@@ -103,18 +103,18 @@ app.get("/webhook", (req, res) => {
 
 app.post("/webhook", (req, res) => {
 
-        let bodyParam = req.body;
+        let body_param = req.body;
         console.log(JSON.stringify(body_param, null, 2));
 
-        if (bodyParam.object === "page" &&
-            bodyParam.entry &&
-            bodyParam.entry[0].changes &&
-            bodyParam.entry[0].changes[0].value.messages &&
-            bodyParam.entry[0].changes[0].value.messages[0]
+        if (body_param.object === "page" &&
+        body_param.entry &&
+        body_param.entry[0].changes &&
+        body_param.entry[0].changes[0].value.messages &&
+        body_param.entry[0].changes[0].value.messages[0]
         ) {
-            let phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
-            let from = bodyParam.entry[0].changes[0].value.messages[0].from;
-            let msgBody = bodyParam.entry[0].changes[0].value.messages[0].text.body;
+            let phone_number_id = body_param.entry[0].changes[0].value.metadata.phone_number_id;
+            let from = body_param.entry[0].changes[0].value.messages[0].from;
+            let msgBody = body_param.entry[0].changes[0].value.messages[0].text.body;
 
             // let newTemplateMessage = "Hi there! Thanks for reaching out. Your message is important to us.";
             // let buttonTemplateMessage = {
@@ -142,7 +142,7 @@ app.post("/webhook", (req, res) => {
 
             axios({
                 method: "POST",
-                url: "https://graph.facebook.com/v17.0/" + phoneNumberId + "/messages?access_token=" + token,
+                url: "https://graph.facebook.com/v17.0/" + phone_number_id + "/messages?access_token=" + token,
                 data: {
                     messaging_product: "whatsapp",
                     to: from,
