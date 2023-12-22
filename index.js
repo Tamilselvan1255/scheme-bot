@@ -13,7 +13,7 @@ app.listen(process.env.PORT, () => {
     console.log("Webhook is listening!!");
 });
 
-// to verify the callback URL from the dashboard side - cloud API side
+// to verify the callback URL from dashboard side - cloud API side
 app.get("/webhook", (req, res) => {
     let mode = req.query["hub.mode"];
     let challenge = req.query["hub.challenge"];
@@ -47,9 +47,9 @@ app.post("/webhook", async (req, res) => {
             let newTemplateMessage = "Hi there! Thanks for reaching out. Your message is important to us.";
 
             // URL of the image
-            let imageUrl = 'https://example.com/path/to/image.jpg'; // Replace with your image URL
+            let imageUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Hamburger_%2812164386105%29.jpg/1200px-Hamburger_%2812164386105%29.jpg'; // Replace with your image URL
 
-            // Reply with the image URL
+            // Reply with both text and image
             await axios.post(
                 `https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`,
                 {
@@ -58,10 +58,12 @@ app.post("/webhook", async (req, res) => {
                     text: {
                         body: newTemplateMessage,
                     },
-                    media: {
-                        media_type: "image",
-                        url: imageUrl,
-                    },
+                    media: [
+                        {
+                            media_type: "image",
+                            url: imageUrl,
+                        }
+                    ],
                 },
                 {
                     headers: {
@@ -80,6 +82,7 @@ app.post("/webhook", async (req, res) => {
 app.get("/", (req, res) => {
     res.status(200).send("Hello, this is Webhook setup!!");
 });
+
 
 
 
