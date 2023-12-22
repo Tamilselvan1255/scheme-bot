@@ -50,8 +50,25 @@ app.post("/webhook", (req, res) => {
                 data: {
                     messaging_product: "whatsapp",
                     to: from,
-                    text: {
-                        body: "Hello, This is Tamil"
+                    data: {
+                        messaging_product: "whatsapp",
+                        to: from,
+                        template: {
+                            template_type: "button",
+                            text: "Hello, This is Tamil. Choose an option:",
+                            buttons: [
+                                {
+                                    type: "postback",
+                                    title: "Option 1",
+                                    payload: "option1"
+                                },
+                                {
+                                    type: "postback",
+                                    title: "Option 2",
+                                    payload: "option2"
+                                }
+                            ]
+                        }
                     }
                 },
                 Headers: {
