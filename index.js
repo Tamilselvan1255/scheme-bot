@@ -30,7 +30,7 @@ app.get("/webhook", (req, res) => {
     }
 });
 
-app.post("/webhook", (req, res) => {
+app.post("/webhook", async (req, res) => {
     try {
         let bodyParam = req.body;
 
