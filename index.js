@@ -73,7 +73,7 @@ app.post("/webhook", (req, res) => {
                         {
                           "type": "image",
                           "image": {
-                            "link": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/800px-Good_Food_Display_-_NCI_Visuals_Online.jpg"
+                            "link": "https://goldenbroasted.com/wp-content/uploads/2022/11/Prawn-Biryani-Recipe.jpg"
                           }
                         }
                       ]
@@ -83,7 +83,11 @@ app.post("/webhook", (req, res) => {
                       "parameters": [
                         {
                           "type": "text",
-                          "text": "TEXT_STRING"
+                          "text": "THURSDAY DEALS 🥳 🥗🥘"
+                        },
+                        {
+                          "type": "text",
+                          "text": "Grab your dishes for the best prices at today's deal."
                         },
                         {
                           "type": "currency",
@@ -108,7 +112,7 @@ app.post("/webhook", (req, res) => {
                       "parameters": [
                         {
                           "type": "payload",
-                          "payload": "PAYLOAD"
+                          "payload": "order"
                         }
                       ]
                     },
@@ -119,13 +123,14 @@ app.post("/webhook", (req, res) => {
                       "parameters": [
                         {
                           "type": "payload",
-                          "payload": "PAYLOAD"
+                          "payload": "not_interested"
                         }
                       ]
                     }
                   ]
                 }
-              }, {
+              }
+              , {
                 headers: {
                     "Content-Type": "application/json"
                 }
