@@ -67,9 +67,10 @@ app.post("/webhook", async (req, res) => {
             //     }
             // };
 
-            axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, {
-                messaging_product: "whatsapp",
-                to: from,
+
+            axios({
+                method: "POST",
+                url: "https://graph.facebook.com/v17.0/" + phone_number_id + "/messages?access_token=" + token,
                 data: {
                     messaging_product: "whatsapp",
                     to: from,
@@ -77,11 +78,25 @@ app.post("/webhook", async (req, res) => {
                         body: "Hello, This is Tamil"
                     }
                 },
-            }, {
-                headers: {
-                    "Content-Type": "application/json"
+                Headers: {
+                    "Content_Type": "application/json"
                 }
             });
+            // axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, {
+            //     messaging_product: "whatsapp",
+            //     to: from,
+            //     data: {
+            //         messaging_product: "whatsapp",
+            //         to: from,
+            //         text: {
+            //             body: "Hello, This is Tamil"
+            //         }
+            //     },
+            // }, {
+            //     headers: {
+            //         "Content-Type": "application/json"
+            //     }
+            // });
 
             res.sendStatus(200);
         } else {
