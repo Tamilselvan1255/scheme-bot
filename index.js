@@ -45,32 +45,38 @@ app.post("/webhook", async (req, res) => {
             let msgBody = bodyParam.entry[0].changes[0].value.messages[0].text.body;
 
             // let newTemplateMessage = "Hi there! Thanks for reaching out. Your message is important to us.";
-            let buttonTemplateMessage = {
-                attachment: {
-                    type: "template",
-                    payload: {
-                        template_type: "button",
-                        text: "Hi there! Choose an option:",
-                        buttons: [
-                            {
-                                type: "postback",
-                                title: "Option 1",
-                                payload: "option1"
-                            },
-                            {
-                                type: "postback",
-                                title: "Option 2",
-                                payload: "option2"
-                            }
-                        ]
-                    }
-                }
-            };
+            // let buttonTemplateMessage = {
+            //     attachment: {
+            //         type: "template",
+            //         payload: {
+            //             template_type: "button",
+            //             text: "Hi there! Choose an option:",
+            //             buttons: [
+            //                 {
+            //                     type: "postback",
+            //                     title: "Option 1",
+            //                     payload: "option1"
+            //                 },
+            //                 {
+            //                     type: "postback",
+            //                     title: "Option 2",
+            //                     payload: "option2"
+            //                 }
+            //             ]
+            //         }
+            //     }
+            // };
 
             axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, {
                 messaging_product: "whatsapp",
                 to: from,
-                ...buttonTemplateMessage
+                data: {
+                    messaging_product: "whatsapp",
+                    to: from,
+                    text: {
+                        body: "Hello, This is Tamil"
+                    }
+                },
             }, {
                 headers: {
                     "Content-Type": "application/json"
