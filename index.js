@@ -48,42 +48,13 @@ app.post("/webhook", async (req, res) => {
             let newTemplateMessage = "Hi there! Thanks for reaching out. Your message is important to us.";
 
             try {
-                // Upload media file from URL
-                let imageUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Hamburger_%2812164386105%29.jpg/1200px-Hamburger_%2812164386105%29.jpg'; // Replace with the actual URL of your image
-                const mediaResponseUrl = await axios.post(
-                    `https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`,
-                    {
-                        messaging_product: "whatsapp",
-                        to: from,
-                        text: {
-                            body: newTemplateMessage,
-                        },
-                        media: [
-                            {
-                                media_type: "image",
-                                url: imageUrl,
-                            },
-                        ],
-                    },
-                    {
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    }
-                );
-
-                // Path to the local image file (in the same folder as your script)
-                let imagePath = './Hamburger.jpg'; // Replace with the actual name of your image file
-
-                // Read the image file
-                let imageBuffer = fs.readFileSync(imagePath);
-
-                // Upload media file from local file
-                const mediaData = new FormData();
-                mediaData.append('file', imageBuffer, { filename: 'file.jpg' });
+                // Upload media file
+                let mediaData = new FormData();
+                mediaData.append('file', fs.createReadStream('Hamburger.jpg'), { filename: 'Hamburger.jpg' });
                 mediaData.append('messaging_product', 'whatsapp');
 
-                const mediaResponseLocal = await axios.post(
+                // Send media file
+                const mediaResponse = await axios.post(
                     `https://graph.facebook.com/v17.0/${phone_number_id}/media?access_token=${token}`,
                     mediaData,
                     {
@@ -94,10 +65,30 @@ app.post("/webhook", async (req, res) => {
                     }
                 );
 
-                console.log("Media responses:", mediaResponseUrl.data, mediaResponseLocal.data);
+                // Reply with the uploaded media and text
+                await axios.post(
+                    `https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`,
+                    {
+                        messaging_product: "whatsapp",
+                        to: from,
+                        text: {
+                            body: newTemplateMessage,
+                        },
+                        media: {
+                            media_type: "image",
+                            attachment_id: mediaResponse.data.id,
+                        },
+                    },
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    }
+                );
+
                 res.sendStatus(200);
             } catch (error) {
-                console.error("Error uploading media file:", error);
+                console.error("Error uploading or sending media file:", error);
                 res.sendStatus(500);
             }
         } else {
