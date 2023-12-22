@@ -31,10 +31,17 @@ app.post("/whatsapp", async (req, res) => {
 
     if (body_param.object) {
         console.log("inside body_param");
-        if (body_param.entry &&
+        if (
+            body_param.entry &&
+            Array.isArray(body_param.entry) &&
+            body_param.entry.length > 0 &&
             body_param.entry[0].changes &&
+            Array.isArray(body_param.entry[0].changes) &&
+            body_param.entry[0].changes.length > 0 &&
+            body_param.entry[0].changes[0].value &&
             body_param.entry[0].changes[0].value.messages &&
-            body_param.entry[0].changes[0].value.messages[0]
+            Array.isArray(body_param.entry[0].changes[0].value.messages) &&
+            body_param.entry[0].changes[0].value.messages.length > 0
         ) {
             let phone_number_id = body_param.entry[0].changes[0].value.metadata.phone_number_id;
             let msg_body = body_param.entry[0].changes[0].value.messages[0].text.body;
