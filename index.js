@@ -53,7 +53,7 @@ app.post("/webhook", (req, res) => {
                 "to": "+919788825633",
                 "type": "template",
                 "template": {
-                    "name": "new",
+                    "name": "hello_world",
                     "language": {
                         "code": "en_US"
                     }
