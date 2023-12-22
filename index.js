@@ -44,51 +44,88 @@ app.post("/webhook", (req, res) => {
             let from = body_param.entry[0].changes[0].value.messages[0].from;
             let msg_body = body_param.entry[0].changes[0].value.messages[0].text.body;
 
-            // let mediaTemplateMessage = {
+            let newTemplateMessage = "Hi there! Thanks for reaching out. Your message is important to us.";
+
+            // axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, {
             //     messaging_product: "whatsapp",
             //     to: from,
-            //     media: {
-            //         type: "image", // Change to "video" for a video template
-            //         media_url: "URL_TO_YOUR_MEDIA_FILE",
-            //         buttons: [
-            //             {
-            //                 type: "url",
-            //                 title: "View Details",
-            //                 url: "URL_TO_VIEW_DETAILS"
-            //             },
-            //             {
-            //                 type: "postback",
-            //                 title: "Buy Now",
-            //                 payload: "BUY_NOW_PAYLOAD"
-            //             }
-            //         ]
+            //     text: {
+            //         body: newTemplateMessage
             //     }
-            // };
-
-            // axios({
-            //     method: "POST",
-            //     url: "https://graph.facebook.com/v17.0/" + phone_number_id + "/messages?access_token=" + token,
-            //     data: {
-            //         messaging_product: "whatsapp",
-            //         to: from,
-            //         text: {
-            //             body: "Hello, This is Tamil"
-            //         }
-            //     },
+            // }, {
             //     headers: {
             //         "Content-Type": "application/json"
             //     }
             // });
-
-            let newTemplateMessage = "Hi there! Thanks for reaching out. Your message is important to us.";
-
             axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, {
-                messaging_product: "whatsapp",
-                to: from,
-                text: {
-                    body: newTemplateMessage
+                "messaging_product": "whatsapp",
+                "to": from,
+                "type": "template",
+                "template": {
+                  "name": "TEMPLATE01",
+                  "language": {
+                    "code": "LANGUAGE_AND_LOCALE_CODE"
+                  },
+                  "components": [
+                    {
+                      "type": "header",
+                      "parameters": [
+                        {
+                          "type": "image",
+                          "image": {
+                            "link": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/800px-Good_Food_Display_-_NCI_Visuals_Online.jpg"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "body",
+                      "parameters": [
+                        {
+                          "type": "text",
+                          "text": "TEXT_STRING"
+                        },
+                        {
+                          "type": "currency",
+                          "currency": {
+                            "fallback_value": "VALUE",
+                            "code": "USD",
+                            "amount_1000": NUMBER// *1000
+                          }
+                        },
+                        {
+                          "type": "date_time",
+                          "date_time": {
+                            "fallback_value": "MONTH DAY, YEAR"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "button",
+                      "sub_type": "quick_reply",
+                      "index": "0",
+                      "parameters": [
+                        {
+                          "type": "payload",
+                          "payload": "PAYLOAD"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "button",
+                      "sub_type": "quick_reply",
+                      "index": "1",
+                      "parameters": [
+                        {
+                          "type": "payload",
+                          "payload": "PAYLOAD"
+                        }
+                      ]
+                    }
+                  ]
                 }
-            }, {
+              }, {
                 headers: {
                     "Content-Type": "application/json"
                 }
@@ -104,112 +141,3 @@ app.post("/webhook", (req, res) => {
 app.get("/", (req, res) => {
     res.status(200).send("Hello, this is Webhook setup!!")
 });
-
-// const express = require('express');
-// const body_parser = require('body-parser');
-// const axios = require('axios');
-// require('dotenv').config;
-
-
-// const app = express().use(body_parser.json());
-
-// const token = process.env.TOKEN; // for sending message to user
-// const myToken = process.env.MYTOKEN; // for verify
-
-// app.listen(process.env.PORT, () => {
-//     console.log("Webhook is listening!!");
-// });
-
-// app.get("/webhook", (req, res) => {
-//     let mode = req.query["hub.mode"];
-//     let challenge = req.query["hub.challenge"];
-//     let token = req.query["hub.verify_token"];
-
-
-//     if (mode && token) {
-
-//         if (mode === "subscribe" && token === myToken) {
-//             res.status(200).send(challenge);
-//         } else {
-//             res.status(403);
-//         }
-//     }
-// });
-
-// app.post("/webhook", (req, res) => {
-
-//         let body_param = req.body;
-//         console.log(JSON.stringify(body_param, null, 2));
-
-//         if (body_param.object === "page" &&
-//         body_param.entry &&
-//         body_param.entry[0].changes &&
-//         body_param.entry[0].changes[0].value.messages &&
-//         body_param.entry[0].changes[0].value.messages[0]
-//         ) {
-//             let phone_number_id = body_param.entry[0].changes[0].value.metadata.phone_number_id;
-//             let from = body_param.entry[0].changes[0].value.messages[0].from;
-//             let msgBody = body_param.entry[0].changes[0].value.messages[0].text.body;
-
-//             // let newTemplateMessage = "Hi there! Thanks for reaching out. Your message is important to us.";
-//             // let buttonTemplateMessage = {
-//             //     attachment: {
-//             //         type: "template",
-//             //         payload: {
-//             //             template_type: "button",
-//             //             text: "Hi there! Choose an option:",
-//             //             buttons: [
-//             //                 {
-//             //                     type: "postback",
-//             //                     title: "Option 1",
-//             //                     payload: "option1"
-//             //                 },
-//             //                 {
-//             //                     type: "postback",
-//             //                     title: "Option 2",
-//             //                     payload: "option2"
-//             //                 }
-//             //             ]
-//             //         }
-//             //     }
-//             // };
-
-
-//             axios({
-//                 method: "POST",
-//                 url: "https://graph.facebook.com/v17.0/" + phone_number_id + "/messages?access_token=" + token,
-//                 data: {
-//                     messaging_product: "whatsapp",
-//                     to: from,
-//                     text: {
-//                         body: "Hello, This is Tamil"
-//                     }
-//                 },
-//                 headers: {
-//                     "Content-Type": "application/json"
-//                 }
-//             });
-//             // axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, {
-//             //     messaging_product: "whatsapp",
-//             //     to: from,
-//             //     data: {
-//             //         messaging_product: "whatsapp",
-//             //         to: from,
-//             //         text: {
-//             //             body: "Hello, This is Tamil"
-//             //         }
-//             //     },
-//             // }, {
-//             //     headers: {
-//             //         "Content-Type": "application/json"
-//             //     }
-//             // });
-
-//             res.sendStatus(200);
-//         } else {
-//             res.sendStatus(404);
-//         }
-// });
-// app.get("/", (req, res) => {
-//     res.status(200).send("Hello, this is Webhook setup!!");
-// });
