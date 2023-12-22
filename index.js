@@ -47,32 +47,10 @@ app.post("/webhook", async (req, res) => {
 
             let newTemplateMessage = "Hi there! Thanks for reaching out. Your message is important to us.";
 
-            // Path to the local image file
-            let imagePath = "./Hamburger.jpg"; // Replace with the actual path to your image file
-
-            // Read the image file
-            let imageBuffer = fs.readFileSync(imagePath);
-
-            // Upload media file
-            let mediaData = new FormData();
-            mediaData.append('file', imageBuffer, { filename: 'file.jpg' });
-            mediaData.append('messaging_product', 'whatsapp');
-
             try {
-                // Send media file
-                const mediaResponse = await axios.post(
-                    `https://graph.facebook.com/v17.0/${phone_number_id}/media?access_token=${token}`,
-                    mediaData,
-                    {
-                        headers: {
-                            "Content-Type": "multipart/form-data",
-                            ...mediaData.getHeaders(),
-                        },
-                    }
-                );
-
-                // Reply with the uploaded media
-                await axios.post(
+                // Upload media file from URL
+                let imageUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Hamburger_%2812164386105%29.jpg/1200px-Hamburger_%2812164386105%29.jpg'; // Replace with the actual URL of your image
+                const mediaResponseUrl = await axios.post(
                     `https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`,
                     {
                         messaging_product: "whatsapp",
@@ -83,8 +61,8 @@ app.post("/webhook", async (req, res) => {
                         media: [
                             {
                                 media_type: "image",
-                                attachment_id: mediaResponse.data.id,
-                            }
+                                url: imageUrl,
+                            },
                         ],
                     },
                     {
@@ -94,6 +72,29 @@ app.post("/webhook", async (req, res) => {
                     }
                 );
 
+                // Path to the local image file (in the same folder as your script)
+                let imagePath = './Hamburger.jpg'; // Replace with the actual name of your image file
+
+                // Read the image file
+                let imageBuffer = fs.readFileSync(imagePath);
+
+                // Upload media file from local file
+                const mediaData = new FormData();
+                mediaData.append('file', imageBuffer, { filename: 'file.jpg' });
+                mediaData.append('messaging_product', 'whatsapp');
+
+                const mediaResponseLocal = await axios.post(
+                    `https://graph.facebook.com/v17.0/${phone_number_id}/media?access_token=${token}`,
+                    mediaData,
+                    {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                            ...mediaData.getHeaders(),
+                        },
+                    }
+                );
+
+                console.log("Media responses:", mediaResponseUrl.data, mediaResponseLocal.data);
                 res.sendStatus(200);
             } catch (error) {
                 console.error("Error uploading media file:", error);
@@ -108,6 +109,7 @@ app.post("/webhook", async (req, res) => {
 app.get("/", (req, res) => {
     res.status(200).send("Hello, this is Webhook setup!!");
 });
+
 
 
 
