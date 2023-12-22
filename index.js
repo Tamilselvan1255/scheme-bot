@@ -90,7 +90,7 @@ app.post("/webhook", (req, res) => {
                           "currency": {
                             "fallback_value": "VALUE",
                             "code": "USD",
-                            "amount_1000": NUMBER// *1000
+                            "amount_1000": 1000
                           }
                         },
                         {
