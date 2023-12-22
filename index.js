@@ -44,16 +44,51 @@ app.post("/webhook", (req, res) => {
             let from = body_param.entry[0].changes[0].value.messages[0].from;
             let msg_body = body_param.entry[0].changes[0].value.messages[0].text.body;
 
-            axios({
-                method: "POST",
-                url: "https://graph.facebook.com/v17.0/" + phone_number_id + "/messages?access_token=" + token,
-                data: {
-                    messaging_product: "whatsapp",
-                    to: from,
-                    text: {
-                        body: "Hello, This is Tamil"
-                    }
-                },
+            // let mediaTemplateMessage = {
+            //     messaging_product: "whatsapp",
+            //     to: from,
+            //     media: {
+            //         type: "image", // Change to "video" for a video template
+            //         media_url: "URL_TO_YOUR_MEDIA_FILE",
+            //         buttons: [
+            //             {
+            //                 type: "url",
+            //                 title: "View Details",
+            //                 url: "URL_TO_VIEW_DETAILS"
+            //             },
+            //             {
+            //                 type: "postback",
+            //                 title: "Buy Now",
+            //                 payload: "BUY_NOW_PAYLOAD"
+            //             }
+            //         ]
+            //     }
+            // };
+
+            // axios({
+            //     method: "POST",
+            //     url: "https://graph.facebook.com/v17.0/" + phone_number_id + "/messages?access_token=" + token,
+            //     data: {
+            //         messaging_product: "whatsapp",
+            //         to: from,
+            //         text: {
+            //             body: "Hello, This is Tamil"
+            //         }
+            //     },
+            //     headers: {
+            //         "Content-Type": "application/json"
+            //     }
+            // });
+
+            let newTemplateMessage = "Hi there! Thanks for reaching out. Your message is important to us.";
+
+            axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, {
+                messaging_product: "whatsapp",
+                to: from,
+                text: {
+                    body: newTemplateMessage
+                }
+            }, {
                 headers: {
                     "Content-Type": "application/json"
                 }
