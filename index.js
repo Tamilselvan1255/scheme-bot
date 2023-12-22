@@ -62,10 +62,11 @@ app.post("/webhook", (req, res) => {
                 "to": from,
                 "type": "template",
                 "template": {
-                  "name": "deals",
-                  "language": {
-                    "code": "LANGUAGE_AND_LOCALE_CODE"
-                  },
+                    "name": "deals",
+                    "language": {
+                      "code": "en",  // Language code for English
+                      "locale": "US" // Locale code for the United States (or use your specific locale code)
+                    },
                   "components": [
                     {
                       "type": "header",
