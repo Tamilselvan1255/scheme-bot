@@ -151,7 +151,7 @@ app.post("/webhook", (req, res) => {
                     }
                 },
                 headers: {
-                    "Content_Type": "application/json"
+                    "Content-Type": "application/json"
                 }
             });
             // axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, {
