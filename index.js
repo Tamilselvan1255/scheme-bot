@@ -46,78 +46,13 @@ app.post("/webhook", (req, res) => {
 
             let newTemplateMessage = "Hi there! Thanks for reaching out. Your message is important to us.";
 
-            // axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, {
-            //     messaging_product: "whatsapp",
-            //     to: from,
-            //     text: {
-            //         body: newTemplateMessage
-            //     }
-            // }, {
-            //     headers: {
-            //         "Content-Type": "application/json"
-            //     }
-            // });
             axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, {
-                "messaging_product": "whatsapp",
-                "type": "individual",
-                "to": from,
-                "type": "template",
-                "template": {
-                    "name": "deals",
-                    "language": {
-                        "code": "en"
-                      },                      
-                  "components": [
-                    {
-                      "type": "header",
-                      "parameters": [
-                        {
-                          "type": "image",
-                          "image": {
-                            "link": "https://goldenbroasted.com/wp-content/uploads/2022/11/Prawn-Biryani-Recipe.jpg"
-                          }
-                        }
-                      ]
-                    },
-                    {
-                      "type": "body",
-                      "parameters": [
-                        {
-                          "type": "text",
-                          "text": "THURSDAY DEALS 🥳 🥗🥘"
-                        },
-                        {
-                          "type": "text",
-                          "text": "Grab your dishes for the best prices at today's deal."
-                        }
-                      ]
-                    },
-                    {
-                      "type": "button",
-                      "sub_type": "quick_reply",
-                      "index": "0",
-                      "parameters": [
-                        {
-                          "type": "payload",
-                          "payload": "order"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "button",
-                      "sub_type": "quick_reply",
-                      "index": "1",
-                      "parameters": [
-                        {
-                          "type": "payload",
-                          "payload": "not_interested"
-                        }
-                      ]
-                    }
-                  ]
+                messaging_product: "whatsapp",
+                to: from,
+                text: {
+                    body: newTemplateMessage
                 }
-              }
-              , {
+            }, {
                 headers: {
                     "Content-Type": "application/json"
                 }
