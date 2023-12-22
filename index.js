@@ -48,17 +48,19 @@ app.post("/webhook", (req, res) => {
 
             let newTemplateMessage = "Hi there! Thanks for reaching out. Your message is important to us.";
 
-            axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, {
-                messaging_product: "whatsapp",
-                to: from,
-                text: {
-                    body: newTemplateMessage
+            const body = {
+                "messaging_product": "whatsapp",
+                "to": "+919788825633",
+                "type": "template",
+                "template": {
+                    "name": "new",
+                    "language": {
+                        "code": "en_US"
+                    }
                 }
-            }, {
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            });
+            }
+
+            axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, body);
 
             res.sendStatus(200);
         } else {
