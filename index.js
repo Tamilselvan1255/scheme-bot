@@ -2,6 +2,7 @@ const express = require('express');
 const body_parser = require('body-parser');
 const axios = require('axios');
 const FormData = require('form-data');
+const fs = require('fs');
 require('dotenv').config();
 
 const app = express().use(body_parser.json());
@@ -46,33 +47,58 @@ app.post("/webhook", async (req, res) => {
 
             let newTemplateMessage = "Hi there! Thanks for reaching out. Your message is important to us.";
 
-            // URL of the image
-            let imageUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Hamburger_%2812164386105%29.jpg/1200px-Hamburger_%2812164386105%29.jpg'; // Replace with your image URL
+            // Path to the local image file
+            let imagePath = "./Hamburger.jpg"; // Replace with the actual path to your image file
 
-            // Reply with both text and image
-            await axios.post(
-                `https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`,
-                {
-                    messaging_product: "whatsapp",
-                    to: from,
-                    text: {
-                        body: newTemplateMessage,
-                    },
-                    media: [
-                        {
-                            media_type: "image",
-                            url: imageUrl,
-                        }
-                    ],
-                },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
+            // Read the image file
+            let imageBuffer = fs.readFileSync(imagePath);
 
-            res.sendStatus(200);
+            // Upload media file
+            let mediaData = new FormData();
+            mediaData.append('file', imageBuffer, { filename: 'file.jpg' });
+            mediaData.append('messaging_product', 'whatsapp');
+
+            try {
+                // Send media file
+                const mediaResponse = await axios.post(
+                    `https://graph.facebook.com/v17.0/${phone_number_id}/media?access_token=${token}`,
+                    mediaData,
+                    {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                            ...mediaData.getHeaders(),
+                        },
+                    }
+                );
+
+                // Reply with the uploaded media
+                await axios.post(
+                    `https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`,
+                    {
+                        messaging_product: "whatsapp",
+                        to: from,
+                        text: {
+                            body: newTemplateMessage,
+                        },
+                        media: [
+                            {
+                                media_type: "image",
+                                attachment_id: mediaResponse.data.id,
+                            }
+                        ],
+                    },
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    }
+                );
+
+                res.sendStatus(200);
+            } catch (error) {
+                console.error("Error uploading media file:", error);
+                res.sendStatus(500);
+            }
         } else {
             res.sendStatus(404);
         }
