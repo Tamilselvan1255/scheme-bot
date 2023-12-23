@@ -55,16 +55,15 @@ app.post("/whatsapp", async (req, res) => {
             const body = {
                 "messaging_product": "whatsapp",
                 "to": "+919788825633",
-                "type": "template",
-                "template": {
-                    "text": {
-                        "body": responseMessage
-                    },
-                    "language": {
-                        "code": "en_US"
-                    }
+                "type": "text",
+                "text": {
+                    "body": responseMessage
+                },
+                "language": {
+                    "code": "en_US"
                 }
             };
+            
 
             try {
                 await axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, body);
