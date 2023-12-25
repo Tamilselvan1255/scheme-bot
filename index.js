@@ -100,28 +100,30 @@ app.post('/whatsapp', async (req, res) => {
             }
 
         } else if (msgBody.includes('show schemes')) {
-            // If "Show Schemes" is detected, respond with "deals" template
-            const showSchemesTemplate = {
+            // If a greeting is detected, respond with "scheme_template"
+            const dealsTemplate = {
                 messaging_product: 'whatsapp',
                 to: '+919788825633', // Replace with the recipient's phone number
                 type: 'template',
                 template: {
                     name: 'deals',
-                },
-                language: {
-                    code: 'en_US',
+                    language: {
+                        code: 'en_US',
+                    },
                 },
             };
 
             try {
-                await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, showSchemesTemplate);
+                const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, dealsTemplate);
+                console.log('Response:', response.data);
                 res.sendStatus(200);
                 return;
             } catch (error) {
-                console.error('Error sending show schemes template:', error.message);
+                console.error('Error sending greeting template:', error.message, error.response ? error.response.data : '');
                 res.sendStatus(500);
                 return;
             }
+
         } else {
             // Continue with your existing logic for processing user queries
             // Retrieve scheme data from the "schemes" collection based on user input
