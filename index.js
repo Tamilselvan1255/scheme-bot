@@ -60,7 +60,7 @@ app.post("/whatsapp", async (req, res) => {
     console.log('Received POST request to /whatsapp:', req.body);
     let body_param = req.body;
 
-    if (body_param.object === "page" && body_param.entry && body_param.entry[0].changes) {
+    if (body_param.object === "whatsapp_business_account" && body_param.entry && body_param.entry[0].changes) {
         let changes = body_param.entry[0].changes;
 
         for (let i = 0; i < changes.length; i++) {
