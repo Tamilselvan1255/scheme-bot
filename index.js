@@ -100,7 +100,54 @@ app.post('/whatsapp', async (req, res) => {
                 return;
             }
 
-        } 
+        }else if (msgBody.includes('cat')) {
+            // If the user mentions "cat", respond with a plain text message
+            const catResponse = {
+                messaging_product: 'whatsapp',
+                to: '+919788825633', // Replace with the recipient's phone number
+                type: 'text',
+                text: {
+                    body: "I love cats!!",
+                },
+                language: {
+                    code: 'en_US',
+                },
+            };
+
+            try {
+                await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, catResponse);
+                res.sendStatus(200);
+                return;
+            } catch (error) {
+                console.error('Error sending cat response:', error.message, error.response ? error.response.data : '');
+                res.sendStatus(500);
+                return;
+            }
+
+        } else if (msgBody.includes('dog')) {
+            // If the user mentions "dog", respond with a plain text message
+            const dogResponse = {
+                messaging_product: 'whatsapp',
+                to: '+919788825633', // Replace with the recipient's phone number
+                type: 'text',
+                text: {
+                    body: "I love dogs!!",
+                },
+                language: {
+                    code: 'en_US',
+                },
+            };
+
+            try {
+                await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, dogResponse);
+                res.sendStatus(200);
+                return;
+            } catch (error) {
+                console.error('Error sending dog response:', error.message, error.response ? error.response.data : '');
+                res.sendStatus(500);
+                return;
+            }
+        }
     } else {
         res.sendStatus(404);
     }
