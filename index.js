@@ -69,27 +69,19 @@ app.post("/whatsapp", async (req, res) => {
 
         // Retrieve scheme data from the "schemes" collection based on user input
         try {
-            const keyword = msg_body;
-            // const schemes = await Scheme.find({ schemeName: { $regex: keyword, $options: 'i' } });
-            const schemes = await Scheme.find({ implementedBy: { $regex: keyword, $options: 'i' } });
+            const keyword = msg_body.toLowerCase();
+            const schemes = await Scheme.find({ schemeName: { $regex: keyword, $options: 'i' } });
 
        
             let responseMessage;
 
-             if (schemes.length > 0) {
-                if (schemes.length === 1) {
-                    // If only one scheme is found, construct a response for that scheme
-                    const scheme = schemes[0];
-                    responseMessage =
-                        `*Scheme Name:* ${scheme.schemeName}\nDescription: ${scheme.domainDescription}\nComments: ${scheme.comments}\nNIProvider: ${scheme.niProvider}\nState: ${scheme.implementedBy}\nEligible Disabilities: ${scheme.eligibleDisabilities}\nDisability Percentage ${scheme.disabilityPercentage}\nAge: ${scheme.age}\nAnnual Income: ${scheme.annualIncome}\nGender: ${scheme.genderEligibility}\nAttachments:${scheme.attachments}\n\n`;
-                } else {
-                    // If multiple schemes are found, construct a response with a list of schemes
-                    responseMessage = "Here are some schemes matching your query:\n";
-                    schemes.forEach((scheme) => {
-                        responseMessage +=
-                            `*Scheme Name:* ${scheme.schemeName}\nDescription: ${scheme.domainDescription}\nComments: ${scheme.comments}\nNIProvider: ${scheme.niProvider}\nState: ${scheme.implementedBy}\nEligible Disabilities: ${scheme.eligibleDisabilities}\nDisability Percentage ${scheme.disabilityPercentage}\nAge: ${scheme.age}\nAnnual Income: ${scheme.annualIncome}\nGender: ${scheme.genderEligibility}\nAttachments:${scheme.attachments}\n\n`;
-                    });
-                }
+            if (schemes.length > 0) {
+                // Construct a response message based on the retrieved schemes
+                responseMessage = "Here are some schemes matching your query:\n";
+                schemes.forEach((scheme) => {
+                    responseMessage += 
+                    `*Scheme Name:* ${scheme.schemeName}\n*Description:* ${scheme.domainDescription}\n*Comments:* ${scheme.comments}\n*NIProvider:* ${scheme.niProvider}\n*State:* ${scheme.implementedBy}\n*Eligible Disabilities:* ${scheme.eligibleDisabilities}\n*Disability Percentage:* ${scheme.disabilityPercentage}\n*Age:* ${scheme.age}\n*Annual Income:* ${scheme.annualIncome}\n*Gender:* ${scheme.genderEligibility}\n*Attachments:* ${scheme.attachments}\n\n`;
+                });
             } else {
                 responseMessage = "Sorry, no schemes found matching your query.";
             }
