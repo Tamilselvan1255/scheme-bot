@@ -342,9 +342,30 @@ app.post("/whatsapp", async (req, res) => {
 
             let responseMessage;
 
-            // Implement your chatbot logic here
-            if (msg_body.toLowerCase().includes("hello")) {
-                responseMessage = "Hi there! How can I help you today?";
+             // Implement your chatbot logic here
+             if (msg_body.toLowerCase().includes("hello")) {
+                // If a greeting is detected, respond with "scheme_template"
+                const greetingTemplate = {
+                    "messaging_product": "whatsapp",
+                    "to": "+919788825633",
+                    "type": "template",
+                    "template": {
+                        "name": "scheme_template"
+                    },
+                    "language": {
+                        "code": "en_US"
+                    }
+                };
+
+                try {
+                    await axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, greetingTemplate);
+                    res.sendStatus(200);
+                    return;
+                } catch (error) {
+                    console.error("Error sending greeting template:", error);
+                    res.sendStatus(500);
+                    return;
+                }
             } else if (msg_body.toLowerCase().includes("cat")) {
                 responseMessage = "I love cats!";
             } else if (msg_body.toLowerCase().includes("dog")) {
@@ -383,17 +404,3 @@ app.get("/", (req, res) => {
     res.status(200).send("Webhook setup for scheme!!");
 });
 
-
-//      const schemes = await Scheme.find({
-//                 $or: [
-//                   { schemeName: { $regex: keyword, $options: 'i' } },
-//                   { domainDescription: { $regex: keyword, $options: 'i' } },
-//                   { niProvider: { $regex: keyword, $options: 'i' } },
-//                   { implementedBy: { $regex: keyword, $options: 'i' } },
-//                   { eligibleDisabilities: { $regex: keyword, $options: 'i' } },
-//                   { disabilityPercentage: { $regex: keyword, $options: 'i' } },
-//                   { age: { $regex: keyword, $options: 'i' } },
-//                   { annualIncome: { $regex: keyword, $options: 'i' } },
-//                   { genderEligibility: { $regex: keyword, $options: 'i' } }
-//                 ]
-//               });
