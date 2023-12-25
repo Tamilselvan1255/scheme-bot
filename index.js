@@ -298,7 +298,6 @@
 //     res.status(200).send("Webhook setup for scheme!!");
 // });
 
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const axios = require('axios');
@@ -340,8 +339,6 @@ app.post("/whatsapp", async (req, res) => {
             let phone_number_id = body_param.entry[0].changes[0].value.metadata.phone_number_id;
             let msg_body = body_param.entry[0].changes[0].value.messages[0].text.body;
 
-            let responseMessage;
-
             // If a greeting is detected, respond with "scheme_template"
             const greetingTemplate = {
                 "messaging_product": "whatsapp",
@@ -350,21 +347,17 @@ app.post("/whatsapp", async (req, res) => {
                 "template": {
                     "name": "scheme_template"
                 },
-                "language": {
-                    "code": "en_US"
-                }
+                "language": "en_US" // Add the language parameter
             };
 
             // Implement your chatbot logic here
             if (msg_body.toLowerCase().includes("hello")) {
-                // responseMessage = axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, greetingTemplate);
                 try {
-                    const response = axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, greetingTemplate);
+                    const response = await axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, greetingTemplate);
                     console.log(response.data);  // Log the response data for debugging
                 } catch (error) {
                     console.error(error.response.data);  // Log the error response data
                 }
-                
             } else if (msg_body.toLowerCase().includes("cat")) {
                 responseMessage = "I love cats!";
             } else if (msg_body.toLowerCase().includes("dog")) {
@@ -380,11 +373,8 @@ app.post("/whatsapp", async (req, res) => {
                 "text": {
                     "body": responseMessage
                 },
-                "language": {
-                    "code": "en_US"
-                }
+                "language": "en_US"
             };
-
 
             try {
                 await axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, body);
@@ -402,4 +392,3 @@ app.post("/whatsapp", async (req, res) => {
 app.get("/", (req, res) => {
     res.status(200).send("Webhook setup for scheme!!");
 });
-
