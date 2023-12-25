@@ -146,7 +146,7 @@ app.post('/whatsapp', async (req, res) => {
                 res.sendStatus(500);
                 return;
             }
-        } else if (msgBody.includes('1. Show Schemes')) {
+        } else if (msgBody.includes('show schemes')) {
             // If "Show Schemes" is detected, respond with "deals" template
             const showSchemesTemplate = {
                 messaging_product: 'whatsapp',
@@ -154,9 +154,9 @@ app.post('/whatsapp', async (req, res) => {
                 type: 'template',
                 template: {
                     name: 'deals',
-                    language: {
-                        code: 'en_US',
-                    },
+                },
+                language: {
+                    code: 'en_US',
                 },
             };
 
@@ -166,6 +166,29 @@ app.post('/whatsapp', async (req, res) => {
                 return;
             } catch (error) {
                 console.error('Error sending show schemes template:', error.message, error.response ? error.response.data : '');
+                res.sendStatus(500);
+                return;
+            }
+        } else if (msgBody.includes('1. Show Schemes')) {
+            // If the user selects the "Show Schemes" option within the "scheme_template" template, respond with "deals" template
+            const dealsTemplate = {
+                messaging_product: 'whatsapp',
+                to: '+919788825633', // Replace with the recipient's phone number
+                type: 'template',
+                template: {
+                    name: 'deals',
+                },
+                language: {
+                    code: 'en_US',
+                },
+            };
+
+            try {
+                await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, dealsTemplate);
+                res.sendStatus(200);
+                return;
+            } catch (error) {
+                console.error('Error sending deals template:', error.message, error.response ? error.response.data : '');
                 res.sendStatus(500);
                 return;
             }
@@ -197,7 +220,6 @@ app.post('/whatsapp', async (req, res) => {
         res.sendStatus(404);
     }
 });
-
 
 // app.post('/whatsapp', async (req, res) => {
 //     const bodyParam = req.body;
