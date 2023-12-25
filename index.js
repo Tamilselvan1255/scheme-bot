@@ -99,7 +99,7 @@ app.post('/whatsapp', async (req, res) => {
                 return;
             }
 
-        } else if (msgBody.includes('show schemes')) {
+        } else if (msgBody.includes('Show Schemes')) {
             // If a greeting is detected, respond with "scheme_template"
             const dealsTemplate = {
                 messaging_product: 'whatsapp',
