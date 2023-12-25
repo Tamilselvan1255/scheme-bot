@@ -1,3 +1,5 @@
+// with templates
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const axios = require('axios');
@@ -206,32 +208,7 @@ app.get('/', (req, res) => {
 
 // ----------------------
 
-// else if (msgBody.includes('Show Schemes')) {
-//     // If a greeting is detected, respond with "scheme_template"
-//     const dealsTemplate = {
-//         "messaging_product": "whatsapp",
-//         "to": "+919788825633",
-//         "type": "template",
-//         "template": {
-//             "name": "deals",
-//             "language": {
-//                 "code": "en_US"
-//             }
-//         }
-//     };
-
-//     try {
-//         const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, dealsTemplate);
-//         console.log('Response:', response.data);
-//         res.sendStatus(200);
-//         return;
-//     } catch (error) {
-//         console.error('Error sending greeting template:', error.message, error.response ? error.response.data : '');
-//         res.sendStatus(500);
-//         return;
-//     }
-
-// }
+// from database
 
 
 // const express = require('express');
@@ -357,6 +334,7 @@ app.get('/', (req, res) => {
 
 // ----------------------
 
+// chabot alone
 
 // const express = require('express');
 // const bodyParser = require('body-parser');
