@@ -349,6 +349,8 @@ app.post("/whatsapp", async (req, res) => {
                 },
                 "language": "en_US" // Add the language parameter
             };
+            
+            let responseMessage;
 
             // Implement your chatbot logic here
             if (msg_body.toLowerCase().includes("hello")) {
