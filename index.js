@@ -57,62 +57,75 @@ app.get("/whatsapp", (req, res) => {
 });
 
 app.post("/whatsapp", async (req, res) => {
-    let body_param = req.body;
-    
-    if (body_param.object && body_param.entry &&
-        body_param.entry[0].changes &&
-        body_param.entry[0].changes[0].value.messages &&
-        body_param.entry[0].changes[0].value.messages[0]) {
+    try {
+        const body_param = req.body;
 
-        let phone_number_id = body_param.entry[0].changes[0].value.metadata.phone_number_id;
-        let msg_body = body_param.entry[0].changes[0].value.messages[0].text.body;
+        if (
+            body_param.object &&
+            body_param.entry &&
+            body_param.entry[0].changes &&
+            body_param.entry[0].changes[0].value.messages &&
+            body_param.entry[0].changes[0].value.messages[0]
+        ) {
+            const phone_number_id = body_param.entry[0].changes[0].value.metadata.phone_number_id;
+            const msg_body = body_param.entry[0].changes[0].value.messages[0].text.body;
 
-        // Retrieve scheme data from the "schemes" collection based on user input
-        try {
+            // Retrieve scheme data from the "schemes" collection based on user input
             const keyword = msg_body.toLowerCase();
-            const schemes = await Scheme.find({ schemeName: { $regex: keyword, $options: 'i' } });
+            const schemes = await Scheme.find({
+                $or: [
+                    { schemeName: { $regex: keyword, $options: 'i' } },
+                    { implementedBy: { $regex: keyword, $options: 'i' } },
+                    // Add more fields if needed
+                ],
+            });
 
-       
             let responseMessage;
 
             if (schemes.length > 0) {
                 // Construct a response message based on the retrieved schemes
                 responseMessage = "Here are some schemes matching your query:\n";
                 schemes.forEach((scheme) => {
-                    responseMessage += 
-                    `*Scheme Name:* ${scheme.schemeName}\n*Description:* ${scheme.domainDescription}\n*Comments:* ${scheme.comments}\n*NIProvider:* ${scheme.niProvider}\n*State:* ${scheme.implementedBy}\n*Eligible Disabilities:* ${scheme.eligibleDisabilities}\n*Disability Percentage:* ${scheme.disabilityPercentage}\n*Age:* ${scheme.age}\n*Annual Income:* ${scheme.annualIncome}\n*Gender:* ${scheme.genderEligibility}\n*Attachments:* ${scheme.attachments}\n\n`;
+                    responseMessage +=
+                        `*Scheme Name:* ${scheme.schemeName}\n*Description:* ${scheme.domainDescription}\n*Comments:* ${scheme.comments}\n*NIProvider:* ${scheme.niProvider}\n*State:* ${scheme.implementedBy}\n*Eligible Disabilities:* ${scheme.eligibleDisabilities}\n*Disability Percentage:* ${scheme.disabilityPercentage}\n*Age:* ${scheme.age}\n*Annual Income:* ${scheme.annualIncome}\n*Gender:* ${scheme.genderEligibility}\n*Attachments:* ${scheme.attachments}\n\n`;
                 });
             } else {
                 responseMessage = "Sorry, no schemes found matching your query.";
             }
 
-            const body = {
-                "messaging_product": "whatsapp",
-                "to": "+919788825633", // Replace with the recipient's phone number
-                "type": "text",
-                "text": {
-                    "body": responseMessage
+            const axiosConfig = {
+                headers: {
+                    'Content-Type': 'application/json',
                 },
-                "language": {
-                    "code": "en_US"
-                }
             };
 
-            try {
-                await axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, body);
-                res.sendStatus(200);
-            } catch (error) {
-                console.error("Error sending message:", error);
-                res.sendStatus(500);
-            }
-        } catch (error) {
-            console.error("Error retrieving scheme data:", error);
-            res.sendStatus(500);
+            const body = {
+                messaging_product: "whatsapp",
+                to: "+919788825633", // Replace with the recipient's phone number
+                type: "text",
+                text: {
+                    body: responseMessage,
+                },
+                language: {
+                    code: "en_US",
+                },
+            };
+
+            await axios.post(
+                `https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`,
+                body,
+                axiosConfig
+            );
+            res.sendStatus(200);
+        } else {
+            res.sendStatus(404);
         }
-    } else {
-        res.sendStatus(404);
+    } catch (error) {
+        console.error("Error:", error);
+        res.sendStatus(500);
     }
 });
+
 
 app.get("/", (req, res) => {
     res.status(200).send("Webhook setup for scheme!!");
