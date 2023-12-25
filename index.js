@@ -147,33 +147,30 @@ app.post('/whatsapp', async (req, res) => {
                 res.sendStatus(500);
                 return;
             }
-        } 
-        else if (msgBody.includes('Show Schemes')) {
-                // If a greeting is detected, respond with "scheme_template"
-                const dealsTemplate = {
-                    "messaging_product": "whatsapp",
-                    "to": "+919788825633",
-                    "type": "template",
-                    "template": {
-                        "name": "deals",
-                        "language": {
-                            "code": "en_US"
-                        }
-                    }
-                };
-            
-                try {
-                    const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, dealsTemplate);
-                    console.log('Response:', response.data);
-                    res.sendStatus(200);
-                    return;
-                } catch (error) {
-                    console.error('Error sending greeting template:', error.message, error.response ? error.response.data : '');
-                    res.sendStatus(500);
-                    return;
-                }
-            
-            } else {
+        } else if (msgBody.includes('Show Schemes')) {
+            // If "show schemes" is detected, respond with "deals" template
+            const showSchemesTemplate = {
+                messaging_product: 'whatsapp',
+                to: '+919788825633', // Replace with the recipient's phone number
+                type: 'template',
+                template: {
+                    name: 'deals',
+                    language: {
+                        code: 'en_US',
+                    },
+                },
+            };
+        
+            try {
+                await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, showSchemesTemplate);
+                res.sendStatus(200);
+                return;
+            } catch (error) {
+                console.error('Error sending show schemes template:', error.message, error.response ? error.response.data : '');
+                res.sendStatus(500);
+                return;
+            }
+        } else {
             // If the user mentions "dog", respond with a plain text message
             const noResponse = {
                 messaging_product: 'whatsapp',
@@ -197,8 +194,7 @@ app.post('/whatsapp', async (req, res) => {
                 return;
             }
         }
-    } 
-        else {
+    } else {
         res.sendStatus(404);
     }
 });
@@ -209,6 +205,32 @@ app.get('/', (req, res) => {
 
 // ----------------------
 
+// else if (msgBody.includes('Show Schemes')) {
+//     // If a greeting is detected, respond with "scheme_template"
+//     const dealsTemplate = {
+//         "messaging_product": "whatsapp",
+//         "to": "+919788825633",
+//         "type": "template",
+//         "template": {
+//             "name": "deals",
+//             "language": {
+//                 "code": "en_US"
+//             }
+//         }
+//     };
+
+//     try {
+//         const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, dealsTemplate);
+//         console.log('Response:', response.data);
+//         res.sendStatus(200);
+//         return;
+//     } catch (error) {
+//         console.error('Error sending greeting template:', error.message, error.response ? error.response.data : '');
+//         res.sendStatus(500);
+//         return;
+//     }
+
+// }
 
 
 // const express = require('express');
