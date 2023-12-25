@@ -117,7 +117,7 @@ app.post("/whatsapp", async (req, res) => {
                     try {
                         await axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, messageBody);
                         console.log("Message sent successfully");
-                        res.sendStatus(200);
+                        // res.sendStatus(200);
                     } catch (error) {
                         console.error("Error sending message:", error);
                         res.sendStatus(500);
