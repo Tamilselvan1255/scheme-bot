@@ -100,72 +100,12 @@ app.post('/whatsapp', async (req, res) => {
                 return;
             }
 
-        } else if (msgBody.includes('show schemes')) {
-            // If "Show Schemes" is detected, respond with "deals" template
-            const showSchemesTemplate = {
-                messaging_product: 'whatsapp',
-                to: '+919788825633', // Replace with the recipient's phone number
-                type: 'template',
-                template: {
-                    name: 'deals',
-                },
-                language: {
-                    code: 'en_US',
-                },
-            };
-
-            try {
-                await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, showSchemesTemplate);
-                res.sendStatus(200);
-                return;
-            } catch (error) {
-                console.error('Error sending show schemes template:', error.message);
-                res.sendStatus(500);
-                return;
-            }
+        } else if (msgBody.toLowerCase().includes("cat")) {
+                            responseMessage = "I love cats!";
+        } else if (msgBody.toLowerCase().includes("dog")) {
+                            responseMessage = "I love dogs!";
         } else {
-            // Continue with your existing logic for processing user queries
-            // Retrieve scheme data from the "schemes" collection based on user input
-            try {
-                const keyword = msgBody.toLowerCase();
-                const schemes = await Scheme.find({ schemeName: { $regex: keyword, $options: 'i' } });
-
-                let responseMessage;
-
-                if (schemes.length > 0) {
-                    // Construct a response message based on the retrieved schemes
-                    responseMessage = 'Here are some schemes matching your query:\n';
-                    schemes.forEach((scheme) => {
-                        responseMessage +=
-                            `*Scheme Name:* ${scheme.schemeName}\n*Description:* ${scheme.domainDescription}\n*Comments:* ${scheme.comments}\n*NIProvider:* ${scheme.niProvider}\n*State:* ${scheme.implementedBy}\n*Eligible Disabilities:* ${scheme.eligibleDisabilities}\n*Disability Percentage:* ${scheme.disabilityPercentage}\n*Age:* ${scheme.age}\n*Annual Income:* ${scheme.annualIncome}\n*Gender:* ${scheme.genderEligibility}\n*Attachments:* ${scheme.attachments}\n\n`;
-                    });
-                } else {
-                    responseMessage = 'Sorry, no schemes found matching your query.';
-                }
-
-                const messageBody = {
-                    messaging_product: 'whatsapp',
-                    to: '+919788825633', // Replace with the recipient's phone number
-                    type: 'text',
-                    text: {
-                        body: responseMessage,
-                    },
-                    language: {
-                        code: 'en_US',
-                    },
-                };
-
-                try {
-                    await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, messageBody);
-                    res.sendStatus(200);
-                } catch (error) {
-                    console.error('Error sending message:', error.message);
-                    res.sendStatus(500);
-                }
-            } catch (error) {
-                console.error('Error retrieving scheme data:', error.message);
-                res.sendStatus(500);
-            }
+                            responseMessage = "Sorry, I didn't understand that. Can you please clarify?";
         }
     } else {
         res.sendStatus(404);
