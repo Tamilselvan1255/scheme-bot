@@ -16,6 +16,30 @@ db.once('open', () => {
     console.log('Connected to MongoDB');
 });
 
+
+// Define a Mongoose schema for the "schemes" collection
+const schemeSchema = new mongoose.Schema({
+    _id: mongoose.Schema.Types.ObjectId,
+    niProvider: String,
+    schemeName: String,
+    implementedBy: String,
+    domainDescription: String,
+    eligibleDisabilities: String,
+    disabilityPercentage: String,
+    age: String,
+    annualIncome: String,
+    genderEligibility: String,
+    comments: String,
+    attachments: String,
+});
+
+// Create a Mongoose model based on the schema
+const Scheme = mongoose.model('Scheme', schemeSchema); // Add this line
+
+const token = process.env.TOKEN;
+const myToken = process.env.MYTOKEN;
+
+
 // Log server startup
 app.listen(process.env.PORT, () => {
     console.log(`Webhook is listening on port ${process.env.PORT}`);
