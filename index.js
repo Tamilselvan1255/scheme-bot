@@ -73,11 +73,10 @@ app.post('/whatsapp', async (req, res) => {
     ) {
         const phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
         const msgText = bodyParam.entry[0].changes[0].value.messages[0].text;
-
+        const msgBody = bodyParam.entry[0].changes[0].messages[0].text.body.toLowerCase();
            // Log the request body for debugging
            console.log('Request Body:', bodyParam);
         if (msgText && msgText.body) {
-            const msgBody = msgText.body.toLowerCase();
 
             // Check for greetings or specific keywords
             if (msgBody.includes('hello') || msgBody.includes('hi')) {
