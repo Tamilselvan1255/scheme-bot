@@ -59,64 +59,79 @@ app.get("/whatsapp", (req, res) => {
 app.post("/whatsapp", async (req, res) => {
     console.log('Received POST request to /whatsapp:', req.body);
     let body_param = req.body;
-    
-    if (body_param.object && body_param.entry &&
-        body_param.entry[0].changes &&
-        body_param.entry[0].changes[0].value.messages &&
-        body_param.entry[0].changes[0].value.messages[0]) {
 
-        let phone_number_id = body_param.entry[0].changes[0].value.metadata.phone_number_id;
-        let msg_body = body_param.entry[0].changes[0].value.messages[0].text.body;
+    if (body_param.object === "page" && body_param.entry && body_param.entry[0].changes) {
+        let changes = body_param.entry[0].changes;
 
-        // Retrieve scheme data from the "schemes" collection based on user input
-        try {
-            const keyword = msg_body.toLowerCase();
-            // const schemes = await Scheme.find({ schemeName: { $regex: keyword, $options: 'i' } });
-            const schemes = await Scheme.find({
-                $or: [
-                  { schemeName: { $regex: keyword, $options: 'i' } },
-                  { implementedBy:{ $regex: keyword, $options: 'i' }  } 
-                ]
-              });
-       
-            let responseMessage;
+        for (let i = 0; i < changes.length; i++) {
+            let change = changes[i];
 
-            if (schemes.length > 0) {
-                // Construct a response message based on the retrieved schemes
-                responseMessage = "Here are some schemes matching your query:\n";
-                schemes.forEach((scheme) => {
-                    responseMessage += 
-                    `*Scheme Name:* ${scheme.schemeName}\n*Description:* ${scheme.domainDescription}\n*Comments:* ${scheme.comments}\n*NIProvider:* ${scheme.niProvider}\n*State:* ${scheme.implementedBy}\n*Eligible Disabilities:* ${scheme.eligibleDisabilities}\n*Disability Percentage:* ${scheme.disabilityPercentage}\n*Age:* ${scheme.age}\n*Annual Income:* ${scheme.annualIncome}\n*Gender:* ${scheme.genderEligibility}\n*Attachments:* ${scheme.attachments}\n\n`;
-                });
-            } else {
-                responseMessage = "Sorry, no schemes found matching your query.";
-            }
+            if (change.value && change.value.messages && change.value.messages[0]) {
+                let phone_number_id = change.value.metadata.phone_number_id;
+                let msg_body = change.value.messages[0].text.body;
 
-            const body = {
-                "messaging_product": "whatsapp",
-                "to": "+919788825633", // Replace with the recipient's phone number
-                "type": "text",
-                "text": {
-                    "body": responseMessage
-                },
-                "language": {
-                    "code": "en_US"
+                try {
+                    const keyword = msg_body.toLowerCase();
+                    const schemes = await Scheme.find({
+                        $or: [
+                            { schemeName: { $regex: keyword, $options: 'i' } },
+                            { implementedBy: { $regex: keyword, $options: 'i' } }
+                        ]
+                    });
+
+                    let responseMessage;
+
+                    if (schemes.length > 0) {
+                        responseMessage = "Here are some schemes matching your query:\n";
+                        schemes.forEach((scheme) => {
+                            responseMessage +=
+                                `*Scheme Name:* ${scheme.schemeName}\n*Description:* ${scheme.domainDescription}\n` +
+                                `*Comments:* ${scheme.comments}\n*NIProvider:* ${scheme.niProvider}\n` +
+                                `*State:* ${scheme.implementedBy}\n*Eligible Disabilities:* ${scheme.eligibleDisabilities}\n` +
+                                `*Disability Percentage:* ${scheme.disabilityPercentage}\n*Age:* ${scheme.age}\n` +
+                                `*Annual Income:* ${scheme.annualIncome}\n*Gender:* ${scheme.genderEligibility}\n` +
+                                `*Attachments:* ${scheme.attachments}\n\n`;
+                        });
+                    } else {
+                        responseMessage = "Sorry, no schemes found matching your query.";
+                    }
+
+                    // Truncate the message if it exceeds the maxLength
+                    const maxLength = 4096;
+                    const truncatedMessage = responseMessage.length > maxLength
+                        ? responseMessage.substring(0, maxLength)
+                        : responseMessage;
+
+                    const messageBody = {
+                        "messaging_product": "whatsapp",
+                        "to": phone_number_id,
+                        "type": "text",
+                        "text": {
+                            "body": truncatedMessage
+                        },
+                        "language": {
+                            "code": "en_US"
+                        }
+                    };
+
+                    try {
+                        await axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, messageBody);
+                        console.log("Message sent successfully");
+                        res.sendStatus(200);
+                    } catch (error) {
+                        console.error("Error sending message:", error);
+                        res.sendStatus(500);
+                    }
+                } catch (error) {
+                    console.error("Error retrieving scheme data:", error);
+                    res.sendStatus(500);
                 }
-            };
-
-            try {
-                await axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, body);
-                res.sendStatus(200);
-            } catch (error) {
-                console.error("Error sending message:", error);
-                res.sendStatus(500);
             }
-        } catch (error) {
-            console.error("Error retrieving scheme data:", error);
-            res.sendStatus(500);
         }
-    } else {
+
         res.sendStatus(404);
+    } else {
+        res.sendStatus(400);
     }
 });
 
