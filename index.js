@@ -78,7 +78,18 @@ app.post("/whatsapp", async (req, res) => {
                 // Construct a response message based on the retrieved schemes
                 responseMessage = "Here are some schemes matching your query:\n";
                 schemes.forEach((scheme) => {
-                    responseMessage += `${scheme.schemeName}\n${scheme.domainDescription}\n${scheme.comments}\n\n`;
+                    responseMessage += 
+                    `${scheme.schemeName}\n
+                    ${scheme.domainDescription}\n
+                    ${scheme.comments}\n
+                    ${scheme.niProvider}\n
+                    ${scheme.implementedBy}\n
+                    ${scheme.eligibleDisabilities}\n
+                    ${scheme.disabilityPercentage}\n
+                    ${scheme.age}\n
+                    ${scheme.annualIncome}\n
+                    ${scheme.genderEligibility}\n
+                    ${scheme.attachments}\n\n`;
                 });
             } else {
                 responseMessage = "Sorry, no schemes found matching your query.";
