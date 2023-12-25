@@ -357,9 +357,7 @@ app.post("/whatsapp", async (req, res) => {
 
              // Implement your chatbot logic here
              if (msg_body.toLowerCase().includes("hello")) {
-              
-
-                    responseMessage = axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, greetingTemplate);
+                    responseMessage = "axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, greetingTemplate)";
             } else if (msg_body.toLowerCase().includes("cat")) {
                 responseMessage = "I love cats!";
             } else if (msg_body.toLowerCase().includes("dog")) {
