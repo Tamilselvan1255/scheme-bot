@@ -225,7 +225,7 @@ app.post('/whatsapp', async (req, res) => {
             res.sendStatus(400);
         }
     } else {
-        console.error('Error: Invalid message structure.');
+        console.error('Error: Invalid message structure. Request body:', bodyParam);
         res.sendStatus(400);
     }
 });
