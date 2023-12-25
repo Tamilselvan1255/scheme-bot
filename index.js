@@ -147,7 +147,7 @@ app.post('/whatsapp', async (req, res) => {
                 res.sendStatus(500);
                 return;
             }
-        } else if (msgBody.includes('Show Schemes')) {
+        } else if (msgBody.toLowerCase().includes('show schemes')) {
             // If "show schemes" is detected, respond with "deals" template
             const showSchemesTemplate = {
                 messaging_product: 'whatsapp',
