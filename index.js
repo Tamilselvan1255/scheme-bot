@@ -10,12 +10,10 @@ const app = express().use(bodyParser.json());
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 
-// Log server startup
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.once('open', () => {
     console.log('Connected to MongoDB');
 });
-
 
 // Define a Mongoose schema for the "schemes" collection
 const schemeSchema = new mongoose.Schema({
@@ -33,19 +31,17 @@ const schemeSchema = new mongoose.Schema({
     attachments: String,
 });
 
+
 // Create a Mongoose model based on the schema
-const Scheme = mongoose.model('Scheme', schemeSchema); // Add this line
+const Scheme = mongoose.model('Scheme', schemeSchema);
 
 const token = process.env.TOKEN;
 const myToken = process.env.MYTOKEN;
 
-
-// Log server startup
 app.listen(process.env.PORT, () => {
-    console.log(`Webhook is listening on port ${process.env.PORT}`);
+    console.log("Webhook is listening!!");
 });
 
-// Log incoming requests
 app.get("/whatsapp", (req, res) => {
     let mode = req.query["hub.mode"];
     let challenge = req.query["hub.challenge"];
@@ -53,242 +49,74 @@ app.get("/whatsapp", (req, res) => {
 
     if (mode && token) {
         if (mode === "subscribe" && token === myToken) {
-            console.log("Webhook subscription successful");
             res.status(200).send(challenge);
         } else {
-            console.log("Webhook subscription failed");
             res.status(403);
         }
     }
 });
 
-// Log incoming requests and scheme retrieval
 app.post("/whatsapp", async (req, res) => {
-    console.log(JSON.stringify(req.body, null, 2));
+    let body_param = req.body;
+    
+    if (body_param.object && body_param.entry &&
+        body_param.entry[0].changes &&
+        body_param.entry[0].changes[0].value.messages &&
+        body_param.entry[0].changes[0].value.messages[0]) {
 
-    try {
-        const body_param = req.body;
+        let phone_number_id = body_param.entry[0].changes[0].value.metadata.phone_number_id;
+        let msg_body = body_param.entry[0].changes[0].value.messages[0].text.body;
 
-        if (
-            body_param.object &&
-            body_param.entry &&
-            body_param.entry[0].changes &&
-            body_param.entry[0].changes[0].value.messages &&
-            body_param.entry[0].changes[0].value.messages[0]
-        ) {
-            const phone_number_id = body_param.entry[0].changes[0].value.metadata.phone_number_id;
-            const msg_body = body_param.entry[0].changes[0].value.messages[0].text.body;
-
-            // Log the received message
-            console.log("Received message:", msg_body);
-
-            // Retrieve scheme data from the "schemes" collection based on user input
+        // Retrieve scheme data from the "schemes" collection based on user input
+        try {
             const keyword = msg_body.toLowerCase();
-            const schemes = await Scheme.find({
-                $or: [
-                    { schemeName: { $regex: keyword, $options: 'i' } },
-                    { implementedBy: { $regex: keyword, $options: 'i' } },
-                    // Add more fields if needed
-                ],
-            });
+            const schemes = await Scheme.find({ schemeName: { $regex: keyword, $options: 'i' } });
 
-            console.log("Retrieved schemes:", schemes);
-
+       
             let responseMessage;
 
             if (schemes.length > 0) {
                 // Construct a response message based on the retrieved schemes
                 responseMessage = "Here are some schemes matching your query:\n";
                 schemes.forEach((scheme) => {
-                    responseMessage +=
-                        `*Scheme Name:* ${scheme.schemeName}\n*Description:* ${scheme.domainDescription}\n*Comments:* ${scheme.comments}\n*NIProvider:* ${scheme.niProvider}\n*State:* ${scheme.implementedBy}\n*Eligible Disabilities:* ${scheme.eligibleDisabilities}\n*Disability Percentage:* ${scheme.disabilityPercentage}\n*Age:* ${scheme.age}\n*Annual Income:* ${scheme.annualIncome}\n*Gender:* ${scheme.genderEligibility}\n*Attachments:* ${scheme.attachments}\n\n`;
+                    responseMessage += 
+                    `*Scheme Name:* ${scheme.schemeName}\n*Description:* ${scheme.domainDescription}\n*Comments:* ${scheme.comments}\n*NIProvider:* ${scheme.niProvider}\n*State:* ${scheme.implementedBy}\n*Eligible Disabilities:* ${scheme.eligibleDisabilities}\n*Disability Percentage:* ${scheme.disabilityPercentage}\n*Age:* ${scheme.age}\n*Annual Income:* ${scheme.annualIncome}\n*Gender:* ${scheme.genderEligibility}\n*Attachments:* ${scheme.attachments}\n\n`;
                 });
             } else {
                 responseMessage = "Sorry, no schemes found matching your query.";
             }
 
-            const axiosConfig = {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            };
-
-            console.log(req.headers);
-
             const body = {
-                messaging_product: "whatsapp",
-                to: "+919788825633", // Replace with the recipient's phone number
-                type: "text",
-                text: {
-                    body: responseMessage,
+                "messaging_product": "whatsapp",
+                "to": "+919788825633", // Replace with the recipient's phone number
+                "type": "text",
+                "text": {
+                    "body": responseMessage
                 },
-                language: {
-                    code: "en_US",
-                },
+                "language": {
+                    "code": "en_US"
+                }
             };
 
-            // Log sending message to Facebook Graph API
-            await axios.post(
-                `https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`,
-                body,
-                axiosConfig
-            );
-            console.log("Sent message to Facebook Graph API");
-
-            res.sendStatus(200);
-        } else {
-            console.log("Invalid WhatsApp webhook request");
-            res.sendStatus(404);
+            try {
+                await axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, body);
+                res.sendStatus(200);
+            } catch (error) {
+                console.error("Error sending message:", error);
+                res.sendStatus(500);
+            }
+        } catch (error) {
+            console.error("Error retrieving scheme data:", error);
+            res.sendStatus(500);
         }
-    } catch (error) {
-        // Log errors
-        console.error("Error:", error);
-        console.error("Error Details:", error.response?.data || error.message);
-        res.sendStatus(500);
+    } else {
+        res.sendStatus(404);
     }
 });
 
-// Log server startup
 app.get("/", (req, res) => {
-    console.log("Webhook setup endpoint accessed");
     res.status(200).send("Webhook setup for scheme!!");
 });
-
-
-// const express = require('express');
-// const bodyParser = require('body-parser');
-// const axios = require('axios');
-// const mongoose = require('mongoose');
-// require('dotenv').config();
-
-// const app = express().use(bodyParser.json());
-
-// // Connect to MongoDB
-// mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-// const db = mongoose.connection;
-
-// db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-// db.once('open', () => {
-//     console.log('Connected to MongoDB');
-// });
-
-// // Define a Mongoose schema for the "schemes" collection
-// const schemeSchema = new mongoose.Schema({
-//     _id: mongoose.Schema.Types.ObjectId,
-//     niProvider: String,
-//     schemeName: String,
-//     implementedBy: String,
-//     domainDescription: String,
-//     eligibleDisabilities: String,
-//     disabilityPercentage: String,
-//     age: String,
-//     annualIncome: String,
-//     genderEligibility: String,
-//     comments: String,
-//     attachments: String,
-// });
-
-
-// // Create a Mongoose model based on the schema
-// const Scheme = mongoose.model('Scheme', schemeSchema);
-
-// const token = process.env.TOKEN;
-// const myToken = process.env.MYTOKEN;
-
-// app.listen(process.env.PORT, () => {
-//     console.log("Webhook is listening!!");
-// });
-
-// app.get("/whatsapp", (req, res) => {
-//     let mode = req.query["hub.mode"];
-//     let challenge = req.query["hub.challenge"];
-//     let token = req.query["hub.verify_token"];
-
-//     if (mode && token) {
-//         if (mode === "subscribe" && token === myToken) {
-//             res.status(200).send(challenge);
-//         } else {
-//             res.status(403);
-//         }
-//     }
-// });
-
-// app.post("/whatsapp", async (req, res) => {
-//     try {
-//         const body_param = req.body;
-//         console.log("Received request:", req.body); 
-//         if (
-//             body_param.object &&
-//             body_param.entry &&
-//             body_param.entry[0].changes &&
-//             body_param.entry[0].changes[0].value.messages &&
-//             body_param.entry[0].changes[0].value.messages[0]
-//         ) {
-//             const phone_number_id = body_param.entry[0].changes[0].value.metadata.phone_number_id;
-//             const msg_body = body_param.entry[0].changes[0].value.messages[0].text.body;
-
-//             console.log("Received message:", msg_body);
-//             // Retrieve scheme data from the "schemes" collection based on user input
-//             const keyword = msg_body.toLowerCase().replace(/[^\w\s]/gi, '');
-//             const schemes = await Scheme.find({
-//                 $or: [
-//                     { schemeName: { $regex: keyword, $options: 'i' } },
-//                     { implementedBy: { $regex: keyword, $options: 'i' } },
-//                     // Add more fields if needed
-//                 ],
-//             });
-
-//             let responseMessage;
-
-//             if (schemes.length > 0) {
-//                 // Construct a response message based on the retrieved schemes
-//                 responseMessage = "Here are some schemes matching your query:\n";
-//                 schemes.forEach((scheme) => {
-//                     responseMessage +=
-//                         `*Scheme Name:* ${scheme.schemeName}\n*Description:* ${scheme.domainDescription}\n*Comments:* ${scheme.comments}\n*NIProvider:* ${scheme.niProvider}\n*State:* ${scheme.implementedBy}\n*Eligible Disabilities:* ${scheme.eligibleDisabilities}\n*Disability Percentage:* ${scheme.disabilityPercentage}\n*Age:* ${scheme.age}\n*Annual Income:* ${scheme.annualIncome}\n*Gender:* ${scheme.genderEligibility}\n*Attachments:* ${scheme.attachments}\n\n`;
-//                 });
-//             } else {
-//                 responseMessage = "Sorry, no schemes found matching your query.";
-//             }
-
-//             const axiosConfig = {
-//                 headers: {
-//                     'Content-Type': 'application/json',
-//                 },
-//             };
-
-//             const body = {
-//                 messaging_product: "whatsapp",
-//                 to: "+919788825633", // Replace with the recipient's phone number
-//                 type: "text",
-//                 text: {
-//                     body: responseMessage,
-//                 },
-//                 language: {
-//                     code: "en_US",
-//                 },
-//             };
-
-//             await axios.post(
-//                 `https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`,
-//                 body,
-//                 axiosConfig
-//             );
-//             res.sendStatus(200);
-//         } else {
-//             res.sendStatus(404);
-//         }
-//     } catch (error) {
-//         console.error("Error:", error);
-//         console.error("Error Details:", error.response?.data || error.message);
-//         res.sendStatus(500);
-//     }
-// });
-
-
-// app.get("/", (req, res) => {
-//     res.status(200).send("Webhook setup for scheme!!");
-// });
 
 
 // const express = require('express');
