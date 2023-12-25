@@ -170,7 +170,7 @@ app.post('/whatsapp', async (req, res) => {
                 res.sendStatus(500);
                 return;
             }
-        } else if (bodyParam.entry[0].changes[0].value.messages[0].quick_reply && bodyParam.entry[0].changes[0].value.messages[0].quick_reply.payload === 'SHOW_SCHEMES_OPTION') {
+        } else if (bodyParam.entry[0].changes[0].value.messages[0].quick_reply && bodyParam.entry[0].changes[0].value.messages[0].quick_reply.payload === 'Show Schemes') {
             // If the user clicks on the "Show Schemes" option within the "scheme_template" template, respond with "deals" template
             const dealsTemplate = {
                 messaging_product: 'whatsapp',
