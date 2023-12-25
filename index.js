@@ -103,16 +103,15 @@ app.post('/whatsapp', async (req, res) => {
         } else if (msgBody.includes('Show Schemes')) {
             // If a greeting is detected, respond with "scheme_template"
             const dealsTemplate = {
-                messaging_product: 'whatsapp',
-                to: '+919788825633', // Replace with the recipient's phone number
-                type: 'template',
-                template: {
-                    name: 'deals',
-                    language: {
-                    code: 'en_US',
-                },
-                },
-                
+                "messaging_product": "whatsapp",
+                "to": "+919788825633",
+                "type": "template",
+                "template": {
+                    "name": "deals",
+                    "language": {
+                        "code": "en_US"
+                    }
+                }
             };
 
             try {
