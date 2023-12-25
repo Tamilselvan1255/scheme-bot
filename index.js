@@ -98,7 +98,7 @@
 //                 res.sendStatus(500);
 //                 return;
 //             }
-            
+
 //         } else if (msgBody.includes('show schemes')) {
 //             // If "Show Schemes" is detected, respond with "deals" template
 //             const showSchemesTemplate = {
@@ -238,7 +238,7 @@
 
 // app.post("/whatsapp", async (req, res) => {
 //     let body_param = req.body;
-    
+
 //     if (body_param.object && body_param.entry &&
 //         body_param.entry[0].changes &&
 //         body_param.entry[0].changes[0].value.messages &&
@@ -252,7 +252,7 @@
 //             const keyword = msg_body.toLowerCase();
 //             const schemes = await Scheme.find({ schemeName: { $regex: keyword, $options: 'i' } });
 
-       
+
 //             let responseMessage;
 
 //             if (schemes.length > 0) {
@@ -342,8 +342,8 @@ app.post("/whatsapp", async (req, res) => {
 
             let responseMessage;
 
-              // If a greeting is detected, respond with "scheme_template"
-              const greetingTemplate = {
+            // If a greeting is detected, respond with "scheme_template"
+            const greetingTemplate = {
                 "messaging_product": "whatsapp",
                 "to": "+919788825633",
                 "type": "template",
@@ -355,9 +355,16 @@ app.post("/whatsapp", async (req, res) => {
                 }
             };
 
-             // Implement your chatbot logic here
-             if (msg_body.toLowerCase().includes("hello")) {
-                    responseMessage = "axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, greetingTemplate)";
+            // Implement your chatbot logic here
+            if (msg_body.toLowerCase().includes("hello")) {
+                // responseMessage = axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, greetingTemplate);
+                try {
+                    const response = await axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, greetingTemplate);
+                    console.log(response.data);  // Log the response data for debugging
+                } catch (error) {
+                    console.error(error.response.data);  // Log the error response data
+                }
+                
             } else if (msg_body.toLowerCase().includes("cat")) {
                 responseMessage = "I love cats!";
             } else if (msg_body.toLowerCase().includes("dog")) {
@@ -377,7 +384,7 @@ app.post("/whatsapp", async (req, res) => {
                     "code": "en_US"
                 }
             };
-            
+
 
             try {
                 await axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, body);
