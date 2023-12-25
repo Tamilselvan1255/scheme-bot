@@ -64,6 +64,8 @@ app.get("/whatsapp", (req, res) => {
 
 // Log incoming requests and scheme retrieval
 app.post("/whatsapp", async (req, res) => {
+    console.log(JSON.stringify(req.body, null, 2));
+
     try {
         const body_param = req.body;
 
@@ -110,6 +112,8 @@ app.post("/whatsapp", async (req, res) => {
                     'Content-Type': 'application/json',
                 },
             };
+
+            console.log(req.headers);
 
             const body = {
                 messaging_product: "whatsapp",
