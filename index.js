@@ -162,7 +162,8 @@ app.post('/whatsapp', async (req, res) => {
             };
         
             try {
-                await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, showSchemesTemplate);
+                const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, showSchemesTemplate);
+                console.log('Response:', response.data);
                 res.sendStatus(200);
                 return;
             } catch (error) {
