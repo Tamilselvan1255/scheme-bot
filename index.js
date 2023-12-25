@@ -100,7 +100,33 @@ app.post('/whatsapp', async (req, res) => {
                 return;
             }
 
-        }else if (msgBody.includes('cat')) {
+        } else if (msgBody.includes('Show Schemes')) {
+            // If a greeting is detected, respond with "scheme_template"
+            const dealsTemplate = {
+                messaging_product: 'whatsapp',
+                to: '+919788825633', // Replace with the recipient's phone number
+                type: 'template',
+                template: {
+                    name: 'deals',
+                    language: {
+                    code: 'en_US',
+                },
+                },
+                
+            };
+
+            try {
+                const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, dealsTemplate);
+                console.log('Response:', response.data);
+                res.sendStatus(200);
+                return;
+            } catch (error) {
+                console.error('Error sending greeting template:', error.message, error.response ? error.response.data : '');
+                res.sendStatus(500);
+                return;
+            }
+
+        } else if (msgBody.includes('cat')) {
             // If the user mentions "cat", respond with a plain text message
             const catResponse = {
                 messaging_product: 'whatsapp',
