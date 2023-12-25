@@ -88,7 +88,7 @@ app.post("/whatsapp", async (req, res) => {
 
             const body = {
                 "messaging_product": "whatsapp",
-                "to": phone_number_id, // Replace with the recipient's phone number
+                "to": "+919788825633", // Replace with the recipient's phone number
                 "type": "text",
                 "text": {
                     "body": responseMessage
