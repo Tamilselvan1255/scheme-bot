@@ -70,20 +70,21 @@ app.post("/whatsapp", async (req, res) => {
         // Retrieve scheme data from the "schemes" collection based on user input
         try {
             const keyword = msg_body.toLowerCase();
-            const schemes = await Scheme.find({
-                $or: [
-                  { schemeName: { $regex: keyword, $options: 'i' } },
-                  { domainDescription: { $regex: keyword, $options: 'i' } },
-                  { niProvider: { $regex: keyword, $options: 'i' } },
-                  { implementedBy: { $regex: keyword, $options: 'i' } },
-                  { eligibleDisabilities: { $regex: keyword, $options: 'i' } },
-                  { disabilityPercentage: { $regex: keyword, $options: 'i' } },
-                  { age: { $regex: keyword, $options: 'i' } },
-                  { annualIncome: { $regex: keyword, $options: 'i' } },
-                  { genderEligibility: { $regex: keyword, $options: 'i' } }
-                ]
-              });
-              
+            const schemes = await Scheme.find({ schemeName: { $regex: keyword, $options: 'i' } });
+
+            // const schemes = await Scheme.find({
+            //     $or: [
+            //       { schemeName: { $regex: keyword, $options: 'i' } },
+            //       { domainDescription: { $regex: keyword, $options: 'i' } },
+            //       { niProvider: { $regex: keyword, $options: 'i' } },
+            //       { implementedBy: { $regex: keyword, $options: 'i' } },
+            //       { eligibleDisabilities: { $regex: keyword, $options: 'i' } },
+            //       { disabilityPercentage: { $regex: keyword, $options: 'i' } },
+            //       { age: { $regex: keyword, $options: 'i' } },
+            //       { annualIncome: { $regex: keyword, $options: 'i' } },
+            //       { genderEligibility: { $regex: keyword, $options: 'i' } }
+            //     ]
+            //   });
             let responseMessage;
 
             if (schemes.length > 0) {
