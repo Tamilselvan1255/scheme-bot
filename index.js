@@ -68,320 +68,122 @@ app.post('/whatsapp', async (req, res) => {
         bodyParam.entry &&
         bodyParam.entry[0].changes &&
         bodyParam.entry[0].changes[0].value.messages &&
-        bodyParam.entry[0].changes[0].value.messages[0] &&
-        bodyParam.entry[0].changes[0].value.messages[0].text
+        bodyParam.entry[0].changes[0].value.messages[0]
     ) {
         const phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
-        const msgText = bodyParam.entry[0].changes[0].value.messages[0].text;
-        const msgBody = bodyParam.entry[0].changes[0].messages[0].text.body.toLowerCase();
-           // Log the request body for debugging
-           console.log('Request Body:', bodyParam);
-        if (msgText && msgText.body) {
+        const msgBody = bodyParam.entry[0].changes[0].value.messages[0].text.body.toLowerCase();
 
-            // Check for greetings or specific keywords
-            if (msgBody.includes('hello') || msgBody.includes('hi')) {
-                // If a greeting is detected, respond with "scheme_template"
-                const greetingTemplate = {
-                    messaging_product: 'whatsapp',
-                    to: '+919788825633', // Replace with the recipient's phone number
-                    type: 'template',
-                    template: {
-                        name: 'scheme_template',
-                        language: {
-                            code: 'en_US',
-                        },
-                    },
-                };
-
-                try {
-                    const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, greetingTemplate);
-                    console.log('Response:', response.data);
-                    res.sendStatus(200);
-                    return;
-                } catch (error) {
-                    console.error('Error sending greeting template:', error.message, error.response ? error.response.data : '');
-                    res.sendStatus(500);
-                    return;
-                }
-
-            } else if (msgBody.includes('cat')) {
-                // If the user mentions "cat", respond with a plain text message
-                const catResponse = {
-                    messaging_product: 'whatsapp',
-                    to: '+919788825633', // Replace with the recipient's phone number
-                    type: 'text',
-                    text: {
-                        body: "I love cats!!",
-                    },
+        // Check for greetings or specific keywords
+        if (msgBody.includes('hello') || msgBody.includes('hi')) {
+            // If a greeting is detected, respond with "scheme_template"
+            const greetingTemplate = {
+                messaging_product: 'whatsapp',
+                to: '+919788825633', // Replace with the recipient's phone number
+                type: 'template',
+                template: {
+                    name: 'scheme_template',
                     language: {
-                        code: 'en_US',
-                    },
-                };
+                    code: 'en_US',
+                },
+                },
+                
+            };
 
-                try {
-                    await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, catResponse);
-                    res.sendStatus(200);
-                    return;
-                } catch (error) {
-                    console.error('Error sending cat response:', error.message, error.response ? error.response.data : '');
-                    res.sendStatus(500);
-                    return;
-                }
+            try {
+                const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, greetingTemplate);
+                console.log('Response:', response.data);
+                res.sendStatus(200);
+                return;
+            } catch (error) {
+                console.error('Error sending greeting template:', error.message, error.response ? error.response.data : '');
+                res.sendStatus(500);
+                return;
+            }
 
-            } else if (msgBody.includes('dog')) {
-                // If the user mentions "dog", respond with a plain text message
-                const dogResponse = {
-                    messaging_product: 'whatsapp',
-                    to: '+919788825633', // Replace with the recipient's phone number
-                    type: 'text',
-                    text: {
-                        body: "I love dogs!!",
-                    },
-                    language: {
-                        code: 'en_US',
-                    },
-                };
+        } else if (msgBody.includes('cat')) {
+            // If the user mentions "cat", respond with a plain text message
+            const catResponse = {
+                messaging_product: 'whatsapp',
+                to: '+919788825633', // Replace with the recipient's phone number
+                type: 'text',
+                text: {
+                    body: "I love cats!!",
+                },
+                language: {
+                    code: 'en_US',
+                },
+            };
 
-                try {
-                    await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, dogResponse);
-                    res.sendStatus(200);
-                    return;
-                } catch (error) {
-                    console.error('Error sending dog response:', error.message, error.response ? error.response.data : '');
-                    res.sendStatus(500);
-                    return;
-                }
-            } else if (msgBody.includes('show schemes')) {
-                // If "Show Schemes" is detected, respond with "deals" template
-                const showSchemesTemplate = {
-                    messaging_product: 'whatsapp',
-                    to: '+919788825633', // Replace with the recipient's phone number
-                    type: 'template',
-                    template: {
-                        name: 'deals',
-                        language: {
-                            code: 'en_US',
-                        },
-                    },
-                };
+            try {
+                await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, catResponse);
+                res.sendStatus(200);
+                return;
+            } catch (error) {
+                console.error('Error sending cat response:', error.message, error.response ? error.response.data : '');
+                res.sendStatus(500);
+                return;
+            }
 
-                try {
-                    await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, showSchemesTemplate);
-                    res.sendStatus(200);
-                    return;
-                } catch (error) {
-                    console.error('Error sending show schemes template:', error.message, error.response ? error.response.data : '');
-                    res.sendStatus(500);
-                    return;
-                }
-            } else if (msgText.quick_reply && msgText.quick_reply.payload === 'Show Schemes') {
-                // If the user clicks on the "Show Schemes" option within the "scheme_template" template, respond with "deals" template
-                const dealsTemplate = {
-                    messaging_product: 'whatsapp',
-                    to: '+919788825633', // Replace with the recipient's phone number
-                    type: 'template',
-                    template: {
-                        name: 'deals',
-                    },
-                    language: {
-                        code: 'en_US',
-                    },
-                };
+        } else if (msgBody.includes('dog')) {
+            // If the user mentions "dog", respond with a plain text message
+            const dogResponse = {
+                messaging_product: 'whatsapp',
+                to: '+919788825633', // Replace with the recipient's phone number
+                type: 'text',
+                text: {
+                    body: "I love dogs!!",
+                },
+                language: {
+                    code: 'en_US',
+                },
+            };
 
-                try {
-                    await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, dealsTemplate);
-                    res.sendStatus(200);
-                    return;
-                } catch (error) {
-                    console.error('Error sending deals template:', error.message, error.response ? error.response.data : '');
-                    res.sendStatus(500);
-                    return;
-                }
-            } else {
-                // If none of the specific conditions are met, respond with a default message
-                const defaultMessage = {
-                    messaging_product: 'whatsapp',
-                    to: '+919788825633', // Replace with the recipient's phone number
-                    type: 'text',
-                    text: {
-                        body: "Sorry, no schemes found matching your query.",
-                    },
-                    language: {
-                        code: 'en_US',
-                    },
-                };
-
-                try {
-                    await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, defaultMessage);
-                    res.sendStatus(200);
-                    return;
-                } catch (error) {
-                    console.error('Error sending default response:', error.message, error.response ? error.response.data : '');
-                    res.sendStatus(500);
-                    return;
-                }
+            try {
+                await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, dogResponse);
+                res.sendStatus(200);
+                return;
+            } catch (error) {
+                console.error('Error sending dog response:', error.message, error.response ? error.response.data : '');
+                res.sendStatus(500);
+                return;
             }
         } else {
-            console.error('Error: Message body not found.');
-            res.sendStatus(400);
+            // If the user mentions "dog", respond with a plain text message
+            const noResponse = {
+                messaging_product: 'whatsapp',
+                to: '+919788825633', // Replace with the recipient's phone number
+                type: 'text',
+                text: {
+                    body: "Sorry, no schemes found matching your query.",
+                },
+                language: {
+                    code: 'en_US',
+                },
+            };
+
+            try {
+                await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, noResponse);
+                res.sendStatus(200);
+                return;
+            } catch (error) {
+                console.error('Error sending dog response:', error.message, error.response ? error.response.data : '');
+                res.sendStatus(500);
+                return;
+            }
         }
     } else {
-        console.error('Error: Invalid message structure. Request body:', bodyParam);
-        res.sendStatus(400);
+        res.sendStatus(404);
     }
 });
-
-
-// app.post('/whatsapp', async (req, res) => {
-//     const bodyParam = req.body;
-
-//     if (
-//         bodyParam.object &&
-//         bodyParam.entry &&
-//         bodyParam.entry[0].changes &&
-//         bodyParam.entry[0].changes[0].value.messages &&
-//         bodyParam.entry[0].changes[0].value.messages[0]
-//     ) {
-//         const phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
-//         const msgBody = bodyParam.entry[0].changes[0].value.messages[0].text.body.toLowerCase();
-
-//         // Check for greetings or specific keywords
-//         if (msgBody.includes('hello') || msgBody.includes('hi')) {
-//             // If a greeting is detected, respond with "scheme_template"
-//             const greetingTemplate = {
-//                 messaging_product: 'whatsapp',
-//                 to: '+919788825633', // Replace with the recipient's phone number
-//                 type: 'template',
-//                 template: {
-//                     name: 'scheme_template',
-//                     language: {
-//                     code: 'en_US',
-//                 },
-//                 },
-                
-//             };
-
-//             try {
-//                 const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, greetingTemplate);
-//                 console.log('Response:', response.data);
-//                 res.sendStatus(200);
-//                 return;
-//             } catch (error) {
-//                 console.error('Error sending greeting template:', error.message, error.response ? error.response.data : '');
-//                 res.sendStatus(500);
-//                 return;
-//             }
-
-//         } else if (msgBody.includes('cat')) {
-//             // If the user mentions "cat", respond with a plain text message
-//             const catResponse = {
-//                 messaging_product: 'whatsapp',
-//                 to: '+919788825633', // Replace with the recipient's phone number
-//                 type: 'text',
-//                 text: {
-//                     body: "I love cats!!",
-//                 },
-//                 language: {
-//                     code: 'en_US',
-//                 },
-//             };
-
-//             try {
-//                 await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, catResponse);
-//                 res.sendStatus(200);
-//                 return;
-//             } catch (error) {
-//                 console.error('Error sending cat response:', error.message, error.response ? error.response.data : '');
-//                 res.sendStatus(500);
-//                 return;
-//             }
-
-//         } else if (msgBody.includes('dog')) {
-//             // If the user mentions "dog", respond with a plain text message
-//             const dogResponse = {
-//                 messaging_product: 'whatsapp',
-//                 to: '+919788825633', // Replace with the recipient's phone number
-//                 type: 'text',
-//                 text: {
-//                     body: "I love dogs!!",
-//                 },
-//                 language: {
-//                     code: 'en_US',
-//                 },
-//             };
-
-//             try {
-//                 await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, dogResponse);
-//                 res.sendStatus(200);
-//                 return;
-//             } catch (error) {
-//                 console.error('Error sending dog response:', error.message, error.response ? error.response.data : '');
-//                 res.sendStatus(500);
-//                 return;
-//             }
-//         } else {
-//             // If the user mentions "dog", respond with a plain text message
-//             const noResponse = {
-//                 messaging_product: 'whatsapp',
-//                 to: '+919788825633', // Replace with the recipient's phone number
-//                 type: 'text',
-//                 text: {
-//                     body: "Sorry, no schemes found matching your query.",
-//                 },
-//                 language: {
-//                     code: 'en_US',
-//                 },
-//             };
-
-//             try {
-//                 await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, noResponse);
-//                 res.sendStatus(200);
-//                 return;
-//             } catch (error) {
-//                 console.error('Error sending dog response:', error.message, error.response ? error.response.data : '');
-//                 res.sendStatus(500);
-//                 return;
-//             }
-//         }
-//     } else {
-//         res.sendStatus(404);
-//     }
-// });
 
 app.get('/', (req, res) => {
     res.status(200).send('Webhook setup for scheme!!');
 });
 
-// else if (msgBody.includes('Show Schemes')) {
-//     // If a greeting is detected, respond with "scheme_template"
-//     const dealsTemplate = {
-//         "messaging_product": "whatsapp",
-//         "to": "+919788825633",
-//         "type": "template",
-//         "template": {
-//             "name": "deals",
-//             "language": {
-//                 "code": "en_US"
-//             }
-//         }
-//     };
-
-//     try {
-//         const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, dealsTemplate);
-//         console.log('Response:', response.data);
-//         res.sendStatus(200);
-//         return;
-//     } catch (error) {
-//         console.error('Error sending greeting template:', error.message, error.response ? error.response.data : '');
-//         res.sendStatus(500);
-//         return;
-//     }
-
-// }
-
 // ----------------------
 
-// scheme in database
+
+
 
 // const express = require('express');
 // const bodyParser = require('body-parser');
@@ -506,7 +308,6 @@ app.get('/', (req, res) => {
 
 // ----------------------
 
-// chatbot alone
 
 // const express = require('express');
 // const bodyParser = require('body-parser');
