@@ -154,10 +154,11 @@ app.post('/whatsapp', async (req, res) => {
                 type: 'template',
                 template: {
                     name: 'deals',
+                    language: {
+                        code: 'en_US',
+                    },
                 },
-                language: {
-                    code: 'en_US',
-                },
+               
             };
 
             try {
@@ -177,10 +178,11 @@ app.post('/whatsapp', async (req, res) => {
                 type: 'template',
                 template: {
                     name: 'deals',
+                    language: {
+                        code: 'en_US',
+                    },
                 },
-                language: {
-                    code: 'en_US',
-                },
+               
             };
 
             try {
