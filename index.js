@@ -94,7 +94,7 @@ app.post('/whatsapp', async (req, res) => {
                 res.sendStatus(200);
                 return;
             } catch (error) {
-                console.error('Error sending greeting template:', error.message);
+                console.error('Error sending greeting template:', error.message, error.response ? error.response.data : '');
                 res.sendStatus(500);
                 return;
             }
