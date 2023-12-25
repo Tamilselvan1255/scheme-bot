@@ -100,13 +100,7 @@ app.post('/whatsapp', async (req, res) => {
                 return;
             }
 
-        } else if (msgBody.toLowerCase().includes("cat")) {
-                            responseMessage = "I love cats!";
-        } else if (msgBody.toLowerCase().includes("dog")) {
-                            responseMessage = "I love dogs!";
-        } else {
-                            responseMessage = "Sorry, I didn't understand that. Can you please clarify?";
-        }
+        } 
     } else {
         res.sendStatus(404);
     }
