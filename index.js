@@ -342,30 +342,24 @@ app.post("/whatsapp", async (req, res) => {
 
             let responseMessage;
 
+              // If a greeting is detected, respond with "scheme_template"
+              const greetingTemplate = {
+                "messaging_product": "whatsapp",
+                "to": "+919788825633",
+                "type": "template",
+                "template": {
+                    "name": "scheme_template"
+                },
+                "language": {
+                    "code": "en_US"
+                }
+            };
+
              // Implement your chatbot logic here
              if (msg_body.toLowerCase().includes("hello")) {
-                // If a greeting is detected, respond with "scheme_template"
-                const greetingTemplate = {
-                    "messaging_product": "whatsapp",
-                    "to": "+919788825633",
-                    "type": "template",
-                    "template": {
-                        "name": "scheme_template"
-                    },
-                    "language": {
-                        "code": "en_US"
-                    }
-                };
+              
 
-                try {
-                    await axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, greetingTemplate);
-                    res.sendStatus(200);
-                    return;
-                } catch (error) {
-                    console.error("Error sending greeting template:", error);
-                    res.sendStatus(500);
-                    return;
-                }
+                    responseMessage = axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, greetingTemplate);
             } else if (msg_body.toLowerCase().includes("cat")) {
                 responseMessage = "I love cats!";
             } else if (msg_body.toLowerCase().includes("dog")) {
