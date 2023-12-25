@@ -89,7 +89,8 @@ app.post('/whatsapp', async (req, res) => {
             };
 
             try {
-                await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, greetingTemplate);
+                const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, greetingTemplate);
+                console.log('Response:', response.data);
                 res.sendStatus(200);
                 return;
             } catch (error) {
@@ -97,6 +98,7 @@ app.post('/whatsapp', async (req, res) => {
                 res.sendStatus(500);
                 return;
             }
+            
         } else if (msgBody.includes('show schemes')) {
             // If "Show Schemes" is detected, respond with "deals" template
             const showSchemesTemplate = {
