@@ -70,7 +70,13 @@ app.post("/whatsapp", async (req, res) => {
         // Retrieve scheme data from the "schemes" collection based on user input
         try {
             const keyword = msg_body.toLowerCase();
-            const schemes = await Scheme.find({ schemeName: { $regex: keyword, $options: 'i' } });
+            const schemes = await Scheme.find({
+                $or: [
+                  { schemeName: { $regex: keyword, $options: 'i' } },
+                  { implementedBy: { $regex: keyword, $options: 'i' } }
+                ]
+              });
+              
 
        
             let responseMessage;
