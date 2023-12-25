@@ -359,7 +359,7 @@ app.post("/whatsapp", async (req, res) => {
             if (msg_body.toLowerCase().includes("hello")) {
                 // responseMessage = axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, greetingTemplate);
                 try {
-                    const response = await axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, greetingTemplate);
+                    const response = axios.post(`https://graph.facebook.com/v17.0/${phone_number_id}/messages?access_token=${token}`, greetingTemplate);
                     console.log(response.data);  // Log the response data for debugging
                 } catch (error) {
                     console.error(error.response.data);  // Log the error response data
