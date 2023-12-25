@@ -70,13 +70,7 @@ app.post("/whatsapp", async (req, res) => {
         // Retrieve scheme data from the "schemes" collection based on user input
         try {
             const keyword = msg_body.toLowerCase();
-            const schemes = await Scheme.find({
-                $or: [
-                  { schemeName: { $regex: keyword, $options: 'i' } },
-                  { implementedBy: { $regex: keyword, $options: 'i' } }
-                ]
-              });
-              
+            const schemes = await Scheme.find({ schemeName: { $regex: keyword, $options: 'i' } });
 
        
             let responseMessage;
@@ -94,7 +88,7 @@ app.post("/whatsapp", async (req, res) => {
 
             const body = {
                 "messaging_product": "whatsapp",
-                "to": "+919788825633", // Replace with the recipient's phone number
+                "to": phone_number_id, // Replace with the recipient's phone number
                 "type": "text",
                 "text": {
                     "body": responseMessage
