@@ -122,6 +122,7 @@ app.post("/whatsapp", async (req, res) => {
         }
     } catch (error) {
         console.error("Error:", error);
+        console.error("Error Details:", error.response?.data || error.message);
         res.sendStatus(500);
     }
 });
