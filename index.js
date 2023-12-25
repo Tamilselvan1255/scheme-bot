@@ -57,6 +57,7 @@ app.get("/whatsapp", (req, res) => {
 });
 
 app.post("/whatsapp", async (req, res) => {
+    console.log('Received POST request to /whatsapp:', req.body);
     let body_param = req.body;
     
     if (body_param.object && body_param.entry &&
