@@ -84,55 +84,55 @@ app.post('/whatsapp', async (req, res) => {
             }
         } else {
             // Handle other cases...
-            // Your existing code for handling other messages
-            if (msgBody.text && typeof msgBody.text === 'string' && (msgBody.text.toLowerCase().includes('hello') || msgBody.text.toLowerCase().includes('hi'))) {
-                const greetingTemplate = {
-                    messaging_product: 'whatsapp',
-                    to: '+919788825633',
-                    type: 'template',
-                    template: {
-                        name: 'scheme_template',
-                        language: {
-                            code: 'en_US',
-                        },
-                    },
-                };
-
-                try {
-                    const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, greetingTemplate);
-                    console.log('Successfully sent greeting template response:', response.data);
-                    res.status(200).send('Success');
-                    return;
-                } catch (error) {
-                    console.error('Error sending greeting template:', error.message, error.response ? error.response.data : '');
-                    res.status(500).send('Internal Server Error');
-                    return;
-                }
-
-            } else if (msgBody.text && typeof msgBody.text === 'string' && msgBody.text.toLowerCase().includes('show schemes')) {
-                const showSchemesTemplate = {
-                    messaging_product: 'whatsapp',
-                    to: '+919788825633',
-                    type: 'text',
-                    text: {
-                        body: 'Hi! Here are the schemes:',
-                    },
-                    language: {
-                        code: 'en_US',
-                    },
-                };
-                console.log('Before axios post request');
-                try {
-                    const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, showSchemesTemplate);
-                    console.log('Successfully sent show schemes template response:', response.data);
-                    res.status(200).send('Success');
-                    return;
-                } catch (error) {
-                    console.error('Error sending show schemes template:', error.message, error.response ? error.response.data : '');
-                    res.status(500).send('Internal Server Error');
-                    return;
-                }
-            } else {
+            if (msgBody.includes('hello') || msgBody.includes('hi')) {
+                            const greetingTemplate = {
+                                messaging_product: 'whatsapp',
+                                to: '+919788825633',
+                                type: 'template',
+                                template: {
+                                    name: 'scheme_template',
+                                    language: {
+                                    code: 'en_US',
+                                },
+                                },
+                                
+                            };
+                
+                            try {
+                                const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, greetingTemplate);
+                                console.log('Response:', response.data);
+                                res.status(200);
+                                return;
+                            } catch (error) {
+                                console.error('Error sending greeting template:', error.message, error.response ? error.response.data : '');
+                                res.status(500);
+                                return;
+                            }
+                
+                        } else if (msgBody.toLowerCase().includes('show schemes')) {
+                                        const showSchemesTemplate = {
+                                            messaging_product: 'whatsapp',
+                                            to: '+919788825633', 
+                                            type: 'template',
+                                            template: {
+                                                name: 'deals',
+                                                language: {
+                                                code: 'en_US',
+                                            },
+                                            },
+                                        };
+                                    
+                                        try {
+                                            const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, showSchemesTemplate);
+                                            console.log('Response:', response.data);
+                                            res.status(200);
+                                            return;
+                                        } catch (error) {
+                                            console.error('Error sending show schemes template:', error.message, error.response ? error.response.data : '');
+                                            res.status(500);
+                                            return;
+                                        }
+                                    } else {
                 const noResponse = {
                     messaging_product: 'whatsapp',
                     to: '+919788825633',
