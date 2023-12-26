@@ -8,7 +8,6 @@ require('dotenv').config();
 
 const app = express().use(bodyParser.json());
 
-// Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 
@@ -19,25 +18,6 @@ db.on('error', (err) => {
 db.once('open', () => {
     console.log('Connected to MongoDB');
 });
-
-// Define a Mongoose schema for the "schemes" collection
-const schemeSchema = new mongoose.Schema({
-    _id: mongoose.Schema.Types.ObjectId,
-    niProvider: String,
-    schemeName: String,
-    implementedBy: String,
-    domainDescription: String,
-    eligibleDisabilities: String,
-    disabilityPercentage: String,
-    age: String,
-    annualIncome: String,
-    genderEligibility: String,
-    comments: String,
-    attachments: String,
-});
-
-// Create a Mongoose model based on the schema
-const Scheme = mongoose.model('Scheme', schemeSchema);
 
 const token = process.env.TOKEN;
 const myToken = process.env.MYTOKEN;
@@ -75,12 +55,10 @@ app.post('/whatsapp', async (req, res) => {
         const phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
         const msgBody = bodyParam.entry[0].changes[0].value.messages[0].text.body.toLowerCase();
 
-        // Check for greetings or specific keywords
         if (msgBody.includes('hello') || msgBody.includes('hi')) {
-            // If a greeting is detected, respond with "scheme_template"
             const greetingTemplate = {
                 messaging_product: 'whatsapp',
-                to: '+919788825633', // Replace with the recipient's phone number
+                to: '+919788825633',
                 type: 'template',
                 template: {
                     name: 'scheme_template',
@@ -102,58 +80,10 @@ app.post('/whatsapp', async (req, res) => {
                 return;
             }
 
-        } else if (msgBody.includes('cat')) {
-            // If the user mentions "cat", respond with a plain text message
-            const catResponse = {
-                messaging_product: 'whatsapp',
-                to: '+919788825633', // Replace with the recipient's phone number
-                type: 'text',
-                text: {
-                    body: "I love cats!!",
-                },
-                language: {
-                    code: 'en_US',
-                },
-            };
-
-            try {
-                await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, catResponse);
-                res.sendStatus(200);
-                return;
-            } catch (error) {
-                console.error('Error sending cat response:', error.message, error.response ? error.response.data : '');
-                res.sendStatus(500);
-                return;
-            }
-
-        } else if (msgBody.includes('dog')) {
-            // If the user mentions "dog", respond with a plain text message
-            const dogResponse = {
-                messaging_product: 'whatsapp',
-                to: '+919788825633', // Replace with the recipient's phone number
-                type: 'text',
-                text: {
-                    body: "I love dogs!!",
-                },
-                language: {
-                    code: 'en_US',
-                },
-            };
-
-            try {
-                await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, dogResponse);
-                res.sendStatus(200);
-                return;
-            } catch (error) {
-                console.error('Error sending dog response:', error.message, error.response ? error.response.data : '');
-                res.sendStatus(500);
-                return;
-            }
         } else if (msgBody.toLowerCase().includes('show schemes')) {
-            // If "show schemes" is detected, respond with "deals" template
             const showSchemesTemplate = {
                 messaging_product: 'whatsapp',
-                to: '+919788825633', // Replace with the recipient's phone number
+                to: '+919788825633', 
                 type: 'template',
                 template: {
                     name: 'deals',
@@ -174,10 +104,9 @@ app.post('/whatsapp', async (req, res) => {
                 return;
             }
         } else {
-            // If the user mentions "dog", respond with a plain text message
             const noResponse = {
                 messaging_product: 'whatsapp',
-                to: '+919788825633', // Replace with the recipient's phone number
+                to: '+919788825633', 
                 type: 'text',
                 text: {
                     body: "Sorry, no schemes found matching your query.",
