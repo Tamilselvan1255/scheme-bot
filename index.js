@@ -53,7 +53,9 @@ app.post('/whatsapp', async (req, res) => {
         bodyParam.entry[0].changes[0].value.messages[0]
     ) {
         const phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
-        const msgBody = bodyParam.entry[0].changes[0].value.messages[0].text.body.toLowerCase();
+        // const msgBody = bodyParam.entry[0].changes[0].value.messages[0].text.body.toLowerCase();
+        const msgBody = (bodyParam.entry[0]?.changes[0]?.value?.messages[0]?.text?.body || '').toLowerCase();
+
 
         if (msgBody.includes('hello') || msgBody.includes('hi')) {
             const greetingTemplate = {
