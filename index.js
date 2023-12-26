@@ -94,14 +94,10 @@ app.post('/whatsapp', async (req, res) => {
                                 },
                                 components: [
                                     {
-                                        type: 'text',
-                                        text: 'Show Schemes',
-                                    },
-                                    {
                                         type: 'quick_reply',
                                         payload: 'SHOW_SCHEMES_PAYLOAD',
-                                        content: {
-                                            type: 'text',
+                                        action: {
+                                            type: 'reply',
                                             text: 'Show Schemes',
                                         },
                                     },
@@ -109,7 +105,6 @@ app.post('/whatsapp', async (req, res) => {
                             },
                         };
                         
-            
             try {
                 const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, showSchemesTemplate);
                 console.log('Response:', response.data);
