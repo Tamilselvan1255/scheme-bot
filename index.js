@@ -57,8 +57,8 @@ app.post('/whatsapp', async (req, res) => {
         const phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
         const message = bodyParam.entry[0].changes[0].value.messages[0];
         const msgBody = (message.text?.body || '').toLowerCase();
-        const payload = message.quick_reply?.payload;
-
+        const quickReply = message.quick_reply;
+        const payload = quickReply?.payload;
         console.log('payload:', payload);
 
         if (msgBody.includes('hello') || msgBody.includes('hi')) {
@@ -86,7 +86,7 @@ app.post('/whatsapp', async (req, res) => {
                 res.status(500);
                 return;
             }
-        } else if (message.quick_reply && payload === 'Show Schemes') {
+        } else if (quickReply && payload === 'Show Schemes') {
             // Handle show schemes logic
 
             const showSchemesTemplate = {
