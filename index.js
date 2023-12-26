@@ -75,7 +75,7 @@ app.post('/whatsapp', async (req, res) => {
                             parameters: [
                                 {
                                     type: 'payload',
-                                    payload: 'Show_Schemes_Payload', // Ensure this payload is handled correctly
+                                    payload: 'show_schemes_payload', // Ensure this payload is handled correctly
                                 },
                             ],
                         },
