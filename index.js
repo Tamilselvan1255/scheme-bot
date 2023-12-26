@@ -47,18 +47,12 @@ app.post('/whatsapp', async (req, res) => {
     console.log('Request Body:', bodyParam);
 
     if (
-        bodyParam.object === 'whatsapp_business_account' &&
-        bodyParam.entry &&
-        Array.isArray(bodyParam.entry) &&
-        bodyParam.entry.length > 0 &&
-        bodyParam.entry[0].id &&
-        bodyParam.entry[0].changes &&
-        Array.isArray(bodyParam.entry[0].changes) &&
-        bodyParam.entry[0].changes.length > 0 &&
-        bodyParam.entry[0].changes[0].value &&
-        bodyParam.entry[0].changes[0].value.messages &&
-        Array.isArray(bodyParam.entry[0].changes[0].value.messages) &&
-        bodyParam.entry[0].changes[0].value.messages.length > 0
+        bodyParam.object &&
+  bodyParam.entry &&
+  bodyParam.entry[0].changes &&
+  bodyParam.entry[0].changes[0].value &&
+  bodyParam.entry[0].changes[0].value.messages &&
+  bodyParam.entry[0].changes[0].value.messages[0]
     ) {
         const phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
         const msgBody = (bodyParam.entry[0]?.changes[0]?.value?.messages[0]?.text?.body || '').toLowerCase();
