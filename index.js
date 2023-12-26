@@ -95,7 +95,6 @@ app.post('/whatsapp', async (req, res) => {
                                 components: [
                                     {
                                         type: 'quick_reply',
-                                        payload: 'SHOW_SCHEMES_PAYLOAD',
                                         action: {
                                             type: 'reply',
                                             text: 'Show Schemes',
@@ -103,6 +102,7 @@ app.post('/whatsapp', async (req, res) => {
                                     },
                                 ],
                             },
+                            payload: 'SHOW_SCHEMES_PAYLOAD',
                         };
                         
             try {
