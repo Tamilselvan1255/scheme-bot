@@ -85,7 +85,7 @@ app.post('/whatsapp', async (req, res) => {
         } else {
             // Handle other cases...
             // Your existing code for handling other messages
-            if (msgBody.text && (msgBody.text.toLowerCase().includes('hello') || msgBody.text.toLowerCase().includes('hi'))) {
+            if (msgBody.text && typeof msgBody.text === 'string' && (msgBody.text.toLowerCase().includes('hello') || msgBody.text.toLowerCase().includes('hi'))) {
                 const greetingTemplate = {
                     messaging_product: 'whatsapp',
                     to: '+919788825633',
