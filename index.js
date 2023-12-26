@@ -57,7 +57,8 @@ app.post('/whatsapp', async (req, res) => {
         const phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
         const message = bodyParam.entry[0].changes[0].value.messages[0];
         const msgBody = (message.text?.body || '').toLowerCase();
-        const payload = message.payload || (message.quick_reply && message.quick_reply.payload);
+        // const payload = message.payload || (message.quick_reply && message.quick_reply.payload);
+        const payload = message.button.payload;
 
         console.log('message:', message);
 
