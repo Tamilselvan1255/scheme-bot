@@ -75,7 +75,7 @@ app.post('/whatsapp', async (req, res) => {
                             parameters: [
                                 {
                                     type: 'payload',
-                                    payload: 'show_schemes_payload', // Ensure this payload is handled correctly
+                                    payload: 'Show_Schemes_Payload', // Ensure this payload is handled correctly
                                 },
                             ],
                         },
@@ -94,7 +94,7 @@ app.post('/whatsapp', async (req, res) => {
                 res.status(500).send('Error sending show schemes template');
                 return;
             }
-        } else if (msgBody.toLowerCase().includes('show_schemes_payload')) {
+        } else if (msgBody.toLowerCase().includes('Show_Schemes_Payload')) {
             // Handle the "Show Schemes" button click here
             const schemesResponse = {
                 messaging_product: 'whatsapp',
