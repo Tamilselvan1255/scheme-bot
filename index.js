@@ -61,7 +61,7 @@ app.post('/whatsapp', async (req, res) => {
 
         console.log('message:', message);
 
-        if (msgBody.includes('hello') || msgBody.includes('hi') || payload === 'SHOW_SCHEMES') {
+        if (msgBody.includes('hello') || msgBody.includes('hi')) {
             // Handle greeting or show schemes logic
 
             const greetingTemplate = {
@@ -86,7 +86,7 @@ app.post('/whatsapp', async (req, res) => {
                 res.status(500);
                 return;
             }
-        } else if (msgBody.toLowerCase().includes('show schemes')) {
+        } else if (msgBody.toLowerCase().includes('show schemes') || payload === 'SHOW_SCHEMES') {
             // Handle show schemes logic
 
             const showSchemesTemplate = {
