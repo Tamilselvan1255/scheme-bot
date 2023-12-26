@@ -83,38 +83,38 @@ app.post('/whatsapp', async (req, res) => {
                         }
             
                     } else if (msgBody.toLowerCase().includes('show schemes')) {
-            const showSchemesTemplate = {
-                messaging_product: 'whatsapp',
-                to: '+919788825633', 
-                type: 'template',
-                template: {
-                    name: 'deals',
-                    language: {
-                        code: 'en_US',
-                    },
-                    payload: {
-                        buttons: [
-                            {
-                                type: 'quick_reply',
-                                content: {
-                                    type: 'text',
-                                    text: 'Show Schemes',
+                        const showSchemesTemplate = {
+                            messaging_product: 'whatsapp',
+                            to: '+919788825633', 
+                            type: 'template',
+                            template: {
+                                name: 'deals',
+                                language: {
+                                    code: 'en_US',
                                 },
-                                payload: 'SHOW_SCHEMES_PAYLOAD',
-                            },
-                            {
-                                type: 'url',
-                                content: {
-                                    type: 'text',
-                                    text: 'Visit Website',
+                                payload: {
+                                    buttons: [
+                                        {
+                                            type: 'quick_reply',
+                                            content: {
+                                                type: 'text',
+                                                text: 'Show Schemes',
+                                            },
+                                            payload: 'SHOW_SCHEMES_PAYLOAD',
+                                        },
+                                        {
+                                            type: 'url',
+                                            content: {
+                                                type: 'text',
+                                                text: 'Visit Website',
+                                            },
+                                            url: 'https://example.com',
+                                        },
+                                    ],
                                 },
-                                url: 'https://example.com',
                             },
-                        ],
-                    },
-                },
-            };
-
+                        };
+            
             try {
                 const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, showSchemesTemplate);
                 console.log('Response:', response.data);
