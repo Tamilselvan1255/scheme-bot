@@ -50,9 +50,7 @@ app.post('/whatsapp', async (req, res) => {
         bodyParam.entry &&
         bodyParam.entry[0].changes &&
         bodyParam.entry[0].changes[0].value.messages &&
-        bodyParam.entry[0].changes[0].value.messages[0] &&
-        bodyParam.entry[0].changes[0].value.messages[0].text &&
-        bodyParam.entry[0].changes[0].value.messages[0].text.body
+        bodyParam.entry[0].changes[0].value.messages[0]
     ) {
         const phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
         const msgBody = bodyParam.entry[0].changes[0].value.messages[0].text.body.toLowerCase();
@@ -85,19 +83,18 @@ app.post('/whatsapp', async (req, res) => {
         } else if (msgBody.toLowerCase().includes('show schemes')) {
             const showSchemesTemplate = {
                 messaging_product: 'whatsapp',
-                to: '+919788825633',
-                type: 'text',
-                text: {
-                    body: 'Hi! Here are the schemes:',
-                },
-                language: {
+                to: '+919788825633', 
+                type: 'template',
+                template: {
+                    name: 'deals',
+                    language: {
                     code: 'en_US',
                 },
+                },
             };
-            console.log('Before axios post request');
+        
             try {
                 const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, showSchemesTemplate);
-                console.log('After axios post request - Response:', response.data); 
                 console.log('Response:', response.data);
                 res.status(200);
                 return;
@@ -130,7 +127,7 @@ app.post('/whatsapp', async (req, res) => {
             }
         }
     } else {
-        res.status(404).send('Not found!');
+        res.status(404);
     }
 });
 
