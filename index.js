@@ -44,7 +44,7 @@ app.get('/whatsapp', (req, res) => {
 
 app.post('/whatsapp', async (req, res) => {
     const bodyParam = req.body;
-
+    console.log('Request Body:', bodyParam);
     if (
         bodyParam.object &&
         bodyParam.entry &&
