@@ -50,7 +50,9 @@ app.post('/whatsapp', async (req, res) => {
         bodyParam.entry &&
         bodyParam.entry[0].changes &&
         bodyParam.entry[0].changes[0].value.messages &&
-        bodyParam.entry[0].changes[0].value.messages[0]
+        bodyParam.entry[0].changes[0].value.messages[0] &&
+        bodyParam.entry[0].changes[0].value.messages[0].text &&
+        bodyParam.entry[0].changes[0].value.messages[0].text.body
     ) {
         const phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
         const msgBody = bodyParam.entry[0].changes[0].value.messages[0].text.body.toLowerCase();
@@ -128,7 +130,7 @@ app.post('/whatsapp', async (req, res) => {
             }
         }
     } else {
-        res.status(404);
+        res.status(404).send('Not found!');
     }
 });
 
