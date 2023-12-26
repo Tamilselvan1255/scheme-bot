@@ -83,7 +83,7 @@ app.post('/whatsapp', async (req, res) => {
                 return;
             }
 
-        } else if (msgBody.toLowerCase().includes('show schemes')) {
+        } else if (msgBody.toLowerCase().includes('')) {
             const showSchemesTemplate = {
                 messaging_product: 'whatsapp',
                 to: '+919788825633', 
