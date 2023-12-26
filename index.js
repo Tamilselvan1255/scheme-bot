@@ -44,16 +44,18 @@ app.get('/whatsapp', (req, res) => {
 
 app.post('/whatsapp', async (req, res) => {
     const bodyParam = req.body;
-    console.log('Incoming WhatsApp Request:', JSON.stringify(bodyParam, null, 2));
+
     if (
         bodyParam.object &&
         bodyParam.entry &&
         bodyParam.entry[0].changes &&
         bodyParam.entry[0].changes[0].value.messages &&
-        bodyParam.entry[0].changes[0].value.messages[0] 
+        bodyParam.entry[0].changes[0].value.messages[0] &&
+        bodyParam.entry[0].changes[0].value.messages[0].text &&
+        bodyParam.entry[0].changes[0].value.messages[0].text.body
     ) {
         const phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
-        const msgBody = bodyParam.entry[0].changes[0].value.messages[0];
+        const msgBody = bodyParam.entry[0].changes[0].value.messages[0].text.body.toLowerCase();
 
         if (msgBody.includes('hello') || msgBody.includes('hi')) {
             const greetingTemplate = {
