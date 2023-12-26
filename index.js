@@ -58,6 +58,7 @@ app.post('/whatsapp', async (req, res) => {
         console.log('msgBody:', msgBody);
 
         if (msgBody.includes('hello') || msgBody.includes('hi')) {
+            console.log('Entering hello/hi condition');
             const showSchemesTemplate = {
                 messaging_product: 'whatsapp',
                 to: '+919788825633',
@@ -94,8 +95,10 @@ app.post('/whatsapp', async (req, res) => {
                 return;
             }
         } else {
+            console.log('Entering else condition');
             // Check for the payload from the button click
             if (bodyParam.entry[0]?.messaging?.[0]?.postback?.payload === 'Show_Schemes_Payload') {
+                console.log('Payload:', bodyParam.entry[0]?.messaging?.[0]?.postback?.payload);
                 // Send a response based on the payload
                 const dealsTemplate = {
                     messaging_product: 'whatsapp',
@@ -120,6 +123,7 @@ app.post('/whatsapp', async (req, res) => {
                 }
             } else {
                 // Handle other messages or commands
+                console.log('Handling other messages or commands');
                 const noResponse = {
                     messaging_product: 'whatsapp',
                     to: '+919788825633',
@@ -144,6 +148,7 @@ app.post('/whatsapp', async (req, res) => {
             }
         }
     } else {
+        console.log('Request structure not as expected');
         res.status(404);
     }
 });
