@@ -48,10 +48,13 @@ app.post('/whatsapp', async (req, res) => {
 
     if (
         bodyParam.object &&
-        bodyParam.entry &&
-        bodyParam.entry[0].changes &&
-        bodyParam.entry[0].changes[0].value.messages &&
-        bodyParam.entry[0].changes[0].value.messages[0]
+    bodyParam.entry &&
+    bodyParam.entry[0] &&
+    bodyParam.entry[0].changes &&
+    bodyParam.entry[0].changes[0] &&
+    bodyParam.entry[0].changes[0].value &&
+    bodyParam.entry[0].changes[0].value.messages &&
+    bodyParam.entry[0].changes[0].value.messages[0]
     ) {
         const phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
         const msgBody = (bodyParam.entry[0]?.changes[0]?.value?.messages[0]?.text?.body || '').toLowerCase();
@@ -148,7 +151,7 @@ app.post('/whatsapp', async (req, res) => {
             }
         }
     } else {
-        console.log('Request structure not as expected');
+        console.log('Request structure not as expected:', bodyParam);
         res.status(404);
     }
 });
