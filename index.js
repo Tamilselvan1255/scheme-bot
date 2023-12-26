@@ -72,11 +72,11 @@ app.post('/whatsapp', async (req, res) => {
             try {
                 const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, greetingTemplate);
                 console.log('Response:', response.data);
-                res.sendStatus(200);
+                res.status(200);
                 return;
             } catch (error) {
                 console.error('Error sending greeting template:', error.message, error.response ? error.response.data : '');
-                res.sendStatus(500);
+                res.status(500);
                 return;
             }
 
@@ -96,11 +96,11 @@ app.post('/whatsapp', async (req, res) => {
             try {
                 const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, showSchemesTemplate);
                 console.log('Response:', response.data);
-                res.sendStatus(200);
+                res.status(200);
                 return;
             } catch (error) {
                 console.error('Error sending show schemes template:', error.message, error.response ? error.response.data : '');
-                res.sendStatus(500);
+                res.status(500);
                 return;
             }
         } else {
@@ -118,16 +118,16 @@ app.post('/whatsapp', async (req, res) => {
 
             try {
                 await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, noResponse);
-                res.sendStatus(200);
+                res.status(200);
                 return;
             } catch (error) {
                 console.error('Error sending dog response:', error.message, error.response ? error.response.data : '');
-                res.sendStatus(500);
+                res.status(500);
                 return;
             }
         }
     } else {
-        res.sendStatus(404);
+        res.status(404);
     }
 });
 
