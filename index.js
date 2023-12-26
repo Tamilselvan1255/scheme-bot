@@ -58,9 +58,31 @@ app.post('/whatsapp', async (req, res) => {
         console.log('msgBody:', msgBody);
 
         if (msgBody.includes('hello') || msgBody.includes('hi')) {
-            // ... (existing code)
-
-        } else if (msgBody.toLowerCase().includes('show schemes')) {
+                        const greetingTemplate = {
+                            messaging_product: 'whatsapp',
+                            to: '+919788825633',
+                            type: 'template',
+                            template: {
+                                name: 'scheme_template',
+                                language: {
+                                code: 'en_US',
+                            },
+                            },
+                            
+                        };
+            
+                        try {
+                            const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, greetingTemplate);
+                            console.log('Response:', response.data);
+                            res.status(200);
+                            return;
+                        } catch (error) {
+                            console.error('Error sending greeting template:', error.message, error.response ? error.response.data : '');
+                            res.status(500);
+                            return;
+                        }
+            
+                    } else if (msgBody.toLowerCase().includes('show schemes')) {
             const showSchemesTemplate = {
                 messaging_product: 'whatsapp',
                 to: '+919788825633', 
