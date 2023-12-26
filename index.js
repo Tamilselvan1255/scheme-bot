@@ -98,7 +98,7 @@ app.post('/whatsapp', async (req, res) => {
                         to: '+919788825633',
                         type: 'text',
                         text: {
-                            body: `Sorry to disturb you 🙏. Once you free please send "HI" or "HELLO" to continue further.Thank you. Have a nice day 🌺`,
+                            body: `I appreciate your consideration. Please feel free to reach out whenever you have a moment. When you're ready to continue, a simple "HI" or "HELLO" would be great. Thank you for your understanding. Have a wonderful day! 🌟`,
                         },
                         language: {
                             code: 'en_US',
