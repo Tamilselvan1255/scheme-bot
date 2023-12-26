@@ -50,12 +50,41 @@ app.post('/whatsapp', async (req, res) => {
         bodyParam.entry &&
         bodyParam.entry[0].changes &&
         bodyParam.entry[0].changes[0].value.messages &&
-        bodyParam.entry[0].changes[0].value.messages[0] &&
-        bodyParam.entry[0].changes[0].value.messages[0].text &&
-        bodyParam.entry[0].changes[0].value.messages[0].text.body
+        bodyParam.entry[0].changes[0].value.messages[0] 
     ) {
         const phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
-        const msgBody = bodyParam.entry[0].changes[0].value.messages[0].text.body.toLowerCase();
+        const msgBody = bodyParam.entry[0].changes[0].value.messages[0];
+
+        if (message.quick_reply) {
+            // User clicked a quick reply button
+            const quickReplyPayload = message.quick_reply.payload;
+
+            if (quickReplyPayload === 'SHOW_SCHEMES') {
+                // User clicked "Show Schemes" button
+                const response = {
+                    messaging_product: 'whatsapp',
+                    to: phoneNumberId,
+                    type: 'text',
+                    text: {
+                        body: 'Hi, here are the schemes...',
+                    },
+                    language: {
+                        code: 'en_US',
+                    },
+                };
+
+                try {
+                    await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, response);
+                    res.status(200).send('Success');
+                    return;
+                } catch (error) {
+                    console.error('Error sending response:', error.message, error.response ? error.response.data : '');
+                    res.status(500).send('Internal Server Error');
+                    return;
+                }
+            }
+        } else {
+
 
         if (msgBody.includes('hello') || msgBody.includes('hi')) {
             const greetingTemplate = {
@@ -129,7 +158,8 @@ app.post('/whatsapp', async (req, res) => {
                 return;
             }
         }
-    } else {
+    } }
+    else {
         res.status(404).send('Not found!');
     }
 });
