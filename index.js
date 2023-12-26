@@ -155,7 +155,7 @@ app.post('/whatsapp', async (req, res) => {
             }
         }
     } else {
-        console.log('Request structure not as expected:', bodyParam);
+        console.log('Request structure not as expected:', JSON.stringify(bodyParam, null, 2));
         res.status(404);
     }
 });
