@@ -58,7 +58,8 @@ app.post('/whatsapp', async (req, res) => {
         const message = bodyParam.entry[0].changes[0].value.messages[0];
         const msgBody = (message.text?.body || '').toLowerCase();
         // const payload = message.payload || (message.quick_reply && message.quick_reply.payload);
-        const payload = message.button.payload;
+        const payload = message.button ? message.button.payload : undefined;
+
 
         console.log('message:', message);
 
