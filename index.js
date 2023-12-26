@@ -55,9 +55,9 @@ app.post('/whatsapp', async (req, res) => {
         const phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
         const msgBody = bodyParam.entry[0].changes[0].value.messages[0];
 
-        if (message.quick_reply) {
+        if (msgBody.quick_reply) {
             // User clicked a quick reply button
-            const quickReplyPayload = message.quick_reply.payload;
+            const quickReplyPayload = msgBody.quick_reply.payload;
 
             if (quickReplyPayload === 'SHOW_SCHEMES') {
                 // User clicked "Show Schemes" button
