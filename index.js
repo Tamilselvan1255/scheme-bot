@@ -83,13 +83,13 @@ app.post('/whatsapp', async (req, res) => {
         } else if (msgBody.toLowerCase().includes('show schemes')) {
             const showSchemesTemplate = {
                 messaging_product: 'whatsapp',
-                to: '+919788825633', 
-                type: 'template',
-                template: {
-                    name: 'deals',
-                    language: {
-                    code: 'en_US',
+                to: '+919788825633',
+                type: 'text',
+                text: {
+                    body: 'Hi! Here are the schemes:',
                 },
+                language: {
+                    code: 'en_US',
                 },
             };
         
