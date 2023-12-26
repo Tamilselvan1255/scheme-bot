@@ -45,6 +45,7 @@ app.get('/whatsapp', (req, res) => {
 app.post('/whatsapp', async (req, res) => {
     const bodyParam = req.body;
     console.log('Request Body:', bodyParam);
+
     if (
         bodyParam.object &&
         bodyParam.entry &&
@@ -92,50 +93,54 @@ app.post('/whatsapp', async (req, res) => {
                 res.status(500).send('Error sending show schemes template');
                 return;
             }
-        } else if (msgBody.includes('Show_Schemes_Payload')) {
-            const dealsTemplate = {
-                messaging_product: 'whatsapp',
-                to: '+919788825633',
-                type: 'template',
-                template: {
-                    name: 'deals',
+        } else {
+            // Check for the payload from the button click
+            if (bodyParam.entry[0]?.messaging?.[0]?.postback?.payload === 'Show_Schemes_Payload') {
+                // Send a response based on the payload
+                const dealsTemplate = {
+                    messaging_product: 'whatsapp',
+                    to: '+919788825633',
+                    type: 'template',
+                    template: {
+                        name: 'deals',
+                        language: {
+                            code: 'en_US',
+                        },
+                    },
+                };
+
+                try {
+                    await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, dealsTemplate);
+                    res.status(200).send('Deals template sent!');
+                    return;
+                } catch (error) {
+                    console.error('Error sending deals template:', error.message, error.response ? error.response.data : '');
+                    res.status(500).send('Error sending deals template');
+                    return;
+                }
+            } else {
+                // Handle other messages or commands
+                const noResponse = {
+                    messaging_product: 'whatsapp',
+                    to: '+919788825633',
+                    type: 'text',
+                    text: {
+                        body: "Sorry, no schemes found matching your query.",
+                    },
                     language: {
                         code: 'en_US',
                     },
-                },
-            };
+                };
 
-            try {
-                const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, dealsTemplate);
-                console.log('Response:', response.data);
-                res.status(200).send('Deals template sent!');
-                return;
-            } catch (error) {
-                console.error('Error sending deals template:', error.message, error.response ? error.response.data : '');
-                res.status(500).send('Error sending deals template');
-                return;
-            }
-        } else {
-            const noResponse = {
-                messaging_product: 'whatsapp',
-                to: '+919788825633', 
-                type: 'text',
-                text: {
-                    body: "Sorry, no schemes found matching your query.",
-                },
-                language: {
-                    code: 'en_US',
-                },
-            };
-
-            try {
-                await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, noResponse);
-                res.status(200);
-                return;
-            } catch (error) {
-                console.error('Error sending dog response:', error.message, error.response ? error.response.data : '');
-                res.status(500);
-                return;
+                try {
+                    await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, noResponse);
+                    res.status(200);
+                    return;
+                } catch (error) {
+                    console.error('Error sending response:', error.message, error.response ? error.response.data : '');
+                    res.status(500);
+                    return;
+                }
             }
         }
     } else {
@@ -146,6 +151,7 @@ app.post('/whatsapp', async (req, res) => {
 app.get('/', (req, res) => {
     res.status(200).send('Webhook setup for scheme!!');
 });
+
 
 
 // ----------
