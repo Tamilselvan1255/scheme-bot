@@ -92,9 +92,10 @@ app.post('/whatsapp', async (req, res) => {
                     code: 'en_US',
                 },
             };
-        
+            console.log('Before axios post request');
             try {
                 const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, showSchemesTemplate);
+                console.log('After axios post request - Response:', response.data); 
                 console.log('Response:', response.data);
                 res.status(200);
                 return;
