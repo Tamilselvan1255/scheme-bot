@@ -59,7 +59,7 @@ app.post('/whatsapp', async (req, res) => {
         const msgBody = (message.text?.body || '').toLowerCase();
         const payload = message.payload || (message.quick_reply && message.quick_reply.payload);
 
-        console.log('payload:', payload);
+        console.log('msgBody:', msgBody);
 
         if (msgBody.includes('hello') || msgBody.includes('hi')) {
             // Handle greeting or show schemes logic
