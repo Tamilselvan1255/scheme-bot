@@ -86,7 +86,7 @@ app.post('/whatsapp', async (req, res) => {
                 res.status(500);
                 return;
             }
-        } else if (payload === 'Show Schemes') {
+        } else if (message.quick_reply && payload === 'Show Schemes') {
             // Handle show schemes logic
 
             const showSchemesTemplate = {
