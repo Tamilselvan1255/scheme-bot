@@ -59,31 +59,6 @@ app.post('/whatsapp', async (req, res) => {
 
 
         if (msgBody.includes('hello') || msgBody.includes('hi')) {
-            const greetingTemplate = {
-                messaging_product: 'whatsapp',
-                to: '+919788825633',
-                type: 'template',
-                template: {
-                    name: 'scheme_template',
-                    language: {
-                    code: 'en_US',
-                },
-                },
-                
-            };
-
-            try {
-                const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, greetingTemplate);
-                console.log('Response:', response.data);
-                res.status(200);
-                return;
-            } catch (error) {
-                console.error('Error sending greeting template:', error.message, error.response ? error.response.data : '');
-                res.status(500);
-                return;
-            }
-
-        } else if (msgBody.toLowerCase().includes('show schemes')) {
             const showSchemesTemplate = {
                 messaging_product: 'whatsapp',
                 to: '+919788825633',
@@ -106,6 +81,30 @@ app.post('/whatsapp', async (req, res) => {
                             ],
                         },
                     ],
+                },
+            };
+
+            try {
+                // Send show schemes template with the "Show Schemes" button
+                const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, showSchemesTemplate);
+                console.log('Response:', response.data);
+                res.status(200).send('Show Schemes template sent!');
+                return;
+            } catch (error) {
+                console.error('Error sending show schemes template:', error.message, error.response ? error.response.data : '');
+                res.status(500).send('Error sending show schemes template');
+                return;
+            }
+        } else if (msgBody.toLowerCase().includes('Show_Schemes_Payload')) {
+            const showSchemesTemplate = {
+                messaging_product: 'whatsapp',
+                to: '+919788825633',
+                type: 'template',
+                template: {
+                    name: 'deals', // Replace with the name of your template for showing schemes
+                    language: {
+                        code: 'en_US',
+                    }
                 },
             };
 
