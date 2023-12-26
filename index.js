@@ -95,7 +95,7 @@ app.post('/whatsapp', async (req, res) => {
                 res.status(500).send('Error sending show schemes template');
                 return;
             }
-        } else if (msgBody.toLowerCase().includes('Show_Schemes_Payload')) {
+        } else if (msgBody.toLowerCase().includes('show_schemes_payload')) {
             const showSchemesTemplate = {
                 messaging_product: 'whatsapp',
                 to: '+919788825633',
