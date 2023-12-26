@@ -65,7 +65,20 @@ app.post('/whatsapp', async (req, res) => {
 
             switch (true) {
                 case msgBody.includes('hello') || msgBody.includes('hi'):
-                    // Handle greeting or show schemes logic
+                    responseTemplate = {
+                        messaging_product: 'whatsapp',
+                        to: '+919788825633',
+                        type: 'template',
+                        template: {
+                            name: 'scheme_template',
+                            language: {
+                                code: 'en_US',
+                            },
+                        },
+                    };
+                    break;
+                    
+                case payload === 'Yes':
                     responseTemplate = {
                         messaging_product: 'whatsapp',
                         to: '+919788825633',
@@ -79,8 +92,22 @@ app.post('/whatsapp', async (req, res) => {
                     };
                     break;
 
+                    case payload === 'Not Now':
+                    responseTemplate = {
+                        messaging_product: 'whatsapp',
+                        to: '+919788825633',
+                        type: 'text',
+                        text: {
+                            body: `Sorry to disturb you 🙏. Once you free please send "HI" or "HELLO" to continue further.Thank you. Have a nice day 🌺`,
+                        },
+                        language: {
+                            code: 'en_US',
+                        },
+                    };
+                    break;
+
+
                 case payload === 'Show Schemes':
-                    // Handle show schemes logic
                     responseTemplate = {
                         messaging_product: 'whatsapp',
                         to: '+919788825633',
@@ -95,7 +122,6 @@ app.post('/whatsapp', async (req, res) => {
                     break;
 
                 default:
-                    // Handle other cases
                     responseTemplate = {
                         messaging_product: 'whatsapp',
                         to: '+919788825633',
@@ -121,107 +147,6 @@ app.post('/whatsapp', async (req, res) => {
         res.status(404).send('Invalid request format');
     }
 });
-
-
-// app.post('/whatsapp', async (req, res) => {
-//     const bodyParam = req.body;
-//     console.log('Request Body:', bodyParam);
-
-//     if (
-//         bodyParam.object &&
-//         bodyParam.entry &&
-//         bodyParam.entry[0].changes &&
-//         bodyParam.entry[0].changes[0].value.messages &&
-//         bodyParam.entry[0].changes[0].value.messages[0]
-//     ) {
-//         const phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
-//         const message = bodyParam.entry[0].changes[0].value.messages[0];
-//         const msgBody = (message.text?.body || '').toLowerCase();
-//         // const payload = message.payload || (message.quick_reply && message.quick_reply.payload);
-//         const payload = message.button ? message.button.payload : undefined;
-
-
-//         console.log('message:', message);
-
-//         if (msgBody.includes('hello') || msgBody.includes('hi')) {
-//             // Handle greeting or show schemes logic
-
-//             const greetingTemplate = {
-//                 messaging_product: 'whatsapp',
-//                 to: '+919788825633',
-//                 type: 'template',
-//                 template: {
-//                     name: 'scheme_template',
-//                     language: {
-//                         code: 'en_US',
-//                     },
-//                 },
-//             };
-
-//             try {
-//                 const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, greetingTemplate);
-//                 console.log('Response:', response.data);
-//                 res.status(200);
-//                 return;
-//             } catch (error) {
-//                 console.error('Error sending greeting template:', error.message, error.response ? error.response.data : '');
-//                 res.status(500);
-//                 return;
-//             }
-//         } else if (payload === 'Show Schemes') {
-//             // Handle show schemes logic
-
-//             const showSchemesTemplate = {
-//                 messaging_product: 'whatsapp',
-//                 to: '+919788825633',
-//                 type: 'template',
-//                 template: {
-//                     name: 'deals',
-//                     language: {
-//                         code: 'en_US',
-//                     },
-//                 },
-//             };
-
-//             try {
-//                 const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, showSchemesTemplate);
-//                 console.log('Response:', response.data);
-//                 res.status(200);
-//                 return;
-//             } catch (error) {
-//                 console.error('Error sending show schemes template:', error.message, error.response ? error.response.data : '');
-//                 res.status(500);
-//                 return;
-//             }
-//         } else {
-//             // Handle other cases
-
-//             const noResponse = {
-//                 messaging_product: 'whatsapp',
-//                 to: '+919788825633',
-//                 type: 'text',
-//                 text: {
-//                     body: "Sorry, no schemes found matching your query.",
-//                 },
-//                 language: {
-//                     code: 'en_US',
-//                 },
-//             };
-
-//             try {
-//                 await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, noResponse);
-//                 res.status(200);
-//                 return;
-//             } catch (error) {
-//                 console.error('Error sending response:', error.message, error.response ? error.response.data : '');
-//                 res.status(500);
-//                 return;
-//             }
-//         }
-//     } else {
-//         res.status(404);
-//     }
-// });
 
 
 app.get('/', (req, res) => {
