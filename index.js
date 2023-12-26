@@ -127,7 +127,7 @@ app.post('/whatsapp', async (req, res) => {
                         to: '+919788825633',
                         type: 'text',
                         text: {
-                            body: "Sorry, no schemes found matching your query.",
+                            body: "Please enter valid message!",
                         },
                         language: {
                             code: 'en_US',
