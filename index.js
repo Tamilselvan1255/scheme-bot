@@ -53,17 +53,10 @@ app.post('/whatsapp', async (req, res) => {
         bodyParam.entry[0].changes[0].value.messages[0]
     ) {
         const phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
-
-        // Extract the message body
-        let msgBody = '';
-        if (bodyParam.entry[0]?.changes[0]?.value?.messages[0]?.text) {
-            msgBody = bodyParam.entry[0]?.changes[0]?.value?.messages[0]?.text?.body.toLowerCase();
-        } else if (bodyParam.entry[0]?.changes[0]?.value?.messages[0]?.template) {
-            msgBody = bodyParam.entry[0]?.changes[0]?.value?.messages[0]?.template?.text?.body.toLowerCase();
-        }
-        
-
+        // const msgBody = bodyParam.entry[0].changes[0].value.messages[0].text.body.toLowerCase();
+        const msgBody = (bodyParam.entry[0]?.changes[0]?.value?.messages[0]?.text?.body || '').toLowerCase();
         console.log('msgBody:', msgBody);
+
 
         if (msgBody.includes('hello') || msgBody.includes('hi')) {
             const greetingTemplate = {
@@ -73,9 +66,10 @@ app.post('/whatsapp', async (req, res) => {
                 template: {
                     name: 'scheme_template',
                     language: {
-                        code: 'en_US',
-                    },
+                    code: 'en_US',
                 },
+                },
+                
             };
 
             try {
@@ -92,16 +86,16 @@ app.post('/whatsapp', async (req, res) => {
         } else if (msgBody.toLowerCase().includes('show schemes')) {
             const showSchemesTemplate = {
                 messaging_product: 'whatsapp',
-                to: '+919788825633',
+                to: '+919788825633', 
                 type: 'template',
                 template: {
                     name: 'deals',
                     language: {
-                        code: 'en_US',
-                    },
+                    code: 'en_US',
+                },
                 },
             };
-
+        
             try {
                 const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, showSchemesTemplate);
                 console.log('Response:', response.data);
@@ -115,7 +109,7 @@ app.post('/whatsapp', async (req, res) => {
         } else {
             const noResponse = {
                 messaging_product: 'whatsapp',
-                to: '+919788825633',
+                to: '+919788825633', 
                 type: 'text',
                 text: {
                     body: "Sorry, no schemes found matching your query.",
@@ -143,149 +137,6 @@ app.post('/whatsapp', async (req, res) => {
 app.get('/', (req, res) => {
     res.status(200).send('Webhook setup for scheme!!');
 });
-
-
-// ----------------
-
-// // with templates
-
-// const express = require('express');
-// const bodyParser = require('body-parser');
-// const axios = require('axios');
-// const mongoose = require('mongoose');
-// require('dotenv').config();
-
-// const app = express().use(bodyParser.json());
-
-// mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-// const db = mongoose.connection;
-
-// db.on('error', (err) => {
-//     console.error('MongoDB connection error:', err);
-// });
-
-// db.once('open', () => {
-//     console.log('Connected to MongoDB');
-// });
-
-// const token = process.env.TOKEN;
-// const myToken = process.env.MYTOKEN;
-
-// app.listen(process.env.PORT, () => {
-//     console.log('Webhook is listening!!');
-// });
-
-// app.get('/whatsapp', (req, res) => {
-//     const mode = req.query['hub.mode'];
-//     const challenge = req.query['hub.challenge'];
-//     const verifyToken = req.query['hub.verify_token'];
-
-//     if (mode && verifyToken) {
-//         if (mode === 'subscribe' && verifyToken === myToken) {
-//             res.status(200).send(challenge);
-//         } else {
-//             res.status(403).send('Invalid verify token');
-//         }
-//     } else {
-//         res.status(400).send('Missing parameters');
-//     }
-// });
-
-// app.post('/whatsapp', async (req, res) => {
-//     const bodyParam = req.body;
-//     console.log('Request Body:', bodyParam);
-//     if (
-//         bodyParam.object &&
-//         bodyParam.entry &&
-//         bodyParam.entry[0].changes &&
-//         bodyParam.entry[0].changes[0].value.messages &&
-//         bodyParam.entry[0].changes[0].value.messages[0]
-//     ) {
-//         const phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
-//         // const msgBody = bodyParam.entry[0].changes[0].value.messages[0].text.body.toLowerCase();
-//         const msgBody = (bodyParam.entry[0]?.changes[0]?.value?.messages[0]?.text?.body || '').toLowerCase();
-//         console.log('msgBody:', msgBody);
-
-
-//         if (msgBody.includes('hello') || msgBody.includes('hi')) {
-//             const greetingTemplate = {
-//                 messaging_product: 'whatsapp',
-//                 to: '+919788825633',
-//                 type: 'template',
-//                 template: {
-//                     name: 'scheme_template',
-//                     language: {
-//                     code: 'en_US',
-//                 },
-//                 },
-                
-//             };
-
-//             try {
-//                 const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, greetingTemplate);
-//                 console.log('Response:', response.data);
-//                 res.status(200);
-//                 return;
-//             } catch (error) {
-//                 console.error('Error sending greeting template:', error.message, error.response ? error.response.data : '');
-//                 res.status(500);
-//                 return;
-//             }
-
-//         } else if (msgBody.toLowerCase().includes('show schemes')) {
-//             const showSchemesTemplate = {
-//                 messaging_product: 'whatsapp',
-//                 to: '+919788825633', 
-//                 type: 'template',
-//                 template: {
-//                     name: 'deals',
-//                     language: {
-//                     code: 'en_US',
-//                 },
-//                 },
-//             };
-        
-//             try {
-//                 const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, showSchemesTemplate);
-//                 console.log('Response:', response.data);
-//                 res.status(200);
-//                 return;
-//             } catch (error) {
-//                 console.error('Error sending show schemes template:', error.message, error.response ? error.response.data : '');
-//                 res.status(500);
-//                 return;
-//             }
-//         } else {
-//             const noResponse = {
-//                 messaging_product: 'whatsapp',
-//                 to: '+919788825633', 
-//                 type: 'text',
-//                 text: {
-//                     body: "Sorry, no schemes found matching your query.",
-//                 },
-//                 language: {
-//                     code: 'en_US',
-//                 },
-//             };
-
-//             try {
-//                 await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, noResponse);
-//                 res.status(200);
-//                 return;
-//             } catch (error) {
-//                 console.error('Error sending dog response:', error.message, error.response ? error.response.data : '');
-//                 res.status(500);
-//                 return;
-//             }
-//         }
-//     } else {
-//         res.status(404);
-//     }
-// });
-
-// app.get('/', (req, res) => {
-//     res.status(200).send('Webhook setup for scheme!!');
-// });
 
 // ----------------------
 
