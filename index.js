@@ -56,9 +56,12 @@ app.post('/whatsapp', async (req, res) => {
 
         // Extract the message body
         let msgBody = '';
-        if (bodyParam.entry[0]?.changes[0]?.value?.messages[0]?.template) {
+        if (bodyParam.entry[0]?.changes[0]?.value?.messages[0]?.text) {
+            msgBody = bodyParam.entry[0]?.changes[0]?.value?.messages[0]?.text?.body.toLowerCase();
+        } else if (bodyParam.entry[0]?.changes[0]?.value?.messages[0]?.template) {
             msgBody = bodyParam.entry[0]?.changes[0]?.value?.messages[0]?.template?.text?.body.toLowerCase();
         }
+        
 
         console.log('msgBody:', msgBody);
 
