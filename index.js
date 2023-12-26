@@ -45,27 +45,26 @@ app.get('/whatsapp', (req, res) => {
 app.post('/whatsapp', async (req, res) => {
     const bodyParam = req.body;
     console.log('Request Body:', bodyParam);
-
     if (
         bodyParam.object &&
-  bodyParam.entry &&
-  bodyParam.entry[0].changes &&
-  bodyParam.entry[0].changes[0].value &&
-  bodyParam.entry[0].changes[0].value.messages &&
-  bodyParam.entry[0].changes[0].value.messages[0]
+        bodyParam.entry &&
+        bodyParam.entry[0].changes &&
+        bodyParam.entry[0].changes[0].value.messages &&
+        bodyParam.entry[0].changes[0].value.messages[0]
     ) {
         const phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
+        // const msgBody = bodyParam.entry[0].changes[0].value.messages[0].text.body.toLowerCase();
         const msgBody = (bodyParam.entry[0]?.changes[0]?.value?.messages[0]?.text?.body || '').toLowerCase();
         console.log('msgBody:', msgBody);
 
+
         if (msgBody.includes('hello') || msgBody.includes('hi')) {
-            console.log('Entering hello/hi condition');
             const showSchemesTemplate = {
                 messaging_product: 'whatsapp',
                 to: '+919788825633',
                 type: 'template',
                 template: {
-                    name: 'scheme_template',
+                    name: 'scheme_template', // Replace with the name of your template for showing schemes
                     language: {
                         code: 'en_US',
                     },
@@ -77,7 +76,7 @@ app.post('/whatsapp', async (req, res) => {
                             parameters: [
                                 {
                                     type: 'payload',
-                                    payload: 'Show_Schemes_Payload',
+                                    payload: 'Show_Schemes_Payload', // Define the payload for "Show Schemes" button
                                 },
                             ],
                         },
@@ -86,6 +85,31 @@ app.post('/whatsapp', async (req, res) => {
             };
 
             try {
+                // Send show schemes template with the "Show Schemes" button
+                const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, showSchemesTemplate);
+                console.log('Response:', response.data);
+                res.status(200).send('Show Schemes template sent!');
+                return;
+            } catch (error) {
+                console.error('Error sending show schemes template:', error.message, error.response ? error.response.data : '');
+                res.status(500).send('Error sending show schemes template');
+                return;
+            }
+        } else if (msgBody.toLowerCase().includes('Show_Schemes_Payload')) {
+            const showSchemesTemplate = {
+                messaging_product: 'whatsapp',
+                to: '+919788825633',
+                type: 'template',
+                template: {
+                    name: 'deals', // Replace with the name of your template for showing schemes
+                    language: {
+                        code: 'en_US',
+                    }
+                },
+            };
+
+            try {
+                // Send show schemes template with the "Show Schemes" button
                 const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, showSchemesTemplate);
                 console.log('Response:', response.data);
                 res.status(200).send('Show Schemes template sent!');
@@ -96,60 +120,29 @@ app.post('/whatsapp', async (req, res) => {
                 return;
             }
         } else {
-            console.log('Entering else condition');
-            // Check for the payload from the button click
-            if (bodyParam.entry[0]?.messaging?.[0]?.postback?.payload === 'Show_Schemes_Payload') {
-                console.log('Payload:', bodyParam.entry[0]?.messaging?.[0]?.postback?.payload);
-                // Send a response based on the payload
-                const dealsTemplate = {
-                    messaging_product: 'whatsapp',
-                    to: '+919788825633',
-                    type: 'template',
-                    template: {
-                        name: 'deals',
-                        language: {
-                            code: 'en_US',
-                        },
-                    },
-                };
+            const noResponse = {
+                messaging_product: 'whatsapp',
+                to: '+919788825633', 
+                type: 'text',
+                text: {
+                    body: "Sorry, no schemes found matching your query.",
+                },
+                language: {
+                    code: 'en_US',
+                },
+            };
 
-                try {
-                    await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, dealsTemplate);
-                    res.status(200).send('Deals template sent!');
-                    return;
-                } catch (error) {
-                    console.error('Error sending deals template:', error.message, error.response ? error.response.data : '');
-                    res.status(500).send('Error sending deals template');
-                    return;
-                }
-            } else {
-                // Handle other messages or commands
-                console.log('Handling other messages or commands');
-                const noResponse = {
-                    messaging_product: 'whatsapp',
-                    to: '+919788825633',
-                    type: 'text',
-                    text: {
-                        body: "Sorry, no schemes found matching your query.",
-                    },
-                    language: {
-                        code: 'en_US',
-                    },
-                };
-
-                try {
-                    await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, noResponse);
-                    res.status(200);
-                    return;
-                } catch (error) {
-                    console.error('Error sending response:', error.message, error.response ? error.response.data : '');
-                    res.status(500);
-                    return;
-                }
+            try {
+                await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, noResponse);
+                res.status(200);
+                return;
+            } catch (error) {
+                console.error('Error sending dog response:', error.message, error.response ? error.response.data : '');
+                res.status(500);
+                return;
             }
         }
     } else {
-        console.log('Request structure not as expected:', JSON.stringify(bodyParam, null, 2));
         res.status(404);
     }
 });
@@ -157,163 +150,6 @@ app.post('/whatsapp', async (req, res) => {
 app.get('/', (req, res) => {
     res.status(200).send('Webhook setup for scheme!!');
 });
-
-
-
-// ----------
-
-// // with templates
-
-// const express = require('express');
-// const bodyParser = require('body-parser');
-// const axios = require('axios');
-// const mongoose = require('mongoose');
-// require('dotenv').config();
-
-// const app = express().use(bodyParser.json());
-
-// mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-// const db = mongoose.connection;
-
-// db.on('error', (err) => {
-//     console.error('MongoDB connection error:', err);
-// });
-
-// db.once('open', () => {
-//     console.log('Connected to MongoDB');
-// });
-
-// const token = process.env.TOKEN;
-// const myToken = process.env.MYTOKEN;
-
-// app.listen(process.env.PORT, () => {
-//     console.log('Webhook is listening!!');
-// });
-
-// app.get('/whatsapp', (req, res) => {
-//     const mode = req.query['hub.mode'];
-//     const challenge = req.query['hub.challenge'];
-//     const verifyToken = req.query['hub.verify_token'];
-
-//     if (mode && verifyToken) {
-//         if (mode === 'subscribe' && verifyToken === myToken) {
-//             res.status(200).send(challenge);
-//         } else {
-//             res.status(403).send('Invalid verify token');
-//         }
-//     } else {
-//         res.status(400).send('Missing parameters');
-//     }
-// });
-
-// app.post('/whatsapp', async (req, res) => {
-//     const bodyParam = req.body;
-//     console.log('Request Body:', bodyParam);
-//     if (
-//         bodyParam.object &&
-//         bodyParam.entry &&
-//         bodyParam.entry[0].changes &&
-//         bodyParam.entry[0].changes[0].value.messages &&
-//         bodyParam.entry[0].changes[0].value.messages[0]
-//     ) {
-//         const phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
-//         // const msgBody = bodyParam.entry[0].changes[0].value.messages[0].text.body.toLowerCase();
-//         const msgBody = (bodyParam.entry[0]?.changes[0]?.value?.messages[0]?.text?.body || '').toLowerCase();
-//         console.log('msgBody:', msgBody);
-
-
-//         if (msgBody.includes('hello') || msgBody.includes('hi')) {
-//             const showSchemesTemplate = {
-//                 messaging_product: 'whatsapp',
-//                 to: '+919788825633',
-//                 type: 'template',
-//                 template: {
-//                     name: 'scheme_template', // Replace with the name of your template for showing schemes
-//                     language: {
-//                         code: 'en_US',
-//                     },
-//                     components: [
-//                         {
-//                             type: 'button',
-//                             sub_type: 'quick_reply',
-//                             index: 0,
-//                             parameters: [
-//                                 {
-//                                     type: 'payload',
-//                                     payload: 'Show_Schemes_Payload', // Define the payload for "Show Schemes" button
-//                                 },
-//                             ],
-//                         },
-//                     ],
-//                 },
-//             };
-
-//             try {
-//                 // Send show schemes template with the "Show Schemes" button
-//                 const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, showSchemesTemplate);
-//                 console.log('Response:', response.data);
-//                 res.status(200).send('Show Schemes template sent!');
-//                 return;
-//             } catch (error) {
-//                 console.error('Error sending show schemes template:', error.message, error.response ? error.response.data : '');
-//                 res.status(500).send('Error sending show schemes template');
-//                 return;
-//             }
-//         } else if (msgBody.toLowerCase().includes('Show_Schemes_Payload')) {
-//             const showSchemesTemplate = {
-//                 messaging_product: 'whatsapp',
-//                 to: '+919788825633',
-//                 type: 'template',
-//                 template: {
-//                     name: 'deals', // Replace with the name of your template for showing schemes
-//                     language: {
-//                         code: 'en_US',
-//                     }
-//                 },
-//             };
-
-//             try {
-//                 // Send show schemes template with the "Show Schemes" button
-//                 const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, showSchemesTemplate);
-//                 console.log('Response:', response.data);
-//                 res.status(200).send('Show Schemes template sent!');
-//                 return;
-//             } catch (error) {
-//                 console.error('Error sending show schemes template:', error.message, error.response ? error.response.data : '');
-//                 res.status(500).send('Error sending show schemes template');
-//                 return;
-//             }
-//         } else {
-//             const noResponse = {
-//                 messaging_product: 'whatsapp',
-//                 to: '+919788825633', 
-//                 type: 'text',
-//                 text: {
-//                     body: "Sorry, no schemes found matching your query.",
-//                 },
-//                 language: {
-//                     code: 'en_US',
-//                 },
-//             };
-
-//             try {
-//                 await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, noResponse);
-//                 res.status(200);
-//                 return;
-//             } catch (error) {
-//                 console.error('Error sending dog response:', error.message, error.response ? error.response.data : '');
-//                 res.status(500);
-//                 return;
-//             }
-//         }
-//     } else {
-//         res.status(404);
-//     }
-// });
-
-// app.get('/', (req, res) => {
-//     res.status(200).send('Webhook setup for scheme!!');
-// });
 
 // ----------------------
 
