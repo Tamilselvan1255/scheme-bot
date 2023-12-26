@@ -59,64 +59,51 @@ app.post('/whatsapp', async (req, res) => {
 
 
         if (msgBody.includes('hello') || msgBody.includes('hi')) {
-            const showSchemesTemplate = {
+            const greetingTemplate = {
                 messaging_product: 'whatsapp',
                 to: '+919788825633',
                 type: 'template',
                 template: {
-                    name: 'scheme_template', // Replace with the name of your template for showing schemes
+                    name: 'scheme_template',
                     language: {
-                        code: 'en_US',
-                    },
-                    components: [
-                        {
-                            type: 'button',
-                            sub_type: 'quick_reply',
-                            index: 0,
-                            parameters: [
-                                {
-                                    type: 'payload',
-                                    payload: 'Show_Schemes_Payload', // Define the payload for "Show Schemes" button
-                                },
-                            ],
-                        },
-                    ],
+                    code: 'en_US',
                 },
+                },
+                
             };
 
             try {
-                // Send show schemes template with the "Show Schemes" button
-                const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, showSchemesTemplate);
+                const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, greetingTemplate);
                 console.log('Response:', response.data);
-                res.status(200).send('Show Schemes template sent!');
+                res.status(200);
                 return;
             } catch (error) {
-                console.error('Error sending show schemes template:', error.message, error.response ? error.response.data : '');
-                res.status(500).send('Error sending show schemes template');
+                console.error('Error sending greeting template:', error.message, error.response ? error.response.data : '');
+                res.status(500);
                 return;
             }
-        } else if (msgBody.toLowerCase().includes('Show_Schemes_Payload')) {
+
+        } else if (msgBody.toLowerCase().includes('show schemes')) {
             const showSchemesTemplate = {
                 messaging_product: 'whatsapp',
-                to: '+919788825633',
+                to: '+919788825633', 
                 type: 'template',
                 template: {
-                    name: 'deals', // Replace with the name of your template for showing schemes
+                    name: 'deals',
                     language: {
-                        code: 'en_US',
-                    }
+                    code: 'en_US',
+                },
                 },
             };
-
+        
             try {
-                // Send show schemes template with the "Show Schemes" button
                 const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, showSchemesTemplate);
                 console.log('Response:', response.data);
-                res.status(200).send('Show Schemes template sent!');
+                res.status(200);
                 return;
             } catch (error) {
                 console.error('Error sending show schemes template:', error.message, error.response ? error.response.data : '');
-                res.status(500).send('Error sending show schemes template');
+                res.status(500);
                 return;
             }
         } else {
