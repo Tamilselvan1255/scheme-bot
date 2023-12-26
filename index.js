@@ -86,24 +86,38 @@ app.post('/whatsapp', async (req, res) => {
         } else if (msgBody.toLowerCase().includes('show schemes')) {
             const showSchemesTemplate = {
                 messaging_product: 'whatsapp',
-                to: '+919788825633', 
+                to: '+919788825633',
                 type: 'template',
                 template: {
-                    name: 'deals',
+                    name: 'scheme_template', // Replace with the name of your template for showing schemes
                     language: {
-                    code: 'en_US',
-                },
+                        code: 'en_US',
+                    },
+                    components: [
+                        {
+                            type: 'button',
+                            sub_type: 'quick_reply',
+                            index: 0,
+                            parameters: [
+                                {
+                                    type: 'payload',
+                                    payload: 'Show_Schemes_Payload', // Define the payload for "Show Schemes" button
+                                },
+                            ],
+                        },
+                    ],
                 },
             };
-        
+
             try {
+                // Send show schemes template with the "Show Schemes" button
                 const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, showSchemesTemplate);
                 console.log('Response:', response.data);
-                res.status(200);
+                res.status(200).send('Show Schemes template sent!');
                 return;
             } catch (error) {
                 console.error('Error sending show schemes template:', error.message, error.response ? error.response.data : '');
-                res.status(500);
+                res.status(500).send('Error sending show schemes template');
                 return;
             }
         } else {
