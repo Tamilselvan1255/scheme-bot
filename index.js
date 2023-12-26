@@ -94,11 +94,8 @@ app.post('/whatsapp', async (req, res) => {
                                 },
                                 components: [
                                     {
-                                        type: 'quick_reply',
-                                        action: {
-                                            type: 'reply',
-                                            text: 'Show Schemes',
-                                        },
+                                        type: 'text',
+                                        text: 'Show Schemes',
                                     },
                                 ],
                             },
