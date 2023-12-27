@@ -139,7 +139,7 @@ app.post('/whatsapp', async (req, res) => {
 
                     case payload === '0-16' || payload === '6-18' || payload === '18-24':
                         collectedData.age = payload;
-                        console.log('Collected Data:', collectedData.age);
+                        console.log('Collected Data age:', collectedData.age);
                     responseTemplate = {
                         messaging_product: 'whatsapp',
                         to: '+919788825633',
@@ -155,7 +155,7 @@ app.post('/whatsapp', async (req, res) => {
 
                     case payload === 'Male' || payload === 'Female' || payload === 'Both Male and Female':
                         collectedData.gender = payload;
-                        console.log('Collected Data:', collectedData);
+                        console.log('Collected Data gender:', collectedData);
                     responseTemplate = {
                         messaging_product: 'whatsapp',
                         to: '+919788825633',
