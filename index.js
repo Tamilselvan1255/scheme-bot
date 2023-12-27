@@ -150,19 +150,19 @@ app.post('/whatsapp', async (req, res) => {
                     //     };
                     //     break;
 
-                        case payload === 'Male' || payload === 'Female' || payload === 'Both Male and Female':
-                        responseTemplate = {
-                            messaging_product: 'whatsapp',
-                            to: '+919788825633',
-                            type: 'template',
-                            template: {
-                                name: 'state',
-                                language: {
-                                    code: 'en_US',
-                                },
-                            },
-                        };
-                        break;
+                        // case payload === 'Male' || payload === 'Female' || payload === 'Both Male and Female':
+                        // responseTemplate = {
+                        //     messaging_product: 'whatsapp',
+                        //     to: '+919788825633',
+                        //     type: 'template',
+                        //     template: {
+                        //         name: 'state',
+                        //         language: {
+                        //             code: 'en_US',
+                        //         },
+                        //     },
+                        // };
+                        // break;
 
                         case payload === 'TAMIL NADU' || payload === 'MAHARASHTRA' || payload === 'GOA':
                         responseTemplate = {
