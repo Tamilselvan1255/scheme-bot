@@ -232,6 +232,20 @@ app.post('/whatsapp', async (req, res) => {
                     break;
             }
 
+            if (msgBody === 'hello') {
+                responseTemplate = {
+                    messaging_product: 'whatsapp',
+                    to: '+919788825633',
+                    type: 'text',
+                    text: {
+                        body: "Please enter valid message!",
+                    },
+                    language: {
+                        code: 'en_US',
+                    },
+                };
+            }
+
             const filter = {
                 implementedBy: state ? state : { $exists: true },
                 disabilityPercentage: disability ? disability : { $exists: true },
