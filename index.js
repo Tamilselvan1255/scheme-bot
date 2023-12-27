@@ -207,16 +207,17 @@ app.post('/whatsapp', async (req, res) => {
 
         if (schemesData && schemesData.length > 0) {
             const schemesTextArray = schemesData.map(scheme => {
-                return `Implemented By: ${scheme.implementedBy}\n` +
-                    `Domain Description: ${scheme.domainDescription}\n` +
-                    `Eligible Disabilities: ${scheme.eligibleDisabilities}\n` +
-                    `Disability Percentage: ${scheme.disabilityPercentage}\n` +
-                    `Age: ${scheme.age}\n` +
-                    `Annual Income: ${scheme.annualIncome}\n` +
-                    `Gender Eligibility: ${scheme.genderEligibility}\n` +
+                return `Implemented By: ${scheme.implementedBy || 'Not available'}\n` +
+                    `Domain Description: ${scheme.domainDescription || 'Not available'}\n` +
+                    `Eligible Disabilities: ${scheme.eligibleDisabilities || 'Not available'}\n` +
+                    `Disability Percentage: ${scheme.disabilityPercentage || 'Not available'}\n` +
+                    `Age: ${scheme.age || 'Not available'}\n` +
+                    `Annual Income: ${scheme.annualIncome || 'Not available'}\n` +
+                    `Gender Eligibility: ${scheme.genderEligibility || 'Not available'}\n` +
                     `Comments: ${scheme.comments || 'Not available'}\n` +
                     `Email Address: ${scheme.emailAddress || 'Not available'}`;
             });
+            
 
             console.log('schemesData:', schemesData); 
             console.log('schemesTextArray:', schemesTextArray);
