@@ -34,21 +34,6 @@ const schemeSchema = new mongoose.Schema({
 
 const SchemeModel = mongoose.model('Scheme', schemeSchema);
 
-let collectedData = {}; 
-let age, gender, state, disability;
-
-// const filterFacilities = async (state, disability, age, income, gender) => {
-//     const filter = {
-//         implementedBy: state ? state : { $exists: true },
-//         disabilityPercentage: disability ? disability : { $exists: true },
-//         age: age ? age : { $exists: true },
-//         annualIncome: income ? income : { $exists: true },
-//         genderEligibility: gender ? gender : { $exists: true },
-//     };
-
-//     return await SchemeModel.find(filter);
-// };
-
 const token = process.env.TOKEN;
 const myToken = process.env.MYTOKEN;
 
@@ -92,11 +77,7 @@ app.post('/whatsapp', async (req, res) => {
 
         try {
             let responseTemplate;
-            age = '';
-            gender = '';
-            state = '';
-            disability = '';
-            
+
             switch (true) {
                 case msgBody.includes('hello') || msgBody.includes('hi'):
                     responseTemplate = {
@@ -156,7 +137,7 @@ app.post('/whatsapp', async (req, res) => {
                     break;
 
                     case payload === '0-6' || payload === '6-18' || payload === '18-24':
-                         age = payload;
+                        const age = payload;
                         console.log(age);
                         responseTemplate = {
                             messaging_product: 'whatsapp',
@@ -172,7 +153,7 @@ app.post('/whatsapp', async (req, res) => {
                         break;
 
                         case payload === 'Male' || payload === 'Female' || payload === 'Both Male and Female':
-                             gender = payload;
+                            const gender = payload;
                         console.log(gender);
                         responseTemplate = {
                             messaging_product: 'whatsapp',
@@ -188,7 +169,7 @@ app.post('/whatsapp', async (req, res) => {
                         break;
 
                         case payload === 'TAMIL NADU' || payload === 'MAHARASHTRA' || payload === 'GOA':
-                             state = payload;
+                            const state = payload;
                             console.log(state);
                        responseTemplate = {
                             messaging_product: 'whatsapp',
@@ -204,7 +185,7 @@ app.post('/whatsapp', async (req, res) => {
                         break;
                         
                         case payload === 'Minimum 40%' || payload === 'Minimum 90%':
-                             disability = payload;
+                            const disability = payload;
                             console.log(disability);
                             responseTemplate = {
                                 messaging_product: 'whatsapp',
@@ -220,8 +201,8 @@ app.post('/whatsapp', async (req, res) => {
                             break;
 
                             case payload === '1,25,000' || payload === '1,75,000' || payload === 'No income limit':
-                                collectedData.income = payload;
-                                console.log('Collected Data:', collectedData);
+                                const income = payload;
+                                console.log(income);
                                 responseTemplate = {
                                     messaging_product: 'whatsapp',
                                     to: '+919788825633',
@@ -235,99 +216,68 @@ app.post('/whatsapp', async (req, res) => {
                                 };
                                 break;
 
-                            //     case payload === deals:
-                            //         // Extracting previous user selections
-                            //         const ageSelection = bodyParam.entry[0].changes[0].value.messages[1].quick_reply.payload;
-                            //         const genderSelection = bodyParam.entry[0].changes[0].value.messages[2].quick_reply.payload;
-                            //         const stateSelection = bodyParam.entry[0].changes[0].value.messages[3].quick_reply.payload;
-                            //         const disabilitySelection = bodyParam.entry[0].changes[0].value.messages[4].quick_reply.payload;
-                            //         const incomeSelection = bodyParam.entry[0].changes[0].value.messages[5].quick_reply.payload;
-                    
-                            //         // Filtering facilities based on user selections
-                            //         const filteredFacilities = await filterFacilities(stateSelection, disabilitySelection, ageSelection, incomeSelection, genderSelection);
-                    
-                            //         // Check if there are matching facilities
-                            //         if (filteredFacilities.length !== 0) {
-                            //             // Convert the fetched data to a text response
-                            //             const textResponse = filteredFacilities.map(facility => {
-                            //                 return `Facility: ${facility.domainDescription}\nEligibility: ${facility.eligibleDisabilities}\nComments: ${facility.comments}\n\n`;
-                            //             }).join('\n');
-                    
-                            //             // Adjust the response as needed
-                            //             responseTemplate = {
-                            //                 messaging_product: 'whatsapp',
-                            //                 to: '+919788825633',
-                            //                 type: 'text',
-                            //                 text: {
-                            //                     body: `Matching facilities:\n\n${textResponse}`,
-                            //                 },
-                            //                 language: {
-                            //                     code: 'en_US',
-                            //                 },
-                            //             };
-                            //         } else {
-                            //             responseTemplate = {
-                            //                 messaging_product: 'whatsapp',
-                            //                 to: '+919788825633',
-                            //                 type: 'text',
-                            //                 text: {
-                            //                     body: "No matching facilities found. Please refine your search criteria.",
-                            //                 },
-                            //                 language: {
-                            //                     code: 'en_US',
-                            //                 },
-                            //             };
-                            //         }
-                            //         break;
-                          
-                            case collectedData.income !== undefined:
-                                // Check if all relevant data is collected
-                                const { age, gender, state, disability, income } = collectedData;
-   
-                                   // Query the database to find matching records
-    const matchingRecords = await SchemeModel.find({
-        age: age ? age : { $exists: true },
-        genderEligibility: gender ? gender : { $exists: true },
-        implementedBy: state ? state : { $exists: true },
-        disabilityPercentage: disability ? disability : { $exists: true },
-        annualIncome: income ? income : { $exists: true },
-    });
+    //                             case payload === '0-6' || payload === '6-18' || payload === '18-24':
+    // try {
+    //     // Assuming schemesData is an array of scheme objects
+    //     const schemesData = await SchemeModel.find({ age: payload });
+    //     if (schemesData.length > 0) {
+    //         let responseMessage = `Schemes for ${payload}:\n\n`;
 
-    if (matchingRecords.length !== 0) {
-        // Convert the fetched data to a text response
-        const textResponse = matchingRecords.map(record => {
-            return `Facility: ${record.domainDescription}\nEligibility: ${record.eligibleDisabilities}\nComments: ${record.comments}\n\n`;
-        }).join('\n');
+    //      schemesData.forEach((scheme) => {
+    //             responseMessage += 
+    //                 `Implemented By: ${scheme.implementedBy || 'Not available'}\n` +
+    //                 `Domain Description: ${scheme.domainDescription || 'Not available'}\n` +
+    //                 `Eligible Disabilities: ${scheme.eligibleDisabilities || 'Not available'}\n` +
+    //                 `Disability Percentage: ${scheme.disabilityPercentage || 'Not available'}\n` +
+    //                 `Age: ${scheme.age || 'Not available'}\n` +
+    //                 `Annual Income: ${scheme.annualIncome || 'Not available'}\n` +
+    //                 `Gender Eligibility: ${scheme.genderEligibility || 'Not available'}\n` +
+    //                 `Comments: ${scheme.comments || 'Not available'}\n` +
+    //                 `Email Address: ${scheme.emailAddress || 'Not available'}\n\n`;
+    //         });
 
-        // Truncate the text if it exceeds the limit
-        const truncatedTextResponse = textResponse.substring(0, 4096);
+    //         const truncatedMessage = responseMessage.substring(0, 4096);
 
-        // Adjust the response as needed
-        responseTemplate = {
-            messaging_product: 'whatsapp',
-            to: '+919788825633',
-            type: 'text',
-            text: {
-                body: `Matching facilities:\n\n${truncatedTextResponse}`,
-            },
-            language: {
-                code: 'en_US',
-            },
-        };
-    } else {
-        responseTemplate = {
-            messaging_product: 'whatsapp',
-            to: '+919788825633',
-            type: 'text',
-            text: {
-                body: "No matching facilities found. Please refine your search criteria.",
-            },
-            language: {
-                code: 'en_US',
-            },
-        };
-    }
-    break;
+    //         const responseTemplate = {
+    //             messaging_product: 'whatsapp',
+    //             to: '+919788825633',
+    //             type: 'text',
+    //             text: {
+    //                 body: truncatedMessage,
+    //             },
+    //             language: {
+    //                 code: 'en_US',
+    //             },
+    //         };
+
+    //         const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
+    //         console.log('Response:', response.data);
+    //         res.status(200).send(response.data);
+    //     } else {
+    //         const responseTemplate = {
+    //             messaging_product: 'whatsapp',
+    //             to: '+919788825633',
+    //             type: 'text',
+    //             text: {
+    //                 body: `No schemes found for the selected age group (${payload}).`,
+    //             },
+    //             language: {
+    //                 code: 'en_US',
+    //             },
+    //         };
+
+    //         const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
+    //         console.log('Response:', response.data);
+    //         res.status(200).send(response.data);
+    //     }
+    // } catch (error) {
+    //     console.error('Error fetching data from the database:', error.message);
+    //     res.status(500).send('Internal Server Error');
+    // }
+    // break;
+
+    
+                                
                 default:
                     responseTemplate = {
                         messaging_product: 'whatsapp',
@@ -343,8 +293,6 @@ app.post('/whatsapp', async (req, res) => {
                     break;
             }
 
-           
-        
             const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
             console.log('Response:', response.data);
             res.status(200).send(response.data);
