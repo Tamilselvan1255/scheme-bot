@@ -278,10 +278,10 @@ app.post('/whatsapp', async (req, res) => {
     console.log(income);
 
     // Extracting previous user selections
-    const ageSelection = bodyParam.entry[0].changes[0].value.messages[1].quick_reply.payload;
-    const genderSelection = bodyParam.entry[0].changes[0].value.messages[2].quick_reply.payload;
-    const stateSelection = bodyParam.entry[0].changes[0].value.messages[3].quick_reply.payload;
-    const disabilitySelection = bodyParam.entry[0].changes[0].value.messages[4].quick_reply.payload;
+    const ageSelection = age;
+    const genderSelection = gender;
+    const stateSelection = state;
+    const disabilitySelection = disability;
 
     // Filtering facilities based on user selections, including income
     const filteredFacilities = await filterFacilities(stateSelection, disabilitySelection, ageSelection, income, genderSelection);
