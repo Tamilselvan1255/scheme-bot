@@ -204,6 +204,7 @@ app.post('/whatsapp', async (req, res) => {
                                 case payload === '0-6' || payload === '6-18' || payload === '18-24':
     try {
         // Assuming schemesData is an array of scheme objects
+        const schemesData = await SchemeModel.find({ age: payload });
 const scheme = schemesData[0];
 
 if (scheme) {
