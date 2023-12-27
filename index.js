@@ -169,7 +169,7 @@ app.post('/whatsapp', async (req, res) => {
                         break;
 
                         case payload === 'TAMIL NADU' || payload === 'MAHARASHTRA' || payload === 'GOA':
-                            const state = payload;
+                            var state = payload;
                             console.log(state);
                        responseTemplate = {
                             messaging_product: 'whatsapp',
