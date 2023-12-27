@@ -204,17 +204,17 @@ app.post('/whatsapp', async (req, res) => {
                             case payload === '1,25,000' || payload === '1,75,000' || payload === 'No income limit':
                                 collectedData.income = payload;
                     console.log('Collected Data:', collectedData);
-                                // responseTemplate = {
-                                //     messaging_product: 'whatsapp',
-                                //     to: '+919788825633',
-                                //     type: 'template',
-                                //     template: {
-                                //         name: 'deals',
-                                //         language: {
-                                //             code: 'en_US',
-                                //         },
-                                //     },
-                                // };
+                                responseTemplate = {
+                                    messaging_product: 'whatsapp',
+                                    to: '+919788825633',
+                                    type: 'template',
+                                    template: {
+                                        name: 'deals',
+                                        language: {
+                                            code: 'en_US',
+                                        },
+                                    },
+                                };
                                 break;
             //                     case collectedData.income !== undefined:
             //                         // Check if all relevant data is collected
