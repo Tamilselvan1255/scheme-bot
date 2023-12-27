@@ -348,8 +348,8 @@ app.post('/whatsapp', async (req, res) => {
             
                         const truncatedMessage = responseMessage.substring(0, 4096);
             
-                        responseTemplate = {
-                            messaging_product: 'whatsapp',
+                        const responseTemplate = {
+                            messaging_product: 'whatsapp', // Include messaging_product in the response
                             to: '+919788825633',
                             type: 'text',
                             text: {
@@ -362,10 +362,10 @@ app.post('/whatsapp', async (req, res) => {
             
                         const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
                         console.log('Response:', response.data);
-                        res.status(200).send(response.data);
+                        res.status(200).send(response.data); // Send the response once
                     } else {
                         const responseTemplate = {
-                            messaging_product: 'whatsapp',
+                            messaging_product: 'whatsapp', // Include messaging_product in the response
                             to: '+919788825633',
                             type: 'text',
                             text: {
@@ -378,7 +378,7 @@ app.post('/whatsapp', async (req, res) => {
             
                         const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
                         console.log('Response:', response.data);
-                        res.status(200).send(response.data);
+                        res.status(200).send(response.data); // Send the response once
                     }
                 } catch (error) {
                     console.error('Error fetching data from the database:', error.message);
