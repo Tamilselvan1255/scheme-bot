@@ -244,9 +244,7 @@ app.post('/whatsapp', async (req, res) => {
                 const filteredFacilities = await scheme
                 .find(filter);
 
-                if (filteredFacilities.length === 0) {
-                    return res.status(404).send('No valid information found.');
-                }
+                if (filteredFacilities.length !== 0) {
                 responseTemplate = {
                     messaging_product: 'whatsapp',
                     to: '+919788825633',
@@ -258,6 +256,8 @@ app.post('/whatsapp', async (req, res) => {
                         code: 'en_US',
                     },
                 };
+            }
+
             } catch(error) {
                 res.status(500).send('Internal Server Error');
             }
