@@ -153,7 +153,8 @@ app.post('/whatsapp', async (req, res) => {
                         break;
 
                         case payload === 'Male' || payload === 'Female' || payload === 'Both Male and Female':
-                            console.log(payload);
+                            const gender = payload;
+                        console.log(gender);
                         responseTemplate = {
                             messaging_product: 'whatsapp',
                             to: '+919788825633',
@@ -168,7 +169,8 @@ app.post('/whatsapp', async (req, res) => {
                         break;
 
                         case payload === 'TAMIL NADU' || payload === 'MAHARASHTRA' || payload === 'GOA':
-                            console.log(payload);
+                            const state = payload;
+                            console.log(state);
                        responseTemplate = {
                             messaging_product: 'whatsapp',
                             to: '+919788825633',
@@ -183,7 +185,8 @@ app.post('/whatsapp', async (req, res) => {
                         break;
                         
                         case payload === 'Minimum 40%' || payload === 'Minimum 90%':
-                            console.log(payload);
+                            const disability = payload;
+                            console.log(disability);
                             responseTemplate = {
                                 messaging_product: 'whatsapp',
                                 to: '+919788825633',
@@ -198,7 +201,8 @@ app.post('/whatsapp', async (req, res) => {
                             break;
 
                             case payload === '1,25,000' || payload === '1,75,000' || payload === 'No income limit':
-                            console.log(payload);
+                                const income = payload;
+                                console.log(income);
                                 responseTemplate = {
                                     messaging_product: 'whatsapp',
                                     to: '+919788825633',
