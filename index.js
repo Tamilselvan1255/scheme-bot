@@ -34,6 +34,7 @@ const schemeSchema = new mongoose.Schema({
 
 const SchemeModel = mongoose.model('Scheme', schemeSchema);
 
+let collectedData = {}; 
 const token = process.env.TOKEN;
 const myToken = process.env.MYTOKEN;
 
