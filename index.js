@@ -20,12 +20,17 @@ db.once('open', () => {
 });
 
 const schemeSchema = new mongoose.Schema({
+    implementedBy: String,
+    domainDescription: String,
+    eligibleDisabilities: String,
+    disabilityPercentage: String,
     age: String,
-    gender: String,
-    state: String,
-    disability: String,
-    income: String,
+    annualIncome: String,
+    genderEligibility: String,
+    comments: String,
+    emailAddress: String,
 });
+
 
 const SchemeModel = mongoose.model('Scheme', schemeSchema);
 
