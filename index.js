@@ -210,18 +210,16 @@ app.post('/whatsapp', async (req, res) => {
         if (schemesData && schemesData.length > 0) {
             // Modify responseTemplate based on the data retrieved from the database
             const schemesTextArray = schemesData.map(scheme => {
-                console.log('Processing scheme:', scheme);
-                return `Implemented By: ${scheme.implementedBy || 'Not specified'}\n` +
-                    `Domain Description: ${scheme.domainDescription || 'Not specified'}\n` +
-                    `Eligible Disabilities: ${scheme.eligibleDisabilities || 'Not specified'}\n` +
-                    `Disability Percentage: ${scheme.disabilityPercentage || 'Not specified'}\n` +
-                    `Age: ${scheme.age || 'Not specified'}\n` +
-                    `Annual Income: ${scheme.annualIncome || 'Not specified'}\n` +
-                    `Gender Eligibility: ${scheme.genderEligibility || 'Not specified'}\n` +
-                    `Comments: ${scheme.comments || 'Not specified'}\n` +
-                    `Email Address: ${scheme.emailAddress || 'Not specified'}`;
+                return `Implemented By: ${scheme.implementedBy}\n` +
+                    `Domain Description: ${scheme.domainDescription}\n` +
+                    `Eligible Disabilities: ${scheme.eligibleDisabilities}\n` +
+                    `Disability Percentage: ${scheme.disabilityPercentage}\n` +
+                    `Age: ${scheme.age}\n` +
+                    `Annual Income: ${scheme.annualIncome}\n` +
+                    `Gender Eligibility: ${scheme.genderEligibility}\n` +
+                    `Comments: ${scheme.comments}\n` +
+                    `Email Address: ${scheme.emailAddress}`;
             });
-            
     
             // Combine the schemesTextArray into a single string
             const schemesText = schemesTextArray.join('\n\n');
