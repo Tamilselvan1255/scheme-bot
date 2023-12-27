@@ -208,7 +208,18 @@ app.post('/whatsapp', async (req, res) => {
         
         if (schemesData && schemesData.length > 0) {
             // Modify responseTemplate based on the data retrieved from the database
-            const schemesText = schemesData.map(scheme => `${scheme.name}: ${scheme.description}`).join('\n');
+            const schemesText = schemesData.map(scheme => {
+                return `${scheme.schemeName}\n` +
+                    `Implemented By: ${scheme.implementedBy}\n` +
+                    `Domain Description: ${scheme.domainDescription}\n` +
+                    `Eligible Disabilities: ${scheme.eligibleDisabilities}\n` +
+                    `Disability Percentage: ${scheme.disabilityPercentage}\n` +
+                    `Age: ${scheme.age}\n` +
+                    `Annual Income: ${scheme.annualIncome}\n` +
+                    `Gender Eligibility: ${scheme.genderEligibility}\n` +
+                    `Comments: ${scheme.comments}\n` +
+                    `Email Address: ${scheme.emailAddress}`;
+            }).join('\n\n');
             responseTemplate = {
                 messaging_product: 'whatsapp',
                 to: '+919788825633',
