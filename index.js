@@ -224,11 +224,11 @@ app.post('/whatsapp', async (req, res) => {
                                 // };
                                 break;
 
-                               case collectedData.age === payload &&
-    collectedData.gender === payload &&
-    collectedData.state === payload &&
-    collectedData.disability === payload &&
-    collectedData.income === payload:
+                               case AGE === collectedData.age &&
+                               GENDER === collectedData.gender &&
+    STATE === collectedData.state &&
+    DISABILITY === collectedData.disability &&
+    INCOME === collectedData.income:
                                     // Check if all relevant data is collected
                                     // const { age, gender, state, disability, income } = collectedData;
                 
