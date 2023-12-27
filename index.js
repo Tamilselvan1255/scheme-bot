@@ -139,6 +139,7 @@ app.post('/whatsapp', async (req, res) => {
 
                     case payload === '0-16' || payload === '6-18' || payload === '18-24':
                         collectedData.age = payload;
+                        const AGE = collectedData.age
                         console.log('Collected Data age:', collectedData.age);
                     responseTemplate = {
                         messaging_product: 'whatsapp',
@@ -155,6 +156,7 @@ app.post('/whatsapp', async (req, res) => {
 
                     case payload === 'Male' || payload === 'Female' || payload === 'Both Male and Female':
                         collectedData.gender = payload;
+                        const GENDER = collectedData.gender
                         console.log('Collected Data gender:', collectedData);
                     responseTemplate = {
                         messaging_product: 'whatsapp',
@@ -173,6 +175,7 @@ app.post('/whatsapp', async (req, res) => {
 
                         case payload === 'TAMIL NADU' || payload === 'MAHARASHTRA' || payload === 'GOA':
                             collectedData.state = payload;
+                        const STATE = collectedData.state
                     console.log('Collected Data:', collectedData);
                        responseTemplate = {
                             messaging_product: 'whatsapp',
@@ -189,6 +192,7 @@ app.post('/whatsapp', async (req, res) => {
                         
                         case payload === 'Minimum 40%' || payload === 'Minimum 90%':
                             collectedData.disability = payload;
+                        const DISABILITY = collectedData.disability
                             console.log('Collected Data:', collectedData);
                             responseTemplate = {
                                 messaging_product: 'whatsapp',
@@ -205,6 +209,7 @@ app.post('/whatsapp', async (req, res) => {
 
                             case payload === '1,25,000' || payload === '1,75,000' || payload === 'No income limit':
                                 collectedData.income = payload;
+                        const INCOME = collectedData.income
                     console.log('Collected Data:', collectedData);
                                 // responseTemplate = {
                                 //     messaging_product: 'whatsapp',
@@ -219,17 +224,17 @@ app.post('/whatsapp', async (req, res) => {
                                 // };
                                 break;
 
-                               case collectedData.age !== undefined &&
-    collectedData.gender !== undefined &&
-    collectedData.state !== undefined &&
-    collectedData.disability !== undefined &&
-    collectedData.income !== undefined:
+                               case collectedData.age === payload &&
+    collectedData.gender === payload &&
+    collectedData.state === payload &&
+    collectedData.disability === payload &&
+    collectedData.income === payload:
                                     // Check if all relevant data is collected
                                     // const { age, gender, state, disability, income } = collectedData;
                 
                                     // Query the database to find matching records
                                     const schemesData = await SchemeModel.find({
-                                        age: collectedData.age, genderEligibility: collectedData.gender, implementedBy: collectedData.state, disabilityPercentage: collectedData.disability, annualIncome: collectedData.income});
+                                        age: AGE, genderEligibility: GENDER, implementedBy: STATE, disabilityPercentage: DISABILITY, annualIncome: INCOME});
                 
 
                                     if (schemesData.length > 0) {
