@@ -307,6 +307,7 @@ app.post('/whatsapp', async (req, res) => {
                 code: 'en_US',
             },
         };
+        console.log('Response Template for Matching Schemes:', responseTemplate);
     } else {
         responseTemplate = {
             messaging_product: 'whatsapp',
@@ -319,6 +320,7 @@ app.post('/whatsapp', async (req, res) => {
                 code: 'en_US',
             },
         };
+        console.log('Response Template for No Matching Schemes:', responseTemplate);
     }
 
     // Send the response
