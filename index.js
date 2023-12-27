@@ -210,7 +210,7 @@ app.post('/whatsapp', async (req, res) => {
                                     const genderPayload = message.button ? message.button.gender : undefined;
     try {
         // Assuming schemesData is an array of scheme objects
-        const schemesData = await SchemeModel.find({ age: payload, genderEligibility: payload });
+        const schemesData = await SchemeModel.find({ age: payload, genderEligibility: genderPayload });
         if (schemesData.length > 0) {
             let responseMessage = `Schemes for ${payload}:\n\n`;
 
