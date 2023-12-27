@@ -216,63 +216,121 @@ app.post('/whatsapp', async (req, res) => {
                                 //     },
                                 // };
                                 break;
-                                case collectedData.income !== undefined:
-                                    // Check if all relevant data is collected
-                                    // const { age, gender, state, disability, income } = collectedData;
+            //                     case collectedData.income !== undefined:
+            //                         // Check if all relevant data is collected
+            //                         // const { age, gender, state, disability, income } = collectedData;
                 
-                                    // Query the database to find matching records
-                                    const schemesData = await SchemeModel.find({
-                                        age: collectedData.age, genderEligibility: collectedData.gender, implementedBy: collectedData.state, disabilityPercentage: collectedData.disability, annualIncome: collectedData.income});
+            //                         // Query the database to find matching records
+            //                         const schemesData = await SchemeModel.find({
+            //                             age: collectedData.age, genderEligibility: collectedData.gender, implementedBy: collectedData.state, disabilityPercentage: collectedData.disability, annualIncome: collectedData.income});
                 
-                                    if (schemesData.length > 0) {
-                                        let responseMessage = `Matching schemes:\n\n`;
+            //                         if (schemesData.length > 0) {
+            //                             let responseMessage = `Matching schemes:\n\n`;
                 
-                                        schemesData.forEach((scheme) => {
-                                            responseMessage +=
-                                                `Implemented By: ${scheme.implementedBy || 'Not available'}\n` +
-                                                `Domain Description: ${scheme.domainDescription || 'Not available'}\n` +
-                                                `Eligible Disabilities: ${scheme.eligibleDisabilities || 'Not available'}\n` +
-                                                `Disability Percentage: ${scheme.disabilityPercentage || 'Not available'}\n` +
-                                                `Age: ${scheme.age || 'Not available'}\n` +
-                                                `Annual Income: ${scheme.annualIncome || 'Not available'}\n` +
-                                                `Gender Eligibility: ${scheme.genderEligibility || 'Not available'}\n` +
-                                                `Comments: ${scheme.comments || 'Not available'}\n` +
-                                                `Email Address: ${scheme.emailAddress || 'Not available'}\n\n`;
-                                        });
+            //                             schemesData.forEach((scheme) => {
+            //                                 responseMessage +=
+            //                                     `Implemented By: ${scheme.implementedBy || 'Not available'}\n` +
+            //                                     `Domain Description: ${scheme.domainDescription || 'Not available'}\n` +
+            //                                     `Eligible Disabilities: ${scheme.eligibleDisabilities || 'Not available'}\n` +
+            //                                     `Disability Percentage: ${scheme.disabilityPercentage || 'Not available'}\n` +
+            //                                     `Age: ${scheme.age || 'Not available'}\n` +
+            //                                     `Annual Income: ${scheme.annualIncome || 'Not available'}\n` +
+            //                                     `Gender Eligibility: ${scheme.genderEligibility || 'Not available'}\n` +
+            //                                     `Comments: ${scheme.comments || 'Not available'}\n` +
+            //                                     `Email Address: ${scheme.emailAddress || 'Not available'}\n\n`;
+            //                             });
                 
-                                        const truncatedMessage = responseMessage.substring(0, 4096);
+            //                             const truncatedMessage = responseMessage.substring(0, 4096);
                 
-                                        responseTemplate = {
-                                            messaging_product: 'whatsapp',
-                                            to: '+919788825633',
-                                            type: 'text',
-                                            text: {
-                                                body: truncatedMessage,
-                                            },
-                                            language: {
-                                                code: 'en_US',
-                                            },
-                                        };
-                                        const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
-                                                console.log('Response:', response.data);
-                                                res.status(200).send(response.data);
-                                    } else {
-                                        responseTemplate = {
-                                            messaging_product: 'whatsapp',
-                                            to: '+919788825633',
-                                            type: 'text',
-                                            text: {
-                                                body: "No matching schemes found. Please refine your search criteria.",
-                                            },
-                                            language: {
-                                                code: 'en_US',
-                                            },
-                                        };
-                                                  const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
-            console.log('Response:', response.data);
-            res.status(200).send(response.data);
-                                    }
-                                    break;
+            //                             responseTemplate = {
+            //                                 messaging_product: 'whatsapp',
+            //                                 to: '+919788825633',
+            //                                 type: 'text',
+            //                                 text: {
+            //                                     body: truncatedMessage,
+            //                                 },
+            //                                 language: {
+            //                                     code: 'en_US',
+            //                                 },
+            //                             };
+            //                             const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
+            //                                     console.log('Response:', response.data);
+            //                                     res.status(200).send(response.data);
+            //                         } else {
+            //                             responseTemplate = {
+            //                                 messaging_product: 'whatsapp',
+            //                                 to: '+919788825633',
+            //                                 type: 'text',
+            //                                 text: {
+            //                                     body: "No matching schemes found. Please refine your search criteria.",
+            //                                 },
+            //                                 language: {
+            //                                     code: 'en_US',
+            //                                 },
+            //                             };
+            //                                       const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
+            // console.log('Response:', response.data);
+            // res.status(200).send(response.data);
+            //                         }
+            //                         break;
+
+            case collectedData.income !== undefined:
+    const schemesData = await SchemeModel.find({
+        age: collectedData.age,
+        genderEligibility: collectedData.gender,
+        implementedBy: collectedData.state,
+        disabilityPercentage: collectedData.disability,
+        annualIncome: collectedData.income,
+    });
+
+    if (schemesData.length > 0) {
+        let responseMessage = `Matching schemes:\n\n`;
+
+        schemesData.forEach((scheme) => {
+            responseMessage +=
+                `Implemented By: ${scheme.implementedBy || 'Not available'}\n` +
+                `Domain Description: ${scheme.domainDescription || 'Not available'}\n`
+                // ... (rest of your responseMessage construction)
+
+        });
+
+        const truncatedMessage = responseMessage.substring(0, 4096);
+
+        responseTemplate = {
+            messaging_product: 'whatsapp',
+            to: '+919788825633',
+            type: 'text',
+            text: {
+                body: truncatedMessage,
+            },
+            language: {
+                code: 'en_US',
+            },
+        };
+    } else {
+        responseTemplate = {
+            messaging_product: 'whatsapp',
+            to: '+919788825633',
+            type: 'text',
+            text: {
+                body: "No matching schemes found. Please refine your search criteria.",
+            },
+            language: {
+                code: 'en_US',
+            },
+        };
+    }
+
+    // Send the response
+    try {
+        const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
+        console.log('Response:', response.data);
+        res.status(200).send(response.data);
+    } catch (error) {
+        console.error('Error sending response:', error.message, error.response ? error.response.data : '');
+        res.status(500).send(error.message);
+    }
+    break;
                                                 
                 default:
                     responseTemplate = {
