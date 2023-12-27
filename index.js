@@ -205,7 +205,7 @@ app.post('/whatsapp', async (req, res) => {
     // Example: Fetch data from the database based on the payload
     try {
         const schemesData = await SchemeModel.find({ age: payload });
-        
+    
         if (schemesData && schemesData.length > 0) {
             // Modify responseTemplate based on the data retrieved from the database
             const schemesText = schemesData.map(scheme => {
@@ -220,10 +220,10 @@ app.post('/whatsapp', async (req, res) => {
                     `Comments: ${scheme.comments}\n` +
                     `Email Address: ${scheme.emailAddress}`;
             }).join('\n\n');
-
-              // Truncate the text body if it exceeds the limit
-        const truncatedText = schemesText.substring(0, 4096);
-
+    
+            // Truncate the text body if it exceeds the limit
+            const truncatedText = schemesText.substring(0, 4096);
+    
             responseTemplate = {
                 messaging_product: 'whatsapp',
                 to: '+919788825633',
