@@ -206,31 +206,31 @@ app.post('/whatsapp', async (req, res) => {
         const schemesData = await SchemeModel.find({ age: payload });
 
         if (schemesData && schemesData.length > 0) {
-            const schemesTextArray = schemesData.map(scheme => {
-                return `Implemented By: ${scheme.implementedBy || 'Not available'}\n` +
-                    `Domain Description: ${scheme.domainDescription || 'Not available'}\n` +
-                    `Eligible Disabilities: ${scheme.eligibleDisabilities || 'Not available'}\n` +
-                    `Disability Percentage: ${scheme.disabilityPercentage || 'Not available'}\n` +
-                    `Age: ${scheme.age || 'Not available'}\n` +
-                    `Annual Income: ${scheme.annualIncome || 'Not available'}\n` +
-                    `Gender Eligibility: ${scheme.genderEligibility || 'Not available'}\n` +
-                    `Comments: ${scheme.comments || 'Not available'}\n` +
-                    `Email Address: ${scheme.emailAddress || 'Not available'}`;
-            });
+            // const schemesTextArray = schemesData.map(scheme => {
+            //     return `Implemented By: ${scheme.implementedBy || 'Not available'}\n` +
+            //         `Domain Description: ${scheme.domainDescription || 'Not available'}\n` +
+            //         `Eligible Disabilities: ${scheme.eligibleDisabilities || 'Not available'}\n` +
+            //         `Disability Percentage: ${scheme.disabilityPercentage || 'Not available'}\n` +
+            //         `Age: ${scheme.age || 'Not available'}\n` +
+            //         `Annual Income: ${scheme.annualIncome || 'Not available'}\n` +
+            //         `Gender Eligibility: ${scheme.genderEligibility || 'Not available'}\n` +
+            //         `Comments: ${scheme.comments || 'Not available'}\n` +
+            //         `Email Address: ${scheme.emailAddress || 'Not available'}`;
+            // });
             
 
-            console.log('schemesData:', schemesData); 
-            console.log('schemesTextArray:', schemesTextArray);
-            const schemesText = schemesTextArray.join('\n\n');
+            // console.log('schemesData:', schemesData); 
+            // console.log('schemesTextArray:', schemesTextArray);
+            // const schemesText = schemesTextArray.join('\n\n');
     
-            const truncatedText = schemesText.substring(0, 4096);
+            // const truncatedText = schemesText.substring(0, 4096);
     
             responseTemplate = {
                 messaging_product: 'whatsapp',
                 to: '+919788825633',
                 type: 'text',
                 text: {
-                    body: `Schemes for ${payload}:\n${truncatedText}`,
+                    body: `Schemes for ${payload}:\n${schemesData}`,
                 },
                 language: {
                     code: 'en_US',
