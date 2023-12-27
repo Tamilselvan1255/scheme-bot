@@ -239,12 +239,10 @@ app.post('/whatsapp', async (req, res) => {
                 annualIncome: income ? income : { $exists: true },
                 genderEligibility: gender ? gender : { $exists: true },
             };
-
-            try {
-                const filteredFacilities = await scheme
-                .find(filter);
-
-                if (filteredFacilities.length !== 0) {
+        
+            const filteredFacilities = await scheme.find(filter);
+        
+            if (filteredFacilities.length !== 0) {
                 responseTemplate = {
                     messaging_product: 'whatsapp',
                     to: '+919788825633',
@@ -257,10 +255,7 @@ app.post('/whatsapp', async (req, res) => {
                     },
                 };
             }
-
-            } catch(error) {
-                res.status(500).send('Internal Server Error');
-            }
+        
             const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
             console.log('Response:', response.data);
             res.status(200).send(response.data);
