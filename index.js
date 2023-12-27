@@ -92,7 +92,11 @@ app.post('/whatsapp', async (req, res) => {
 
         try {
             let responseTemplate;
-
+            age = '';
+            gender = '';
+            state = '';
+            disability = '';
+            
             switch (true) {
                 case msgBody.includes('hello') || msgBody.includes('hi'):
                     responseTemplate = {
