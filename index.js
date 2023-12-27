@@ -113,13 +113,27 @@ app.post('/whatsapp', async (req, res) => {
                         to: '+919788825633',
                         type: 'template',
                         template: {
-                            name: 'deals',
+                            name: 'age',
                             language: {
                                 code: 'en_US',
                             },
                         },
                     };
                     break;
+
+                    case payload === '0-6' || payload === '6-18' || payload === '18-24':
+                        responseTemplate = {
+                            messaging_product: 'whatsapp',
+                            to: '+919788825633',
+                            type: 'template',
+                            template: {
+                                name: 'gender',
+                                language: {
+                                    code: 'en_US',
+                                },
+                            },
+                        };
+                        break;
 
                 default:
                     responseTemplate = {
