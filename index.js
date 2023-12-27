@@ -220,12 +220,16 @@ app.post('/whatsapp', async (req, res) => {
                     `Comments: ${scheme.comments}\n` +
                     `Email Address: ${scheme.emailAddress}`;
             }).join('\n\n');
+
+              // Truncate the text body if it exceeds the limit
+        const truncatedText = schemesText.substring(0, 4096);
+
             responseTemplate = {
                 messaging_product: 'whatsapp',
                 to: '+919788825633',
                 type: 'text',
                 text: {
-                    body: `Schemes for ${payload}:\n${schemesText}`,
+                    body: `Schemes for ${payload}:\n${truncatedText}`,
                 },
                 language: {
                     code: 'en_US',
