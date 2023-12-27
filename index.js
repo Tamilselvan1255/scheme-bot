@@ -35,6 +35,7 @@ const schemeSchema = new mongoose.Schema({
 const SchemeModel = mongoose.model('Scheme', schemeSchema);
 
 let collectedData = {}; 
+let age, gender, state, disability;
 
 // const filterFacilities = async (state, disability, age, income, gender) => {
 //     const filter = {
