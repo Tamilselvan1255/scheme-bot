@@ -205,7 +205,8 @@ app.post('/whatsapp', async (req, res) => {
     // Example: Fetch data from the database based on the payload
     try {
         const schemesData = await SchemeModel.find({ age: payload });
-    
+        console.log('schemesData:', schemesData);
+
         if (schemesData && schemesData.length > 0) {
             // Modify responseTemplate based on the data retrieved from the database
             const schemesTextArray = schemesData.map(scheme => {
