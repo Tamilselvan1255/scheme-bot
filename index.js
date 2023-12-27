@@ -34,12 +34,6 @@ const schemeSchema = new mongoose.Schema({
 
 const SchemeModel = mongoose.model('Scheme', schemeSchema);
 
-const AGE_PAYLOADS = ['0-6', '6-18', '18-24'];
-const GENDER_PAYLOADS = ['Male', 'Female', 'Both Male and Female'];
-const STATE_PAYLOADS = ['TAMIL NADU', 'MAHARASHTRA', 'GOA'];
-const DISABILITY_PAYLOADS = ['Minimum 40%', 'Minimum 90%'];
-const INCOME_PAYLOADS = ['1,25,000', '1,75,000', 'No income limit'];
-
 const token = process.env.TOKEN;
 const myToken = process.env.MYTOKEN;
 
@@ -142,86 +136,86 @@ app.post('/whatsapp', async (req, res) => {
                     };
                     break;
 
-                    case AGE_PAYLOADS.includes(payload):
-                    const age = payload;
-                    console.log(age);
-                    responseTemplate = {
-                        messaging_product: 'whatsapp',
-                        to: '+919788825633',
-                        type: 'template',
-                        template: {
-                            name: 'gender',
-                            language: {
-                                code: 'en_US',
+                    case payload === '0-6' || payload === '6-18' || payload === '18-24':
+                        const age = payload;
+                        console.log(age);
+                        responseTemplate = {
+                            messaging_product: 'whatsapp',
+                            to: '+919788825633',
+                            type: 'template',
+                            template: {
+                                name: 'gender',
+                                language: {
+                                    code: 'en_US',
+                                },
                             },
-                        },
-                    };
-                    break;
+                        };
+                        break;
 
-                case GENDER_PAYLOADS.includes(payload):
-                    const gender = payload;
-                    console.log(gender);
-                    responseTemplate = {
-                        messaging_product: 'whatsapp',
-                        to: '+919788825633',
-                        type: 'template',
-                        template: {
-                            name: 'state',
-                            language: {
-                                code: 'en_US',
+                        case payload === 'Male' || payload === 'Female' || payload === 'Both Male and Female':
+                            const gender = payload;
+                        console.log(gender);
+                        responseTemplate = {
+                            messaging_product: 'whatsapp',
+                            to: '+919788825633',
+                            type: 'template',
+                            template: {
+                                name: 'state',
+                                language: {
+                                    code: 'en_US',
+                                },
                             },
-                        },
-                    };
-                    break;
+                        };
+                        break;
 
-                case STATE_PAYLOADS.includes(payload):
-                    const state = payload;
-                    console.log(state);
-                    responseTemplate = {
-                        messaging_product: 'whatsapp',
-                        to: '+919788825633',
-                        type: 'template',
-                        template: {
-                            name: 'disability',
-                            language: {
-                                code: 'en_US',
+                        case payload === 'TAMIL NADU' || payload === 'MAHARASHTRA' || payload === 'GOA':
+                            const state = payload;
+                            console.log(state);
+                       responseTemplate = {
+                            messaging_product: 'whatsapp',
+                            to: '+919788825633',
+                            type: 'template',
+                            template: {
+                                name: 'disability',
+                                language: {
+                                    code: 'en_US',
+                                },
                             },
-                        },
-                    };
-                    break;
+                        };
+                        break;
+                        
+                        case payload === 'Minimum 40%' || payload === 'Minimum 90%':
+                            const disability = payload;
+                            console.log(disability);
+                            responseTemplate = {
+                                messaging_product: 'whatsapp',
+                                to: '+919788825633',
+                                type: 'template',
+                                template: {
+                                    name: 'income',
+                                    language: {
+                                        code: 'en_US',
+                                    },
+                                },
+                            };
+                            break;
 
-                case DISABILITY_PAYLOADS.includes(payload):
-                    const disability = payload;
-                    console.log(disability);
-                    responseTemplate = {
-                        messaging_product: 'whatsapp',
-                        to: '+919788825633',
-                        type: 'template',
-                        template: {
-                            name: 'income',
-                            language: {
-                                code: 'en_US',
-                            },
-                        },
-                    };
-                    break;
+                            case payload === '1,25,000' || payload === '1,75,000' || payload === 'No income limit':
+                                const income = payload;
+                                console.log(income);
+                                responseTemplate = {
+                                    messaging_product: 'whatsapp',
+                                    to: '+919788825633',
+                                    type: 'template',
+                                    template: {
+                                        name: 'deals',
+                                        language: {
+                                            code: 'en_US',
+                                        },
+                                    },
+                                };
+                                break;
 
-                case INCOME_PAYLOADS.includes(payload):
-                    const income = payload;
-                    console.log(income);
-                    responseTemplate = {
-                        messaging_product: 'whatsapp',
-                        to: '+919788825633',
-                        type: 'template',
-                        template: {
-                            name: 'deals',
-                            language: {
-                                code: 'en_US',
-                            },
-                        },
-                    };
-                    break;
-    
                                 
                 default:
                     responseTemplate = {
@@ -256,68 +250,6 @@ app.get('/', (req, res) => {
 });
 
 // ----------------------
-
-
-    //                             case payload === '0-6' || payload === '6-18' || payload === '18-24':
-    // try {
-    //     // Assuming schemesData is an array of scheme objects
-    //     const schemesData = await SchemeModel.find({ age: payload });
-    //     if (schemesData.length > 0) {
-    //         let responseMessage = `Schemes for ${payload}:\n\n`;
-
-    //      schemesData.forEach((scheme) => {
-    //             responseMessage += 
-    //                 `Implemented By: ${scheme.implementedBy || 'Not available'}\n` +
-    //                 `Domain Description: ${scheme.domainDescription || 'Not available'}\n` +
-    //                 `Eligible Disabilities: ${scheme.eligibleDisabilities || 'Not available'}\n` +
-    //                 `Disability Percentage: ${scheme.disabilityPercentage || 'Not available'}\n` +
-    //                 `Age: ${scheme.age || 'Not available'}\n` +
-    //                 `Annual Income: ${scheme.annualIncome || 'Not available'}\n` +
-    //                 `Gender Eligibility: ${scheme.genderEligibility || 'Not available'}\n` +
-    //                 `Comments: ${scheme.comments || 'Not available'}\n` +
-    //                 `Email Address: ${scheme.emailAddress || 'Not available'}\n\n`;
-    //         });
-
-    //         const truncatedMessage = responseMessage.substring(0, 4096);
-
-    //         const responseTemplate = {
-    //             messaging_product: 'whatsapp',
-    //             to: '+919788825633',
-    //             type: 'text',
-    //             text: {
-    //                 body: truncatedMessage,
-    //             },
-    //             language: {
-    //                 code: 'en_US',
-    //             },
-    //         };
-
-    //         const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
-    //         console.log('Response:', response.data);
-    //         res.status(200).send(response.data);
-    //     } else {
-    //         const responseTemplate = {
-    //             messaging_product: 'whatsapp',
-    //             to: '+919788825633',
-    //             type: 'text',
-    //             text: {
-    //                 body: `No schemes found for the selected age group (${payload}).`,
-    //             },
-    //             language: {
-    //                 code: 'en_US',
-    //             },
-    //         };
-
-    //         const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
-    //         console.log('Response:', response.data);
-    //         res.status(200).send(response.data);
-    //     }
-    // } catch (error) {
-    //     console.error('Error fetching data from the database:', error.message);
-    //     res.status(500).send('Internal Server Error');
-    // }
-    // break;
-
 
 // else if (msgBody.toLowerCase().includes('show schemes')) {
 //     const showSchemesTemplate = {
