@@ -214,8 +214,8 @@ app.post('/whatsapp', async (req, res) => {
                     `Age: ${scheme.age}\n` +
                     `Annual Income: ${scheme.annualIncome}\n` +
                     `Gender Eligibility: ${scheme.genderEligibility}\n` +
-                    `Comments: ${scheme.comments}\n` +
-                    `Email Address: ${scheme.emailAddress}`;
+                    `Comments: ${scheme.comments || 'Not available'}\n` +
+                    `Email Address: ${scheme.emailAddress || 'Not available'}`;
             });
 
             console.log('schemesData:', schemesData); 
