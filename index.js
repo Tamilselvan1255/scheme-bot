@@ -1,4 +1,4 @@
-// with templates
+// with templates updated
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -19,15 +19,6 @@ db.once('open', () => {
     console.log('Connected to MongoDB');
 });
 
-// Create a mongoose model for the "schemes" collection
-const schemeModel = mongoose.model('Scheme', {
-    age: String,
-    gender: String,
-    state: String,
-    disability: String,
-    income: String,
-    details: String, // Replace with the actual schema of your "schemes" collection
-});
 
 const token = process.env.TOKEN;
 const myToken = process.env.MYTOKEN;
@@ -66,82 +57,70 @@ app.post('/whatsapp', async (req, res) => {
         const phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
         const message = bodyParam.entry[0].changes[0].value.messages[0];
         const msgBody = (message.text?.body || '').toLowerCase();
-        const payload = message?.template?.payload || message?.quick_reply?.payload;
-
+        const payload = message.button ? message.button.payload : undefined;
 
         console.log('message:', message);
 
         try {
             let responseTemplate;
 
-            // Ensure payload is defined before using it
-            if (payload !== undefined) {
-                // Extracting individual keywords
-                const age = payload.includes('0-6') ? '0-6' : payload.includes('6-18') ? '6-18' : '18-24';
-                const gender = payload.includes('Male') ? 'Male' : payload.includes('Female') ? 'Female' : 'Both Male and Female';
-                const state = payload.includes('TAMIL NADU') ? 'TAMIL NADU' : payload.includes('MAHARASHTRA') ? 'MAHARASHTRA' : 'GOA';
-                const disability = payload.includes('Minimum 40%') ? 'Minimum 40%' : 'Minimum 90%';
-                const income = payload.includes('1,25,000') ? '1,25,000' : payload.includes('1,75,000') ? '1,75,000' : 'No income limit';
-
-                // Fetch data from MongoDB based on the inputs
-                const schemeData = await schemeModel.findOne({ age, gender, state, disability, income });
-
-                switch (true) {
-                    case msgBody.includes('hello') || msgBody.includes('hi'):
-                        responseTemplate = {
-                            messaging_product: 'whatsapp',
-                            to: '+919788825633',
-                            type: 'template',
-                            template: {
-                                name: 'scheme_template',
-                                language: {
-                                    code: 'en_US',
-                                },
-                            },
-                        };
-                        break;
-                    
-                    case payload === 'Yes':
-                        responseTemplate = {
-                            messaging_product: 'whatsapp',
-                            to: '+919788825633',
-                            type: 'template',
-                            template: {
-                                name: 'scheme_template',
-                                language: {
-                                    code: 'en_US',
-                                },
-                            },
-                        };
-                        break;
-
-                    case payload === 'Not Now':
-                        responseTemplate = {
-                            messaging_product: 'whatsapp',
-                            to: '+919788825633',
-                            type: 'text',
-                            text: {
-                                body: `I appreciate your consideration. Please feel free to reach out whenever you have a moment. When you're ready to continue, a simple "HI" or "HELLO" would be great. Thank you for your understanding. Have a wonderful day! 🌟`,
-                            },
+            switch (true) {
+                case msgBody.includes('hello') || msgBody.includes('hi'):
+                    responseTemplate = {
+                        messaging_product: 'whatsapp',
+                        to: '+919788825633',
+                        type: 'template',
+                        template: {
+                            name: 'scheme_template',
                             language: {
                                 code: 'en_US',
                             },
-                        };
-                        break;
-
-                    case payload === 'Show Schemes':
-                        responseTemplate = {
-                            messaging_product: 'whatsapp',
-                            to: '+919788825633',
-                            type: 'template',
-                            template: {
-                                name: 'age',
-                                language: {
-                                    code: 'en_US',
-                                },
+                        },
+                    };
+                    break;
+                    
+                case payload === 'Yes':
+                    responseTemplate = {
+                        messaging_product: 'whatsapp',
+                        to: '+919788825633',
+                        type: 'template',
+                        template: {
+                            name: 'scheme_template',
+                            language: {
+                                code: 'en_US',
                             },
-                        };
-                        break;
+                        },
+                    };
+                    break;
+
+                    case payload === 'Not Now':
+                    responseTemplate = {
+                        messaging_product: 'whatsapp',
+                        to: '+919788825633',
+                        type: 'text',
+                        text: {
+                            body: `I appreciate your consideration. Please feel free to reach out whenever you have a moment. When you're ready to continue, a simple "HI" or "HELLO" would be great. Thank you for your understanding. Have a wonderful day! 🌟`,
+                        },
+                        language: {
+                            code: 'en_US',
+                        },
+                    };
+                    break;
+
+
+                case payload === 'Show Schemes':
+                    responseTemplate = {
+                        messaging_product: 'whatsapp',
+                        to: '+919788825633',
+                        type: 'template',
+                        template: {
+                            name: 'age',
+                            language: {
+                                code: 'en_US',
+                            },
+                        },
+                    };
+                    break;
 
                     case payload === '0-6' || payload === '6-18' || payload === '18-24':
                         responseTemplate = {
@@ -157,7 +136,7 @@ app.post('/whatsapp', async (req, res) => {
                         };
                         break;
 
-                    case payload === 'Male' || payload === 'Female' || payload === 'Both Male and Female':
+                        case payload === 'Male' || payload === 'Female' || payload === 'Both Male and Female':
                         responseTemplate = {
                             messaging_product: 'whatsapp',
                             to: '+919788825633',
@@ -171,7 +150,7 @@ app.post('/whatsapp', async (req, res) => {
                         };
                         break;
 
-                    case payload === 'TAMIL NADU' || payload === 'MAHARASHTRA' || payload === 'GOA':
+                        case payload === 'TAMIL NADU' || payload === 'MAHARASHTRA' || payload === 'GOA':
                         responseTemplate = {
                             messaging_product: 'whatsapp',
                             to: '+919788825633',
@@ -185,69 +164,52 @@ app.post('/whatsapp', async (req, res) => {
                         };
                         break;
                         
-                    case payload === 'Minimum 40%' || payload === 'Minimum 90%':
-                        responseTemplate = {
-                            messaging_product: 'whatsapp',
-                            to: '+919788825633',
-                            type: 'template',
-                            template: {
-                                name: 'income',
-                                language: {
-                                    code: 'en_US',
+                        case payload === 'Minimum 40%' || payload === 'Minimum 90%':
+                            responseTemplate = {
+                                messaging_product: 'whatsapp',
+                                to: '+919788825633',
+                                type: 'template',
+                                template: {
+                                    name: 'income',
+                                    language: {
+                                        code: 'en_US',
+                                    },
                                 },
-                            },
-                        };
-                        break;
+                            };
+                            break;
 
-                    case payload === '1,25,000' || payload === '1,75,000' || payload === 'No income limit':
-                        responseTemplate = {
-                            messaging_product: 'whatsapp',
-                            to: '+919788825633',
-                            type: 'template',
-                            template: {
-                                name: 'deals',
-                                language: {
-                                    code: 'en_US',
-                                },
-                            },
-                        };
-                        break;
+                            case payload === '1,25,000' || payload === '1,75,000' || payload === 'No income limit':
+                                responseTemplate = {
+                                    messaging_product: 'whatsapp',
+                                    to: '+919788825633',
+                                    type: 'template',
+                                    template: {
+                                        name: 'deals',
+                                        language: {
+                                            code: 'en_US',
+                                        },
+                                    },
+                                };
+                                break;
 
-                    default:
-                        responseTemplate = {
-                            messaging_product: 'whatsapp',
-                            to: '+919788825633',
-                            type: 'text',
-                            text: {
-                                body: "Please enter valid message!",
-                            },
-                            language: {
-                                code: 'en_US',
-                            },
-                        };
-                        break;
-                }
-
-                const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
-                console.log('Response:', response.data);
-                res.status(200).send(response.data);
-            } else {
-                // Handle the case when payload is undefined
-                responseTemplate = {
-                    messaging_product: 'whatsapp',
-                    to: '+919788825633',
-                    type: 'text',
-                    text: {
-                        body: "Payload is undefined. Please check your request.",
-                    },
-                    language: {
-                        code: 'en_US',
-                    },
-                };
-                const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
-                console.log('Response:', response.data);
-                res.status(200).send(response.data);
+                default:
+                    responseTemplate = {
+                        messaging_product: 'whatsapp',
+                        to: '+919788825633',
+                        type: 'text',
+                        text: {
+                            body: "Please enter valid message!",
+                        },
+                        language: {
+                            code: 'en_US',
+                        },
+                    };
+                    break;
             }
+
+            const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
+            console.log('Response:', response.data);
+            res.status(200).send(response.data);
         } catch (error) {
             console.error('Error sending response:', error.message, error.response ? error.response.data : '');
             res.status(500).send(error.message);
@@ -257,238 +219,10 @@ app.post('/whatsapp', async (req, res) => {
     }
 });
 
+
 app.get('/', (req, res) => {
     res.status(200).send('Webhook setup for scheme!!');
 });
-
-
-// ------------
-
-// // with templates updated
-
-// const express = require('express');
-// const bodyParser = require('body-parser');
-// const axios = require('axios');
-// const mongoose = require('mongoose');
-// require('dotenv').config();
-
-// const app = express().use(bodyParser.json());
-
-// mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-// const db = mongoose.connection;
-
-// db.on('error', (err) => {
-//     console.error('MongoDB connection error:', err);
-// });
-
-// db.once('open', () => {
-//     console.log('Connected to MongoDB');
-// });
-
-
-// const token = process.env.TOKEN;
-// const myToken = process.env.MYTOKEN;
-
-// app.listen(process.env.PORT, () => {
-//     console.log('Webhook is listening!!');
-// });
-
-// app.get('/whatsapp', (req, res) => {
-//     const mode = req.query['hub.mode'];
-//     const challenge = req.query['hub.challenge'];
-//     const verifyToken = req.query['hub.verify_token'];
-
-//     if (mode && verifyToken) {
-//         if (mode === 'subscribe' && verifyToken === myToken) {
-//             res.status(200).send(challenge);
-//         } else {
-//             res.status(403).send('Invalid verify token');
-//         }
-//     } else {
-//         res.status(400).send('Missing parameters');
-//     }
-// });
-
-// app.post('/whatsapp', async (req, res) => {
-//     const bodyParam = req.body;
-//     console.log('Request Body:', bodyParam);
-
-//     if (
-//         bodyParam.object &&
-//         bodyParam.entry &&
-//         bodyParam.entry[0].changes &&
-//         bodyParam.entry[0].changes[0].value.messages &&
-//         bodyParam.entry[0].changes[0].value.messages[0]
-//     ) {
-//         const phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
-//         const message = bodyParam.entry[0].changes[0].value.messages[0];
-//         const msgBody = (message.text?.body || '').toLowerCase();
-//         const payload = message.button ? message.button.payload : undefined;
-
-//         console.log('message:', message);
-
-//         try {
-//             let responseTemplate;
-
-//             switch (true) {
-//                 case msgBody.includes('hello') || msgBody.includes('hi'):
-//                     responseTemplate = {
-//                         messaging_product: 'whatsapp',
-//                         to: '+919788825633',
-//                         type: 'template',
-//                         template: {
-//                             name: 'scheme_template',
-//                             language: {
-//                                 code: 'en_US',
-//                             },
-//                         },
-//                     };
-//                     break;
-                    
-//                 case payload === 'Yes':
-//                     responseTemplate = {
-//                         messaging_product: 'whatsapp',
-//                         to: '+919788825633',
-//                         type: 'template',
-//                         template: {
-//                             name: 'scheme_template',
-//                             language: {
-//                                 code: 'en_US',
-//                             },
-//                         },
-//                     };
-//                     break;
-
-//                     case payload === 'Not Now':
-//                     responseTemplate = {
-//                         messaging_product: 'whatsapp',
-//                         to: '+919788825633',
-//                         type: 'text',
-//                         text: {
-//                             body: `I appreciate your consideration. Please feel free to reach out whenever you have a moment. When you're ready to continue, a simple "HI" or "HELLO" would be great. Thank you for your understanding. Have a wonderful day! 🌟`,
-//                         },
-//                         language: {
-//                             code: 'en_US',
-//                         },
-//                     };
-//                     break;
-
-
-//                 case payload === 'Show Schemes':
-//                     responseTemplate = {
-//                         messaging_product: 'whatsapp',
-//                         to: '+919788825633',
-//                         type: 'template',
-//                         template: {
-//                             name: 'age',
-//                             language: {
-//                                 code: 'en_US',
-//                             },
-//                         },
-//                     };
-//                     break;
-
-//                     case payload === '0-6' || payload === '6-18' || payload === '18-24':
-//                         responseTemplate = {
-//                             messaging_product: 'whatsapp',
-//                             to: '+919788825633',
-//                             type: 'template',
-//                             template: {
-//                                 name: 'gender',
-//                                 language: {
-//                                     code: 'en_US',
-//                                 },
-//                             },
-//                         };
-//                         break;
-
-//                         case payload === 'Male' || payload === 'Female' || payload === 'Both Male and Female':
-//                         responseTemplate = {
-//                             messaging_product: 'whatsapp',
-//                             to: '+919788825633',
-//                             type: 'template',
-//                             template: {
-//                                 name: 'state',
-//                                 language: {
-//                                     code: 'en_US',
-//                                 },
-//                             },
-//                         };
-//                         break;
-
-//                         case payload === 'TAMIL NADU' || payload === 'MAHARASHTRA' || payload === 'GOA':
-//                         responseTemplate = {
-//                             messaging_product: 'whatsapp',
-//                             to: '+919788825633',
-//                             type: 'template',
-//                             template: {
-//                                 name: 'disability',
-//                                 language: {
-//                                     code: 'en_US',
-//                                 },
-//                             },
-//                         };
-//                         break;
-                        
-//                         case payload === 'Minimum 40%' || payload === 'Minimum 90%':
-//                             responseTemplate = {
-//                                 messaging_product: 'whatsapp',
-//                                 to: '+919788825633',
-//                                 type: 'template',
-//                                 template: {
-//                                     name: 'income',
-//                                     language: {
-//                                         code: 'en_US',
-//                                     },
-//                                 },
-//                             };
-//                             break;
-
-//                             case payload === '1,25,000' || payload === '1,75,000' || payload === 'No income limit':
-//                                 responseTemplate = {
-//                                     messaging_product: 'whatsapp',
-//                                     to: '+919788825633',
-//                                     type: 'template',
-//                                     template: {
-//                                         name: 'deals',
-//                                         language: {
-//                                             code: 'en_US',
-//                                         },
-//                                     },
-//                                 };
-//                                 break;
-
-//                 default:
-//                     responseTemplate = {
-//                         messaging_product: 'whatsapp',
-//                         to: '+919788825633',
-//                         type: 'text',
-//                         text: {
-//                             body: "Please enter valid message!",
-//                         },
-//                         language: {
-//                             code: 'en_US',
-//                         },
-//                     };
-//                     break;
-//             }
-
-//             const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
-//             console.log('Response:', response.data);
-//             res.status(200).send(response.data);
-//         } catch (error) {
-//             console.error('Error sending response:', error.message, error.response ? error.response.data : '');
-//             res.status(500).send(error.message);
-//         }
-//     } else {
-//         res.status(404).send('Invalid request format');
-//     }
-// });
-
-
-// app.get('/', (req, res) => {
-//     res.status(200).send('Webhook setup for scheme!!');
-// });
 
 // ----------------------
 
