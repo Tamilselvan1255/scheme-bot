@@ -232,6 +232,35 @@ app.post('/whatsapp', async (req, res) => {
                     break;
             }
 
+            const filter = {
+                implementedBy: implementedBy ? implementedBy : { $exists: true },
+                disabilityPercentage: disabilityPercentage ? disabilityPercentage : { $exists: true },
+                age: age ? age : { $exists: true },
+                annualIncome: annualIncome ? annualIncome : { $exists: true },
+                genderEligibility: genderEligibility ? genderEligibility : { $exists: true },
+            };
+
+            try {
+                const filteredFacilities = await scheme
+                .find(filter);
+
+                if (filteredFacilities.length === 0) {
+                    return res.status(404).send('No valid information found.');
+                }
+                responseTemplate = {
+                    messaging_product: 'whatsapp',
+                    to: '+919788825633',
+                    type: 'text',
+                    text: {
+                        body: "Please enter valid message!",
+                    },
+                    language: {
+                        code: 'en_US',
+                    },
+                };
+            } catch(error) {
+                res.status(500).send('Internal Server Error');
+            }
             const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
             console.log('Response:', response.data);
             res.status(200).send(response.data);
