@@ -229,7 +229,6 @@ app.post('/whatsapp', async (req, res) => {
                                     const schemesData = await SchemeModel.find({
                                         age: collectedData.age, genderEligibility: collectedData.gender, implementedBy: collectedData.state, disabilityPercentage: collectedData.disability, annualIncome: collectedData.income});
                 
-                                        let responseTemplate; 
 
                                     if (schemesData.length > 0) {
                                         let responseMessage = `Matching schemes:\n\n`;
