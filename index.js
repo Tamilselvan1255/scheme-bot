@@ -218,7 +218,7 @@ app.post('/whatsapp', async (req, res) => {
                                 break;
                                 case collectedData.income !== undefined:
                                     // Check if all relevant data is collected
-                                    const { age, gender, state, disability, income } = collectedData;
+                                    // const { age, gender, state, disability, income } = collectedData;
                 
                                     // Query the database to find matching records
                                     const schemesData = await SchemeModel.find({
