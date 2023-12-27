@@ -269,7 +269,7 @@ app.post('/whatsapp', async (req, res) => {
     case payload === 'Male' || payload === 'Female' || payload === 'Both Male and Female':
         try {
             // Assuming schemesData is an array of scheme objects
-            const schemesData = await SchemeModel.find({ gender: payload });
+            const schemesData = await SchemeModel.find({ genderEligibility: payload });
             if (schemesData.length > 0) {
                 let responseMessage = `Schemes for ${payload}:\n\n`;
     
