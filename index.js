@@ -216,13 +216,12 @@ app.post('/whatsapp', async (req, res) => {
                                     },
                                 };
                                 break;
-
                                 case collectedData.income !== undefined:
                                     // Check if all relevant data is collected
                                     const { age, gender, state, disability, income } = collectedData;
                 
                                     // Query the database to find matching records
-                                    const matchingRecords = await SchemeModel.find({
+                                    const schemesData = await SchemeModel.find({
                                         age: age ? age : { $exists: true },
                                         genderEligibility: gender ? gender : { $exists: true },
                                         implementedBy: state ? state : { $exists: true },
@@ -230,22 +229,30 @@ app.post('/whatsapp', async (req, res) => {
                                         annualIncome: income ? income : { $exists: true },
                                     });
                 
-                                    if (matchingRecords.length !== 0) {
-                                        // Convert the fetched data to a text response
-                                        const textResponse = matchingRecords.map(record => {
-                                            return `Facility: ${record.domainDescription}\nEligibility: ${record.eligibleDisabilities}\nComments: ${record.comments}\n\n`;
-                                        }).join('\n');
+                                    if (schemesData.length > 0) {
+                                        let responseMessage = `Matching schemes:\n\n`;
                 
-                                        // Truncate the text if it exceeds the limit
-                                        const truncatedTextResponse = textResponse.substring(0, 4096);
+                                        schemesData.forEach((scheme) => {
+                                            responseMessage +=
+                                                `Implemented By: ${scheme.implementedBy || 'Not available'}\n` +
+                                                `Domain Description: ${scheme.domainDescription || 'Not available'}\n` +
+                                                `Eligible Disabilities: ${scheme.eligibleDisabilities || 'Not available'}\n` +
+                                                `Disability Percentage: ${scheme.disabilityPercentage || 'Not available'}\n` +
+                                                `Age: ${scheme.age || 'Not available'}\n` +
+                                                `Annual Income: ${scheme.annualIncome || 'Not available'}\n` +
+                                                `Gender Eligibility: ${scheme.genderEligibility || 'Not available'}\n` +
+                                                `Comments: ${scheme.comments || 'Not available'}\n` +
+                                                `Email Address: ${scheme.emailAddress || 'Not available'}\n\n`;
+                                        });
                 
-                                        // Adjust the response as needed
+                                        const truncatedMessage = responseMessage.substring(0, 4096);
+                
                                         responseTemplate = {
                                             messaging_product: 'whatsapp',
                                             to: '+919788825633',
                                             type: 'text',
                                             text: {
-                                                body: `Matching facilities:\n\n${truncatedTextResponse}`,
+                                                body: truncatedMessage,
                                             },
                                             language: {
                                                 code: 'en_US',
@@ -257,7 +264,7 @@ app.post('/whatsapp', async (req, res) => {
                                             to: '+919788825633',
                                             type: 'text',
                                             text: {
-                                                body: "No matching facilities found. Please refine your search criteria.",
+                                                body: "No matching schemes found. Please refine your search criteria.",
                                             },
                                             language: {
                                                 code: 'en_US',
@@ -265,7 +272,7 @@ app.post('/whatsapp', async (req, res) => {
                                         };
                                     }
                                     break;
-                                
+                                                
                 default:
                     responseTemplate = {
                         messaging_product: 'whatsapp',
