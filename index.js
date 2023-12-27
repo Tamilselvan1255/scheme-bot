@@ -135,6 +135,62 @@ app.post('/whatsapp', async (req, res) => {
                         };
                         break;
 
+                        case payload === 'Male' || payload === 'Female' || payload === 'Both Male and Female':
+                        responseTemplate = {
+                            messaging_product: 'whatsapp',
+                            to: '+919788825633',
+                            type: 'template',
+                            template: {
+                                name: 'state',
+                                language: {
+                                    code: 'en_US',
+                                },
+                            },
+                        };
+                        break;
+
+                        case payload === 'TAMIL NADU' || payload === 'MAHARASHTRA' || payload === 'GOA':
+                        responseTemplate = {
+                            messaging_product: 'whatsapp',
+                            to: '+919788825633',
+                            type: 'template',
+                            template: {
+                                name: 'disability',
+                                language: {
+                                    code: 'en_US',
+                                },
+                            },
+                        };
+                        break;
+                        
+                        case payload === 'Minimum 40%' || payload === 'Minimum 90%':
+                            responseTemplate = {
+                                messaging_product: 'whatsapp',
+                                to: '+919788825633',
+                                type: 'template',
+                                template: {
+                                    name: 'income',
+                                    language: {
+                                        code: 'en_US',
+                                    },
+                                },
+                            };
+                            break;
+
+                            case payload === '1,25,000' || payload === '1,75,000' || payload === 'No income limit':
+                                responseTemplate = {
+                                    messaging_product: 'whatsapp',
+                                    to: '+919788825633',
+                                    type: 'template',
+                                    template: {
+                                        name: 'deals',
+                                        language: {
+                                            code: 'en_US',
+                                        },
+                                    },
+                                };
+                                break;
+
                 default:
                     responseTemplate = {
                         messaging_product: 'whatsapp',
