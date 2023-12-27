@@ -240,7 +240,8 @@ app.post('/whatsapp', async (req, res) => {
                 genderEligibility: gender ? gender : { $exists: true },
             };
         
-            const filteredFacilities = await scheme.find(filter);
+            const filteredFacilities = await SchemeModel.find(filter);
+
         
             if (filteredFacilities.length !== 0) {
                 responseTemplate = {
