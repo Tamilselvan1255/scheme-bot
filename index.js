@@ -282,12 +282,14 @@ app.post('/whatsapp', async (req, res) => {
     const genderSelection = gender;
     const stateSelection = state;
     const disabilitySelection = disability;
+    const incomeSelection = income;
 
     // Filtering facilities based on user selections, including income
-    const filteredFacilities = await filterFacilities(stateSelection, disabilitySelection, ageSelection, income, genderSelection);
+    const filteredFacilities = await filterFacilities(stateSelection, disabilitySelection, ageSelection, incomeSelection, genderSelection);
 
     // Check if there are matching facilities
     if (filteredFacilities.length !== 0) {
+
         // Convert the fetched data to a text response
         const textResponse = filteredFacilities.map(facility => {
             return `Facility: ${facility.domainDescription}\nEligibility: ${facility.eligibleDisabilities}\nComments: ${facility.comments}\n\n`;
