@@ -73,8 +73,20 @@ app.post('/whatsapp', async (req, res) => {
         try {
             let responseTemplate;
 
-            // Ensure payload is defined before using it
-            if (payload !== undefined) {
+            // Handle 'hello' separately
+            if (msgBody.includes('hello') || msgBody.includes('hi')) {
+                responseTemplate = {
+                    messaging_product: 'whatsapp',
+                    to: '+919788825633',
+                    type: 'template',
+                    template: {
+                        name: 'scheme_template',
+                        language: {
+                            code: 'en_US',
+                        },
+                    },
+                };
+            } else if (payload !== undefined) {
                 // Extracting individual keywords
                 const age = payload.includes('0-6') ? '0-6' : payload.includes('6-18') ? '6-18' : '18-24';
                 const gender = payload.includes('Male') ? 'Male' : payload.includes('Female') ? 'Female' : 'Both Male and Female';
