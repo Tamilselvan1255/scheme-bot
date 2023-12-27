@@ -81,36 +81,7 @@ app.post('/whatsapp', async (req, res) => {
             const income = payload.includes('1,25,000') ? '1,25,000' : payload.includes('1,75,000') ? '1,75,000' : 'No income limit';
 
                // Fetch data from MongoDB based on the inputs
-               const schemeData = await schemeModel.findOne({ age, gender, state, disability, income });
-
-               if (schemeData) {
-                responseTemplate = {
-                    messaging_product: 'whatsapp',
-                    to: '+919788825633',
-                    type: 'template',
-                    template: {
-                        name: 'scheme',
-                        language: {
-                            code: 'en_US',
-                        },
-                        data: {
-                            schemeDetails: schemeData.details,
-                        },
-                    },
-                };
-            } else {
-                responseTemplate = {
-                    messaging_product: 'whatsapp',
-                    to: '+919788825633',
-                    type: 'text',
-                    text: {
-                        body: "Scheme not found for the given inputs!",
-                    },
-                    language: {
-                        code: 'en_US',
-                    },
-                };
-            }
+            const schemeData = await schemeModel.findOne({ age, gender, state, disability, income });
 
             switch (true) {
                 case msgBody.includes('hello') || msgBody.includes('hi'):
@@ -226,19 +197,52 @@ app.post('/whatsapp', async (req, res) => {
                             };
                             break;
 
-                            case payload === '1,25,000' || payload === '1,75,000' || payload === 'No income limit':
-                                responseTemplate = {
-                                    messaging_product: 'whatsapp',
-                                    to: '+919788825633',
-                                    type: 'template',
-                                    template: {
-                                        name: 'deals',
-                                        language: {
-                                            code: 'en_US',
-                                        },
-                                    },
-                                };
-                                break;
+                            // case payload === '1,25,000' || payload === '1,75,000' || payload === 'No income limit':
+                            //     responseTemplate = {
+                            //         messaging_product: 'whatsapp',
+                            //         to: '+919788825633',
+                            //         type: 'template',
+                            //         template: {
+                            //             name: 'deals',
+                            //             language: {
+                            //                 code: 'en_US',
+                            //             },
+                            //         },
+                            //     };
+                            //     break;
+
+                            case '1,25,000':
+                                case '1,75,000':
+                                case 'No income limit':
+                                    if (schemeData) {
+                                        responseTemplate = {
+                                            messaging_product: 'whatsapp',
+                                            to: '+919788825633',
+                                            type: 'template',
+                                            template: {
+                                                name: 'scheme',
+                                                language: {
+                                                    code: 'en_US',
+                                                },
+                                                data: {
+                                                    schemeDetails: schemeData.details,
+                                                },
+                                            },
+                                        };
+                                    } else {
+                                        responseTemplate = {
+                                            messaging_product: 'whatsapp',
+                                            to: '+919788825633',
+                                            type: 'text',
+                                            text: {
+                                                body: "Scheme not found for the given inputs!",
+                                            },
+                                            language: {
+                                                code: 'en_US',
+                                            },
+                                        };
+                                    }
+                                    break;
 
                 default:
                     responseTemplate = {
