@@ -19,6 +19,15 @@ db.once('open', () => {
     console.log('Connected to MongoDB');
 });
 
+const schemeSchema = new mongoose.Schema({
+    age: String,
+    gender: String,
+    state: String,
+    disability: String,
+    income: String,
+});
+
+const SchemeModel = mongoose.model('Scheme', schemeSchema);
 
 const token = process.env.TOKEN;
 const myToken = process.env.MYTOKEN;
