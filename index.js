@@ -34,7 +34,7 @@ const schemeSchema = new mongoose.Schema({
 
 const SchemeModel = mongoose.model('Scheme', schemeSchema);
 
-
+let collectedData = {}; 
 const filterFacilities = async (state, disability, age, income, gender) => {
     const filter = {
         implementedBy: state ? state : { $exists: true },
@@ -214,8 +214,8 @@ app.post('/whatsapp', async (req, res) => {
                             break;
 
                             case payload === '1,25,000' || payload === '1,75,000' || payload === 'No income limit':
-                                var income = payload;
-                                console.log(income);
+                                collectedData.income = payload;
+                                console.log('Collected Data:', collectedData);
                                 responseTemplate = {
                                     messaging_product: 'whatsapp',
                                     to: '+919788825633',
@@ -274,29 +274,27 @@ app.post('/whatsapp', async (req, res) => {
                             //         }
                             //         break;
                           
-                            case payload === '1,25,000' || payload === '1,75,000' || payload === 'No income limit':
-                                var income = payload;
-                                console.log(income);
-    // Extracting previous user selections
-    const ageSelection = age;
-    const genderSelection = gender;
-    const stateSelection = state;
-    const disabilitySelection = disability;
-    const incomeSelection = income;
+                            case collectedData.income !== undefined:
+                                // Check if all relevant data is collected
+                                const { age, gender, state, disability, income } = collectedData;
+   
+                                   // Query the database to find matching records
+    const matchingRecords = await SchemeModel.find({
+        age: age ? age : { $exists: true },
+        genderEligibility: gender ? gender : { $exists: true },
+        implementedBy: state ? state : { $exists: true },
+        disabilityPercentage: disability ? disability : { $exists: true },
+        annualIncome: income ? income : { $exists: true },
+    });
 
-    // Filtering facilities based on user selections, including income
-    const filteredFacilities = await filterFacilities(stateSelection, disabilitySelection, ageSelection, incomeSelection, genderSelection);
-
-    // Check if there are matching facilities
-    if (filteredFacilities.length !== 0) {
-
+    if (matchingRecords.length !== 0) {
         // Convert the fetched data to a text response
-        const textResponse = filteredFacilities.map(facility => {
-            return `Facility: ${facility.domainDescription}\nEligibility: ${facility.eligibleDisabilities}\nComments: ${facility.comments}\n\n`;
+        const textResponse = matchingRecords.map(record => {
+            return `Facility: ${record.domainDescription}\nEligibility: ${record.eligibleDisabilities}\nComments: ${record.comments}\n\n`;
         }).join('\n');
 
-         // Truncate the text if it exceeds the limit
-    const truncatedTextResponse = textResponse.substring(0, 4096);
+        // Truncate the text if it exceeds the limit
+        const truncatedTextResponse = textResponse.substring(0, 4096);
 
         // Adjust the response as needed
         responseTemplate = {
