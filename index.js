@@ -207,9 +207,9 @@ app.post('/whatsapp', async (req, res) => {
 
         if (schemesData && schemesData.length > 0) {
             const schemesTextArray = schemesData.map(scheme => {
-                return `Implemented By: ${schemesData.implementedBy}\n` +
-                    `Domain Description: ${schemesData.domainDescription}\n` +
-                    `Eligible Disabilities: ${schemesData.eligibleDisabilities}\n` +
+                return `Implemented By: ${scheme.implementedBy}\n` +
+                    `Domain Description: ${scheme.domainDescription}\n` +
+                    `Eligible Disabilities: ${scheme.eligibleDisabilities}\n` +
                     `Disability Percentage: ${scheme.disabilityPercentage}\n` +
                     `Age: ${scheme.age}\n` +
                     `Annual Income: ${scheme.annualIncome}\n` +
@@ -219,6 +219,7 @@ app.post('/whatsapp', async (req, res) => {
             });
 
             console.log('schemesData:', schemesData); 
+            console.log('schemesTextArray:', schemesTextArray);
             const schemesText = schemesTextArray.join('\n\n');
     
             const truncatedText = schemesText.substring(0, 4096);
