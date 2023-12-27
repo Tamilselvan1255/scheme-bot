@@ -273,7 +273,10 @@ app.post('/whatsapp', async (req, res) => {
                             //             };
                             //         }
                             //         break;
-
+                          
+                            case payload === '1,25,000' || payload === '1,75,000' || payload === 'No income limit':
+                                var income = payload;
+                                console.log(income);
     // Extracting previous user selections
     const ageSelection = age;
     const genderSelection = gender;
