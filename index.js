@@ -137,7 +137,8 @@ app.post('/whatsapp', async (req, res) => {
                     break;
 
                     case payload === '0-6' || payload === '6-18' || payload === '18-24':
-                        console.log(payload);
+                        const age = payload;
+                        console.log(age);
                         responseTemplate = {
                             messaging_product: 'whatsapp',
                             to: '+919788825633',
@@ -167,7 +168,8 @@ app.post('/whatsapp', async (req, res) => {
                         break;
 
                         case payload === 'TAMIL NADU' || payload === 'MAHARASHTRA' || payload === 'GOA':
-                        responseTemplate = {
+                            console.log(payload);
+                       responseTemplate = {
                             messaging_product: 'whatsapp',
                             to: '+919788825633',
                             type: 'template',
@@ -181,6 +183,7 @@ app.post('/whatsapp', async (req, res) => {
                         break;
                         
                         case payload === 'Minimum 40%' || payload === 'Minimum 90%':
+                            console.log(payload);
                             responseTemplate = {
                                 messaging_product: 'whatsapp',
                                 to: '+919788825633',
@@ -195,6 +198,7 @@ app.post('/whatsapp', async (req, res) => {
                             break;
 
                             case payload === '1,25,000' || payload === '1,75,000' || payload === 'No income limit':
+                            console.log(payload);
                                 responseTemplate = {
                                     messaging_product: 'whatsapp',
                                     to: '+919788825633',
