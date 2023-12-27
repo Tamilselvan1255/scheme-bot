@@ -78,7 +78,7 @@ app.post('/whatsapp', async (req, res) => {
 
         try {
             let responseTemplate;
-
+            let AGE, GENDER, STATE, DISABILITY, INCOME;
             switch (true) {
                 case msgBody.includes('hello') || msgBody.includes('hi'):
                     responseTemplate = {
@@ -139,7 +139,7 @@ app.post('/whatsapp', async (req, res) => {
 
                     case payload === '0-16' || payload === '6-18' || payload === '18-24':
                         collectedData.age = payload;
-                        const AGE = collectedData.age
+                         AGE = collectedData.age
                         console.log('Collected Data age:', collectedData.age);
                     responseTemplate = {
                         messaging_product: 'whatsapp',
@@ -156,7 +156,7 @@ app.post('/whatsapp', async (req, res) => {
 
                     case payload === 'Male' || payload === 'Female' || payload === 'Both Male and Female':
                         collectedData.gender = payload;
-                        const GENDER = collectedData.gender
+                         GENDER = collectedData.gender
                         console.log('Collected Data gender:', collectedData);
                     responseTemplate = {
                         messaging_product: 'whatsapp',
@@ -175,7 +175,7 @@ app.post('/whatsapp', async (req, res) => {
 
                         case payload === 'TAMIL NADU' || payload === 'MAHARASHTRA' || payload === 'GOA':
                             collectedData.state = payload;
-                        const STATE = collectedData.state
+                         STATE = collectedData.state
                     console.log('Collected Data:', collectedData);
                        responseTemplate = {
                             messaging_product: 'whatsapp',
@@ -192,7 +192,7 @@ app.post('/whatsapp', async (req, res) => {
                         
                         case payload === 'Minimum 40%' || payload === 'Minimum 90%':
                             collectedData.disability = payload;
-                        const DISABILITY = collectedData.disability
+                         DISABILITY = collectedData.disability
                             console.log('Collected Data:', collectedData);
                             responseTemplate = {
                                 messaging_product: 'whatsapp',
@@ -209,7 +209,7 @@ app.post('/whatsapp', async (req, res) => {
 
                             case payload === '1,25,000' || payload === '1,75,000' || payload === 'No income limit':
                                 collectedData.income = payload;
-                        const INCOME = collectedData.income
+                         INCOME = collectedData.income
                     console.log('Collected Data:', collectedData);
                                 // responseTemplate = {
                                 //     messaging_product: 'whatsapp',
