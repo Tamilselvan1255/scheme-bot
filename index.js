@@ -208,9 +208,8 @@ app.post('/whatsapp', async (req, res) => {
     
         if (schemesData && schemesData.length > 0) {
             // Modify responseTemplate based on the data retrieved from the database
-            const schemesText = schemesData.map(scheme => {
-                return `${scheme.schemeName}\n` +
-                    `Implemented By: ${scheme.implementedBy}\n` +
+            const schemesTextArray = schemesData.map(scheme => {
+                return `Implemented By: ${scheme.implementedBy}\n` +
                     `Domain Description: ${scheme.domainDescription}\n` +
                     `Eligible Disabilities: ${scheme.eligibleDisabilities}\n` +
                     `Disability Percentage: ${scheme.disabilityPercentage}\n` +
@@ -219,7 +218,10 @@ app.post('/whatsapp', async (req, res) => {
                     `Gender Eligibility: ${scheme.genderEligibility}\n` +
                     `Comments: ${scheme.comments}\n` +
                     `Email Address: ${scheme.emailAddress}`;
-            }).join('\n\n');
+            });
+    
+            // Combine the schemesTextArray into a single string
+            const schemesText = schemesTextArray.join('\n\n');
     
             // Truncate the text body if it exceeds the limit
             const truncatedText = schemesText.substring(0, 4096);
