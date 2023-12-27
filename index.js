@@ -222,12 +222,7 @@ app.post('/whatsapp', async (req, res) => {
                 
                                     // Query the database to find matching records
                                     const schemesData = await SchemeModel.find({
-                                        age: age ? age : { $exists: true },
-                                        genderEligibility: gender ? gender : { $exists: true },
-                                        implementedBy: state ? state : { $exists: true },
-                                        disabilityPercentage: disability ? disability : { $exists: true },
-                                        annualIncome: income ? income : { $exists: true },
-                                    });
+                                        age: collectedData.age, genderEligibility: collectedData.gender, implementedBy: collectedData.state, disabilityPercentage: collectedData.disability, annualIncome: collectedData.income});
                 
                                     if (schemesData.length > 0) {
                                         let responseMessage = `Matching schemes:\n\n`;
