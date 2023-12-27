@@ -274,21 +274,12 @@ app.post('/whatsapp', async (req, res) => {
             responseTemplate = {
                 messaging_product: 'whatsapp',
                 to: '+919788825633',
-                type: 'template',
-                template: {
-                    name: 'continue_template',
-                    language: {
-                        code: 'en_US',
-                    },
+                type: 'text', // Set the type to 'text'
+                text: {
+                    body: truncatedMessage,
                 },
-                metadata: {
-                    filters: {
-                        age: payload === '0-6' || payload === '6-18' || payload === '18-24' ? payload : undefined,
-                        gender: payload === 'Male' || payload === 'Female' || payload === 'Both Male and Female' ? payload : undefined,
-                        state: payload === 'TAMIL NADU' || payload === 'MAHARASHTRA' || payload === 'GOA' ? payload : undefined,
-                        disability: payload === 'Minimum 40%' || payload === 'Minimum 90%' ? payload : undefined,
-                        income: payload === '1,25,000' || payload === '1,75,000' || payload === 'No income limit' ? payload : undefined,
-                    },
+                language: {
+                    code: 'en_US',
                 },
             };
             break;
