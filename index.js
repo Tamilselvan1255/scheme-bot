@@ -78,7 +78,7 @@ app.post('/whatsapp', async (req, res) => {
 
         try {
             let responseTemplate;
-            let AGE, GENDER, STATE, DISABILITY, INCOME;
+
             switch (true) {
                 case msgBody.includes('hello') || msgBody.includes('hi'):
                     responseTemplate = {
@@ -139,7 +139,6 @@ app.post('/whatsapp', async (req, res) => {
 
                     case payload === '0-16' || payload === '6-18' || payload === '18-24':
                         collectedData.age = payload;
-                         AGE = collectedData.age
                         console.log('Collected Data age:', collectedData.age);
                     responseTemplate = {
                         messaging_product: 'whatsapp',
@@ -156,7 +155,6 @@ app.post('/whatsapp', async (req, res) => {
 
                     case payload === 'Male' || payload === 'Female' || payload === 'Both Male and Female':
                         collectedData.gender = payload;
-                         GENDER = collectedData.gender
                         console.log('Collected Data gender:', collectedData);
                     responseTemplate = {
                         messaging_product: 'whatsapp',
@@ -175,7 +173,6 @@ app.post('/whatsapp', async (req, res) => {
 
                         case payload === 'TAMIL NADU' || payload === 'MAHARASHTRA' || payload === 'GOA':
                             collectedData.state = payload;
-                         STATE = collectedData.state
                     console.log('Collected Data:', collectedData);
                        responseTemplate = {
                             messaging_product: 'whatsapp',
@@ -192,7 +189,6 @@ app.post('/whatsapp', async (req, res) => {
                         
                         case payload === 'Minimum 40%' || payload === 'Minimum 90%':
                             collectedData.disability = payload;
-                         DISABILITY = collectedData.disability
                             console.log('Collected Data:', collectedData);
                             responseTemplate = {
                                 messaging_product: 'whatsapp',
@@ -209,32 +205,31 @@ app.post('/whatsapp', async (req, res) => {
 
                             case payload === '1,25,000' || payload === '1,75,000' || payload === 'No income limit':
                                 collectedData.income = payload;
-                         INCOME = collectedData.income
                     console.log('Collected Data:', collectedData);
-                                // responseTemplate = {
-                                //     messaging_product: 'whatsapp',
-                                //     to: '+919788825633',
-                                //     type: 'template',
-                                //     template: {
-                                //         name: 'deals',
-                                //         language: {
-                                //             code: 'en_US',
-                                //         },
-                                //     },
-                                // };
+                                responseTemplate = {
+                                    messaging_product: 'whatsapp',
+                                    to: '+919788825633',
+                                    type: 'template',
+                                    template: {
+                                        name: 'deals',
+                                        language: {
+                                            code: 'en_US',
+                                        },
+                                    },
+                                };
                                 break;
 
-                               case AGE === collectedData.age &&
-                               GENDER === collectedData.gender &&
-    STATE === collectedData.state &&
-    DISABILITY === collectedData.disability &&
-    INCOME === collectedData.income:
+                               case collectedData.age !== undefined &&
+    collectedData.gender !== undefined &&
+    collectedData.state !== undefined &&
+    collectedData.disability !== undefined &&
+    collectedData.income !== undefined:
                                     // Check if all relevant data is collected
                                     // const { age, gender, state, disability, income } = collectedData;
                 
                                     // Query the database to find matching records
                                     const schemesData = await SchemeModel.find({
-                                        age: AGE, genderEligibility: GENDER, implementedBy: STATE, disabilityPercentage: DISABILITY, annualIncome: INCOME});
+                                        age: collectedData.age, genderEligibility: collectedData.gender, implementedBy: collectedData.state, disabilityPercentage: collectedData.disability, annualIncome: collectedData.income});
                 
 
                                     if (schemesData.length > 0) {
