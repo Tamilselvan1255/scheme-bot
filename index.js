@@ -229,6 +229,8 @@ app.post('/whatsapp', async (req, res) => {
                                     const schemesData = await SchemeModel.find({
                                         age: collectedData.age, genderEligibility: collectedData.gender, implementedBy: collectedData.state, disabilityPercentage: collectedData.disability, annualIncome: collectedData.income});
                 
+                                        let responseTemplate; 
+
                                     if (schemesData.length > 0) {
                                         let responseMessage = `Matching schemes:\n\n`;
                 
@@ -258,9 +260,7 @@ app.post('/whatsapp', async (req, res) => {
                                                 code: 'en_US',
                                             },
                                         };
-                                        const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
-                                                console.log('Response:', response.data);
-                                                res.status(200).send(response.data);
+                                        console.log('Response Template for Matching Schemes:', responseTemplate);
                                     } else {
                                         responseTemplate = {
                                             messaging_product: 'whatsapp',
@@ -273,11 +273,22 @@ app.post('/whatsapp', async (req, res) => {
                                                 code: 'en_US',
                                             },
                                         };
-                                                  const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
+                                        console.log('Response Template for No Matching Schemes:', responseTemplate);
+                                    }
+                                    // Send the response if responseTemplate is defined
+    if (responseTemplate) {
+        try {
+            const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
             console.log('Response:', response.data);
             res.status(200).send(response.data);
-                                    }
-                                    break;
+        } catch (error) {
+            console.error('Error sending response:', error.message, error.response ? error.response.data : '');
+            res.status(500).send(error.message);
+        }
+    } else {
+        console.log('Response Template is undefined. No response sent.');
+        res.status(200).send(''); // Send an empty response
+    }
 
              
                 default:
