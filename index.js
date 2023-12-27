@@ -204,13 +204,12 @@ app.post('/whatsapp', async (req, res) => {
                                 case payload === '0-6' || payload === '6-18' || payload === '18-24':
     try {
         const schemesData = await SchemeModel.find({ age: payload });
-        console.log('schemesData:', schemesData);
 
         if (schemesData && schemesData.length > 0) {
             const schemesTextArray = schemesData.map(scheme => {
-                return `Implemented By: ${scheme.implementedBy}\n` +
-                    `Domain Description: ${scheme.domainDescription}\n` +
-                    `Eligible Disabilities: ${scheme.eligibleDisabilities}\n` +
+                return `Implemented By: ${schemesData.implementedBy}\n` +
+                    `Domain Description: ${schemesData.domainDescription}\n` +
+                    `Eligible Disabilities: ${schemesData.eligibleDisabilities}\n` +
                     `Disability Percentage: ${scheme.disabilityPercentage}\n` +
                     `Age: ${scheme.age}\n` +
                     `Annual Income: ${scheme.annualIncome}\n` +
@@ -220,16 +219,16 @@ app.post('/whatsapp', async (req, res) => {
             });
 
             console.log('schemesData:', schemesData); 
-            // const schemesText = schemesTextArray.join('\n\n');
+            const schemesText = schemesTextArray.join('\n\n');
     
-            // const truncatedText = schemesText.substring(0, 4096);
+            const truncatedText = schemesText.substring(0, 4096);
     
             responseTemplate = {
                 messaging_product: 'whatsapp',
                 to: '+919788825633',
                 type: 'text',
                 text: {
-                    body: `Schemes for ${payload}:\n${schemesData}`,
+                    body: `Schemes for ${payload}:\n${truncatedText}`,
                 },
                 language: {
                     code: 'en_US',
