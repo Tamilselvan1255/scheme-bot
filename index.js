@@ -213,21 +213,21 @@ app.post('/whatsapp', async (req, res) => {
                             };
                             break;
 
-                            // case payload === '1,25,000' || payload === '1,75,000' || payload === 'No income limit':
-                            //     var income = payload;
-                            //     console.log(income);
-                            //     responseTemplate = {
-                            //         messaging_product: 'whatsapp',
-                            //         to: '+919788825633',
-                            //         type: 'template',
-                            //         template: {
-                            //             name: 'deals',
-                            //             language: {
-                            //                 code: 'en_US',
-                            //             },
-                            //         },
-                            //     };
-                            //     break;
+                            case payload === '1,25,000' || payload === '1,75,000' || payload === 'No income limit':
+                                var income = payload;
+                                console.log(income);
+                                responseTemplate = {
+                                    messaging_product: 'whatsapp',
+                                    to: '+919788825633',
+                                    type: 'template',
+                                    template: {
+                                        name: 'deals',
+                                        language: {
+                                            code: 'en_US',
+                                        },
+                                    },
+                                };
+                                break;
 
                             //     case payload === deals:
                             //         // Extracting previous user selections
@@ -273,9 +273,6 @@ app.post('/whatsapp', async (req, res) => {
                             //             };
                             //         }
                             //         break;
-                            case payload === '1,25,000' || payload === '1,75,000' || payload === 'No income limit':
-    var income = payload;
-    console.log(income);
 
     // Extracting previous user selections
     const ageSelection = age;
