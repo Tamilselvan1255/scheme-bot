@@ -282,7 +282,7 @@ app.post('/whatsapp', async (req, res) => {
                     };
                     break;
             }
-
+            console.log('Response Template:', responseTemplate);
             const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
             console.log('Response:', response.data);
             res.status(200).send(response.data);
