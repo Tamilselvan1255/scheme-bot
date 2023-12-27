@@ -192,6 +192,45 @@ app.post('/whatsapp', async (req, res) => {
                                 };
                                 break;
 
+                                case payload === '0-6' || payload === '6-18' || payload === '18-24':
+    // Example: Fetch data from the database based on the payload
+    try {
+        const schemesData = await SchemeModel.find({ age: payload });
+        
+        if (schemesData && schemesData.length > 0) {
+            // Modify responseTemplate based on the data retrieved from the database
+            const schemesText = schemesData.map(scheme => `${scheme.name}: ${scheme.description}`).join('\n');
+            responseTemplate = {
+                messaging_product: 'whatsapp',
+                to: '+919788825633',
+                type: 'text',
+                text: {
+                    body: `Schemes for ${payload}:\n${schemesText}`,
+                },
+                language: {
+                    code: 'en_US',
+                },
+            };
+        } else {
+            // Handle the case where no data is found for the given payload
+            responseTemplate = {
+                messaging_product: 'whatsapp',
+                to: '+919788825633',
+                type: 'text',
+                text: {
+                    body: `No schemes found for the selected age group (${payload}).`,
+                },
+                language: {
+                    code: 'en_US',
+                },
+            };
+        }
+    } catch (error) {
+        console.error('Error fetching data from the database:', error.message);
+        // Handle the error appropriately
+    }
+    break;
+                                
                 default:
                     responseTemplate = {
                         messaging_product: 'whatsapp',
