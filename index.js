@@ -19,6 +19,16 @@ db.once('open', () => {
     console.log('Connected to MongoDB');
 });
 
+// Create a mongoose model for the "schemes" collection
+const schemeModel = mongoose.model('Scheme', {
+    age: String,
+    gender: String,
+    state: String,
+    disability: String,
+    income: String,
+    details: String, // Replace with the actual schema of your "schemes" collection
+});
+
 const token = process.env.TOKEN;
 const myToken = process.env.MYTOKEN;
 
@@ -62,6 +72,45 @@ app.post('/whatsapp', async (req, res) => {
 
         try {
             let responseTemplate;
+
+            // Extracting individual keywords
+            const age = payload.includes('0-6') ? '0-6' : payload.includes('6-18') ? '6-18' : '18-24';
+            const gender = payload.includes('Male') ? 'Male' : payload.includes('Female') ? 'Female' : 'Both Male and Female';
+            const state = payload.includes('TAMIL NADU') ? 'TAMIL NADU' : payload.includes('MAHARASHTRA') ? 'MAHARASHTRA' : 'GOA';
+            const disability = payload.includes('Minimum 40%') ? 'Minimum 40%' : 'Minimum 90%';
+            const income = payload.includes('1,25,000') ? '1,25,000' : payload.includes('1,75,000') ? '1,75,000' : 'No income limit';
+
+               // Fetch data from MongoDB based on the inputs
+               const schemeData = await schemeModel.findOne({ age, gender, state, disability, income });
+
+               if (schemeData) {
+                responseTemplate = {
+                    messaging_product: 'whatsapp',
+                    to: '+919788825633',
+                    type: 'template',
+                    template: {
+                        name: 'scheme',
+                        language: {
+                            code: 'en_US',
+                        },
+                        data: {
+                            schemeDetails: schemeData.details,
+                        },
+                    },
+                };
+            } else {
+                responseTemplate = {
+                    messaging_product: 'whatsapp',
+                    to: '+919788825633',
+                    type: 'text',
+                    text: {
+                        body: "Scheme not found for the given inputs!",
+                    },
+                    language: {
+                        code: 'en_US',
+                    },
+                };
+            }
 
             switch (true) {
                 case msgBody.includes('hello') || msgBody.includes('hi'):
