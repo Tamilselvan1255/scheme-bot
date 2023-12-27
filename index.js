@@ -35,17 +35,18 @@ const schemeSchema = new mongoose.Schema({
 const SchemeModel = mongoose.model('Scheme', schemeSchema);
 
 let collectedData = {}; 
-const filterFacilities = async (state, disability, age, income, gender) => {
-    const filter = {
-        implementedBy: state ? state : { $exists: true },
-        disabilityPercentage: disability ? disability : { $exists: true },
-        age: age ? age : { $exists: true },
-        annualIncome: income ? income : { $exists: true },
-        genderEligibility: gender ? gender : { $exists: true },
-    };
 
-    return await SchemeModel.find(filter);
-};
+// const filterFacilities = async (state, disability, age, income, gender) => {
+//     const filter = {
+//         implementedBy: state ? state : { $exists: true },
+//         disabilityPercentage: disability ? disability : { $exists: true },
+//         age: age ? age : { $exists: true },
+//         annualIncome: income ? income : { $exists: true },
+//         genderEligibility: gender ? gender : { $exists: true },
+//     };
+
+//     return await SchemeModel.find(filter);
+// };
 
 const token = process.env.TOKEN;
 const myToken = process.env.MYTOKEN;
