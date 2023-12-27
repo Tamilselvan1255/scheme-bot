@@ -202,52 +202,52 @@ app.post('/whatsapp', async (req, res) => {
                                 break;
 
                                 case payload === '0-6' || payload === '6-18' || payload === '18-24':
-    try {
-        // Assuming schemesData is an array of scheme objects
-        const schemesData = await SchemeModel.find({ age: payload });
-const scheme = schemesData[0];
-
-if (scheme) {
-    const schemesText = `Implemented By: ${scheme.implementedBy || 'Not available'}\n` +
-        `Domain Description: ${scheme.domainDescription || 'Not available'}\n` +
-        `Eligible Disabilities: ${scheme.eligibleDisabilities || 'Not available'}\n` +
-        `Disability Percentage: ${scheme.disabilityPercentage || 'Not available'}\n` +
-        `Age: ${scheme.age || 'Not available'}\n` +
-        `Annual Income: ${scheme.annualIncome || 'Not available'}\n` +
-        `Gender Eligibility: ${scheme.genderEligibility || 'Not available'}\n` +
-        `Comments: ${scheme.comments || 'Not available'}\n` +
-        `Email Address: ${scheme.emailAddress || 'Not available'}`;
-
-    const truncatedText = schemesText.substring(0, 4096);
-
-    responseTemplate = {
-        messaging_product: 'whatsapp',
-        to: '+919788825633',
-        type: 'text',
-        text: {
-            body: `Schemes for ${payload}:\n${truncatedText}`,
-        },
-        language: {
-            code: 'en_US',
-        },
-    };
-} else {
-    responseTemplate = {
-        messaging_product: 'whatsapp',
-        to: '+919788825633',
-        type: 'text',
-        text: {
-            body: `No schemes found for the selected age group (${payload}).`,
-        },
-        language: {
-            code: 'en_US',
-        },
-    };
-}
-    } catch (error) {
-        console.error('Error fetching data from the database:', error.message);
-    }
-    break;
+                                    try {
+                                        const schemesData = await SchemeModel.find({ age: payload });
+                                        const scheme = schemesData[0];
+                                
+                                        if (scheme) {
+                                            const schemesText = `Implemented By: ${scheme.implementedBy || 'Not available'}\n` +
+                                                `Domain Description: ${scheme.domainDescription || 'Not available'}\n` +
+                                                `Eligible Disabilities: ${scheme.eligibleDisabilities || 'Not available'}\n` +
+                                                `Disability Percentage: ${scheme.disabilityPercentage || 'Not available'}\n` +
+                                                `Age: ${scheme.age || 'Not available'}\n` +
+                                                `Annual Income: ${scheme.annualIncome || 'Not available'}\n` +
+                                                `Gender Eligibility: ${scheme.genderEligibility || 'Not available'}\n` +
+                                                `Comments: ${scheme.comments || 'Not available'}\n` +
+                                                `Email Address: ${scheme.emailAddress || 'Not available'}`;
+                                
+                                            const truncatedText = schemesText.substring(0, 4096);
+                                
+                                            responseTemplate = {
+                                                messaging_product: 'whatsapp',
+                                                to: '+919788825633',
+                                                type: 'text',
+                                                text: {
+                                                    body: `Schemes for ${payload}:\n${truncatedText}`,
+                                                },
+                                                language: {
+                                                    code: 'en_US',
+                                                },
+                                            };
+                                        } else {
+                                            responseTemplate = {
+                                                messaging_product: 'whatsapp',
+                                                to: '+919788825633',
+                                                type: 'text',
+                                                text: {
+                                                    body: `No schemes found for the selected age group (${payload}).`,
+                                                },
+                                                language: {
+                                                    code: 'en_US',
+                                                },
+                                            };
+                                        }
+                                    } catch (error) {
+                                        console.error('Error fetching data from the database:', error.message);
+                                    }
+                                    break;
+                                
 
                                 
                 default:
