@@ -233,11 +233,11 @@ app.post('/whatsapp', async (req, res) => {
             }
 
             const filter = {
-                implementedBy: implementedBy ? implementedBy : { $exists: true },
-                disabilityPercentage: disabilityPercentage ? disabilityPercentage : { $exists: true },
+                implementedBy: state ? state : { $exists: true },
+                disabilityPercentage: disability ? disability : { $exists: true },
                 age: age ? age : { $exists: true },
-                annualIncome: annualIncome ? annualIncome : { $exists: true },
-                genderEligibility: genderEligibility ? genderEligibility : { $exists: true },
+                annualIncome: income ? income : { $exists: true },
+                genderEligibility: gender ? gender : { $exists: true },
             };
 
             try {
