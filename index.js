@@ -253,6 +253,9 @@ app.post('/whatsapp', async (req, res) => {
                                                 code: 'en_US',
                                             },
                                         };
+                                        const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
+                                                console.log('Response:', response.data);
+                                                res.status(200).send(response.data);
                                     } else {
                                         responseTemplate = {
                                             messaging_product: 'whatsapp',
@@ -280,9 +283,10 @@ app.post('/whatsapp', async (req, res) => {
                             code: 'en_US',
                         },
                     };
+                    console.log('Switch Case: Default');
                     break;
             }
-            console.log('Response Template:', responseTemplate);
+            console.log('Final Response Template:', responseTemplate);
             const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
             console.log('Response:', response.data);
             res.status(200).send(response.data);
