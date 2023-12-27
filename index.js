@@ -220,16 +220,16 @@ app.post('/whatsapp', async (req, res) => {
             });
 
             console.log('schemesData:', schemesData); 
-            const schemesText = schemesTextArray.join('\n\n');
+            // const schemesText = schemesTextArray.join('\n\n');
     
-            const truncatedText = schemesText.substring(0, 4096);
+            // const truncatedText = schemesText.substring(0, 4096);
     
             responseTemplate = {
                 messaging_product: 'whatsapp',
                 to: '+919788825633',
                 type: 'text',
                 text: {
-                    body: `Schemes for ${payload}:\n${truncatedText}`,
+                    body: `Schemes for ${payload}:\n${schemesData}`,
                 },
                 language: {
                     code: 'en_US',
