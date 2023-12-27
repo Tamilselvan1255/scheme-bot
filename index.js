@@ -293,13 +293,16 @@ app.post('/whatsapp', async (req, res) => {
             return `Facility: ${facility.domainDescription}\nEligibility: ${facility.eligibleDisabilities}\nComments: ${facility.comments}\n\n`;
         }).join('\n');
 
+         // Truncate the text if it exceeds the limit
+    const truncatedTextResponse = textResponse.substring(0, 4096);
+
         // Adjust the response as needed
         responseTemplate = {
             messaging_product: 'whatsapp',
             to: '+919788825633',
             type: 'text',
             text: {
-                body: `Matching facilities:\n\n${textResponse}`,
+                body: `Matching facilities:\n\n${truncatedTextResponse}`,
             },
             language: {
                 code: 'en_US',
