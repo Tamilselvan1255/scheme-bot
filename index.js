@@ -272,7 +272,7 @@ app.post('/whatsapp', async (req, res) => {
         case payload === 'Minimum 40%' || payload === 'Minimum 90%':
         case payload === '1,25,000' || payload === '1,75,000' || payload === 'No income limit':
             try {
-                const filters = { age: payload, genderEligibility: payload }; // Modify this to include other filters as needed
+                const filters = { age: payload }; // Modify this to include other filters as needed
                 const schemesData = await SchemeModel.find(filters);
                 
                 if (schemesData.length > 0) {
@@ -348,8 +348,8 @@ app.post('/whatsapp', async (req, res) => {
             
                         const truncatedMessage = responseMessage.substring(0, 4096);
             
-                        const responseTemplate = {
-                            messaging_product: 'whatsapp', // Include messaging_product in the response
+                        responseTemplate = {
+                            messaging_product: 'whatsapp',
                             to: '+919788825633',
                             type: 'text',
                             text: {
@@ -362,10 +362,10 @@ app.post('/whatsapp', async (req, res) => {
             
                         const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
                         console.log('Response:', response.data);
-                        res.status(200).send(response.data); // Send the response once
+                        res.status(200).send(response.data);
                     } else {
                         const responseTemplate = {
-                            messaging_product: 'whatsapp', // Include messaging_product in the response
+                            messaging_product: 'whatsapp',
                             to: '+919788825633',
                             type: 'text',
                             text: {
@@ -378,7 +378,7 @@ app.post('/whatsapp', async (req, res) => {
             
                         const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
                         console.log('Response:', response.data);
-                        res.status(200).send(response.data); // Send the response once
+                        res.status(200).send(response.data);
                     }
                 } catch (error) {
                     console.error('Error fetching data from the database:', error.message);
