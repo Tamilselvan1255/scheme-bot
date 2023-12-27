@@ -229,7 +229,7 @@ app.post('/whatsapp', async (req, res) => {
                                 };
                                 break;
 
-                                case payload === 'deals':
+                                case payload === 'dealss':
                                     // Extracting previous user selections
                                     const ageSelection = bodyParam.entry[0].changes[0].value.messages[1].quick_reply.payload;
                                     const genderSelection = bodyParam.entry[0].changes[0].value.messages[2].quick_reply.payload;
