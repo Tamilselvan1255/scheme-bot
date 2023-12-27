@@ -137,10 +137,42 @@ app.post('/whatsapp', async (req, res) => {
                     };
                     break;
 
-                    case payload === '0-6' || payload === '6-18' || payload === '18-24':
+                    case payload === '0-16' || payload === '6-18' || payload === '18-24':
+                        collectedData.age = payload;
+                        console.log('Collected Data:', collectedData);
+                    responseTemplate = {
+                        messaging_product: 'whatsapp',
+                        to: '+919788825633',
+                        type: 'template',
+                        template: {
+                            name: 'state',
+                            language: {
+                                code: 'en_US',
+                            },
+                        },
+                    };
+                    break;
+
+                    case payload === 'Male' || payload === 'Female' || payload === 'Both Male and Female':
+                        collectedData.gender = payload;
+                        console.log('Collected Data:', collectedData);
+                    responseTemplate = {
+                        messaging_product: 'whatsapp',
+                        to: '+919788825633',
+                        type: 'template',
+                        template: {
+                            name: 'state',
+                            language: {
+                                code: 'en_US',
+                            },
+                        },
+                    };
+                    break;
+
+                    case payload === '0-6' || payload === '6-18' || payload === '18-24' && payload === 'Male' || payload === 'Female' || payload === 'Both Male and Female':
                         try {
                             // Assuming schemesData is an array of scheme objects
-                            const schemesData = await SchemeModel.find({ age: payload });
+                            const schemesData = await SchemeModel.find({ age: payload, genderEligibility: payload });
                             if (schemesData.length > 0) {
                                 let responseMessage = `Schemes for ${payload}:\n\n`;
                     
@@ -196,6 +228,7 @@ app.post('/whatsapp', async (req, res) => {
                             res.status(500).send('Internal Server Error');
                         }
                         break;
+
                         case payload === 'Male' || payload === 'Female' || payload === 'Both Male and Female':
                             collectedData.gender = payload;
                             console.log('Collected Data:', collectedData);
