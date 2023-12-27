@@ -202,15 +202,13 @@ app.post('/whatsapp', async (req, res) => {
                                 break;
 
                                 case payload === '0-6' || payload === '6-18' || payload === '18-24':
-    // Example: Fetch data from the database based on the payload
     try {
         const schemesData = await SchemeModel.find({ age: payload });
         console.log('schemesData:', schemesData);
 
         if (schemesData && schemesData.length > 0) {
-            // Modify responseTemplate based on the data retrieved from the database
             const schemesTextArray = schemesData.map(scheme => {
-                return `Implemented By: ${scheme.implementedBy}\n` +
+                return `Implemented By: ${schemes.implementedBy}\n` +
                     `Domain Description: ${scheme.domainDescription}\n` +
                     `Eligible Disabilities: ${scheme.eligibleDisabilities}\n` +
                     `Disability Percentage: ${scheme.disabilityPercentage}\n` +
@@ -221,10 +219,8 @@ app.post('/whatsapp', async (req, res) => {
                     `Email Address: ${scheme.emailAddress}`;
             });
     
-            // Combine the schemesTextArray into a single string
             const schemesText = schemesTextArray.join('\n\n');
     
-            // Truncate the text body if it exceeds the limit
             const truncatedText = schemesText.substring(0, 4096);
     
             responseTemplate = {
@@ -239,7 +235,6 @@ app.post('/whatsapp', async (req, res) => {
                 },
             };
         } else {
-            // Handle the case where no data is found for the given payload
             responseTemplate = {
                 messaging_product: 'whatsapp',
                 to: '+919788825633',
@@ -254,7 +249,6 @@ app.post('/whatsapp', async (req, res) => {
         }
     } catch (error) {
         console.error('Error fetching data from the database:', error.message);
-        // Handle the error appropriately
     }
     break;
                                 
