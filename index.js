@@ -210,39 +210,56 @@ app.post('/whatsapp', async (req, res) => {
     try {
         // Assuming schemesData is an array of scheme objects
         const schemesData = await SchemeModel.find({ age: payload });
-        const responseMessages = [];
+        if (schemesData.length > 0) {
+            let responseMessage = `Schemes for ${payload}:\n\n`;
 
-        schemesData.forEach((scheme) => {
-            const schemesText = `Implemented By: ${scheme.implementedBy || 'Not available'}\n` +
-                `Domain Description: ${scheme.domainDescription || 'Not available'}\n` +
-                `Eligible Disabilities: ${scheme.eligibleDisabilities || 'Not available'}\n` +
-                `Disability Percentage: ${scheme.disabilityPercentage || 'Not available'}\n` +
-                `Age: ${scheme.age || 'Not available'}\n` +
-                `Annual Income: ${scheme.annualIncome || 'Not available'}\n` +
-                `Gender Eligibility: ${scheme.genderEligibility || 'Not available'}\n` +
-                `Comments: ${scheme.comments || 'Not available'}\n` +
-                `Email Address: ${scheme.emailAddress || 'Not available'}`;
+         schemesData.forEach((scheme) => {
+                responseMessage += 
+                    `Implemented By: ${scheme.implementedBy || 'Not available'}\n` +
+                    `Domain Description: ${scheme.domainDescription || 'Not available'}\n` +
+                    `Eligible Disabilities: ${scheme.eligibleDisabilities || 'Not available'}\n` +
+                    `Disability Percentage: ${scheme.disabilityPercentage || 'Not available'}\n` +
+                    `Age: ${scheme.age || 'Not available'}\n` +
+                    `Annual Income: ${scheme.annualIncome || 'Not available'}\n` +
+                    `Gender Eligibility: ${scheme.genderEligibility || 'Not available'}\n` +
+                    `Comments: ${scheme.comments || 'Not available'}\n` +
+                    `Email Address: ${scheme.emailAddress || 'Not available'}\n\n`;
+            });
 
-            responseMessages.push({
+            const truncatedMessage = responseMessage.substring(0, 4096);
+
+            const responseTemplate = {
                 messaging_product: 'whatsapp',
                 to: '+919788825633',
                 type: 'text',
                 text: {
-                    body: `Schemes for ${payload}:\n${schemesText}`,
+                    body: truncatedMessage,
                 },
                 language: {
                     code: 'en_US',
                 },
-            });
-        });
+            };
 
-        // Send multiple response messages
-        await Promise.all(responseMessages.map(async (responseTemplate) => {
             const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
             console.log('Response:', response.data);
-        }));
+            res.status(200).send(response.data);
+        } else {
+            const responseTemplate = {
+                messaging_product: 'whatsapp',
+                to: '+919788825633',
+                type: 'text',
+                text: {
+                    body: `No schemes found for the selected age group (${payload}).`,
+                },
+                language: {
+                    code: 'en_US',
+                },
+            };
 
-        res.status(200).send('Messages sent successfully');
+            const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
+            console.log('Response:', response.data);
+            res.status(200).send(response.data);
+        }
     } catch (error) {
         console.error('Error fetching data from the database:', error.message);
         res.status(500).send('Internal Server Error');
