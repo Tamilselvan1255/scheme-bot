@@ -150,7 +150,7 @@ app.post('/whatsapp', async (req, res) => {
                     break;
 
                     case payload === '0-6' || payload === '6-18' || payload === '18-24':
-                        var age = payload;
+                         age = payload;
                         console.log(age);
                         responseTemplate = {
                             messaging_product: 'whatsapp',
@@ -166,7 +166,7 @@ app.post('/whatsapp', async (req, res) => {
                         break;
 
                         case payload === 'Male' || payload === 'Female' || payload === 'Both Male and Female':
-                            var gender = payload;
+                             gender = payload;
                         console.log(gender);
                         responseTemplate = {
                             messaging_product: 'whatsapp',
@@ -182,7 +182,7 @@ app.post('/whatsapp', async (req, res) => {
                         break;
 
                         case payload === 'TAMIL NADU' || payload === 'MAHARASHTRA' || payload === 'GOA':
-                            var state = payload;
+                             state = payload;
                             console.log(state);
                        responseTemplate = {
                             messaging_product: 'whatsapp',
@@ -198,7 +198,7 @@ app.post('/whatsapp', async (req, res) => {
                         break;
                         
                         case payload === 'Minimum 40%' || payload === 'Minimum 90%':
-                            var disability = payload;
+                             disability = payload;
                             console.log(disability);
                             responseTemplate = {
                                 messaging_product: 'whatsapp',
