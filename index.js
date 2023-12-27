@@ -213,66 +213,112 @@ app.post('/whatsapp', async (req, res) => {
                             };
                             break;
 
-                            case payload === '1,25,000' || payload === '1,75,000' || payload === 'No income limit':
-                                var income = payload;
-                                console.log(income);
-                                responseTemplate = {
-                                    messaging_product: 'whatsapp',
-                                    to: '+919788825633',
-                                    type: 'template',
-                                    template: {
-                                        name: 'dealss',
-                                        language: {
-                                            code: 'en_US',
-                                        },
-                                    },
-                                };
-                                break;
+                            // case payload === '1,25,000' || payload === '1,75,000' || payload === 'No income limit':
+                            //     var income = payload;
+                            //     console.log(income);
+                            //     responseTemplate = {
+                            //         messaging_product: 'whatsapp',
+                            //         to: '+919788825633',
+                            //         type: 'template',
+                            //         template: {
+                            //             name: 'deals',
+                            //             language: {
+                            //                 code: 'en_US',
+                            //             },
+                            //         },
+                            //     };
+                            //     break;
 
-                                case payload === 'dealss':
-                                    // Extracting previous user selections
-                                    const ageSelection = bodyParam.entry[0].changes[0].value.messages[1].quick_reply.payload;
-                                    const genderSelection = bodyParam.entry[0].changes[0].value.messages[2].quick_reply.payload;
-                                    const stateSelection = bodyParam.entry[0].changes[0].value.messages[3].quick_reply.payload;
-                                    const disabilitySelection = bodyParam.entry[0].changes[0].value.messages[4].quick_reply.payload;
-                                    const incomeSelection = bodyParam.entry[0].changes[0].value.messages[5].quick_reply.payload;
+                            //     case payload === deals:
+                            //         // Extracting previous user selections
+                            //         const ageSelection = bodyParam.entry[0].changes[0].value.messages[1].quick_reply.payload;
+                            //         const genderSelection = bodyParam.entry[0].changes[0].value.messages[2].quick_reply.payload;
+                            //         const stateSelection = bodyParam.entry[0].changes[0].value.messages[3].quick_reply.payload;
+                            //         const disabilitySelection = bodyParam.entry[0].changes[0].value.messages[4].quick_reply.payload;
+                            //         const incomeSelection = bodyParam.entry[0].changes[0].value.messages[5].quick_reply.payload;
                     
-                                    // Filtering facilities based on user selections
-                                    const filteredFacilities = await filterFacilities(stateSelection, disabilitySelection, ageSelection, incomeSelection, genderSelection);
+                            //         // Filtering facilities based on user selections
+                            //         const filteredFacilities = await filterFacilities(stateSelection, disabilitySelection, ageSelection, incomeSelection, genderSelection);
                     
-                                    // Check if there are matching facilities
-                                    if (filteredFacilities.length !== 0) {
-                                        // Convert the fetched data to a text response
-                                        const textResponse = filteredFacilities.map(facility => {
-                                            return `Facility: ${facility.domainDescription}\nEligibility: ${facility.eligibleDisabilities}\nComments: ${facility.comments}\n\n`;
-                                        }).join('\n');
+                            //         // Check if there are matching facilities
+                            //         if (filteredFacilities.length !== 0) {
+                            //             // Convert the fetched data to a text response
+                            //             const textResponse = filteredFacilities.map(facility => {
+                            //                 return `Facility: ${facility.domainDescription}\nEligibility: ${facility.eligibleDisabilities}\nComments: ${facility.comments}\n\n`;
+                            //             }).join('\n');
                     
-                                        // Adjust the response as needed
-                                        responseTemplate = {
-                                            messaging_product: 'whatsapp',
-                                            to: '+919788825633',
-                                            type: 'text',
-                                            text: {
-                                                body: `Matching facilities:\n\n${textResponse}`,
-                                            },
-                                            language: {
-                                                code: 'en_US',
-                                            },
-                                        };
-                                    } else {
-                                        responseTemplate = {
-                                            messaging_product: 'whatsapp',
-                                            to: '+919788825633',
-                                            type: 'text',
-                                            text: {
-                                                body: "No matching facilities found. Please refine your search criteria.",
-                                            },
-                                            language: {
-                                                code: 'en_US',
-                                            },
-                                        };
-                                    }
-                                    break;
+                            //             // Adjust the response as needed
+                            //             responseTemplate = {
+                            //                 messaging_product: 'whatsapp',
+                            //                 to: '+919788825633',
+                            //                 type: 'text',
+                            //                 text: {
+                            //                     body: `Matching facilities:\n\n${textResponse}`,
+                            //                 },
+                            //                 language: {
+                            //                     code: 'en_US',
+                            //                 },
+                            //             };
+                            //         } else {
+                            //             responseTemplate = {
+                            //                 messaging_product: 'whatsapp',
+                            //                 to: '+919788825633',
+                            //                 type: 'text',
+                            //                 text: {
+                            //                     body: "No matching facilities found. Please refine your search criteria.",
+                            //                 },
+                            //                 language: {
+                            //                     code: 'en_US',
+                            //                 },
+                            //             };
+                            //         }
+                            //         break;
+                            case payload === '1,25,000' || payload === '1,75,000' || payload === 'No income limit':
+    var income = payload;
+    console.log(income);
+
+    // Extracting previous user selections
+    const ageSelection = bodyParam.entry[0].changes[0].value.messages[1].quick_reply.payload;
+    const genderSelection = bodyParam.entry[0].changes[0].value.messages[2].quick_reply.payload;
+    const stateSelection = bodyParam.entry[0].changes[0].value.messages[3].quick_reply.payload;
+    const disabilitySelection = bodyParam.entry[0].changes[0].value.messages[4].quick_reply.payload;
+
+    // Filtering facilities based on user selections, including income
+    const filteredFacilities = await filterFacilities(stateSelection, disabilitySelection, ageSelection, income, genderSelection);
+
+    // Check if there are matching facilities
+    if (filteredFacilities.length !== 0) {
+        // Convert the fetched data to a text response
+        const textResponse = filteredFacilities.map(facility => {
+            return `Facility: ${facility.domainDescription}\nEligibility: ${facility.eligibleDisabilities}\nComments: ${facility.comments}\n\n`;
+        }).join('\n');
+
+        // Adjust the response as needed
+        responseTemplate = {
+            messaging_product: 'whatsapp',
+            to: '+919788825633',
+            type: 'text',
+            text: {
+                body: `Matching facilities:\n\n${textResponse}`,
+            },
+            language: {
+                code: 'en_US',
+            },
+        };
+    } else {
+        responseTemplate = {
+            messaging_product: 'whatsapp',
+            to: '+919788825633',
+            type: 'text',
+            text: {
+                body: "No matching facilities found. Please refine your search criteria.",
+            },
+            language: {
+                code: 'en_US',
+            },
+        };
+    }
+    break;
                 default:
                     responseTemplate = {
                         messaging_product: 'whatsapp',
