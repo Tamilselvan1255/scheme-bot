@@ -109,6 +109,19 @@ app.post("/whatsapp", async (req, res) => {
               language: {
                 code: "en_US",
               },
+              components: [
+                {
+                  type: "header",
+                  parameters: [
+                    {
+                      type: "image",
+                      image: {
+                        link: " https://i.imgur.com/0uVWYeR.jpeg",
+                      },
+                    },
+                  ],
+                },
+              ],
             },
           };
           break;
@@ -219,7 +232,7 @@ app.post("/whatsapp", async (req, res) => {
               language: {
                 code: "en_US",
               },
-            },          
+            },
           };
           break;
 
@@ -370,7 +383,6 @@ app.post("/whatsapp", async (req, res) => {
 app.get("/", (req, res) => {
   res.status(200).send("Webhook setup for scheme!!");
 });
-
 
 // responseTemplate = {
 //   messaging_product: "whatsapp",
