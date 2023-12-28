@@ -221,10 +221,10 @@ app.post("/whatsapp", async (req, res) => {
               },
               components: [
                 {
-                    type: header,
+                    type: "header",
                     parameters: [
                         {
-                            type: image,
+                            type: "image",
                             image: {
                                 link: "https://bd.gaadicdn.com/upload/userfiles/images/640b011e05ee5.jpg"
                             }
@@ -234,7 +234,6 @@ app.post("/whatsapp", async (req, res) => {
             ]
             },
           };
-          
           break;
 
         case payload === "1,25,000" ||
