@@ -228,9 +228,11 @@ app.post("/whatsapp", async (req, res) => {
           try {
             const schemesData = await filterSchemes(collectedData.age, collectedData.gender, collectedData.state, collectedData.disability, collectedData.income);
 
+            const count = schemesData.length
+
             if (schemesData.length > 0) {
               // Process and send the response based on schemesData
-              let responseMessage = `Matching schemes:\n\n`;
+              let responseMessage = `Matching schemes: ${count}\n\n`;
 
                 schemesData.forEach((scheme) => {
                                   responseMessage +=
