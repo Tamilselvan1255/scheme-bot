@@ -226,7 +226,7 @@ app.post("/whatsapp", async (req, res) => {
                           
 
           try {
-            const schemesData = await filterSchemes(collectedData.age, collectedData.gender);
+            const schemesData = await filterSchemes(collectedData.age, collectedData.gender, collectedData.state, collectedData.disability, collectedData.income);
 
             if (schemesData.length > 0) {
               // Process and send the response based on schemesData
