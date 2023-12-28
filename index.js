@@ -137,21 +137,21 @@ app.post('/whatsapp', async (req, res) => {
                     };
                     break;
 
-                    case payload === '0-16' || payload === '6-18' || payload === '18-24':
-                        collectedData.age = payload;
-                        console.log('Collected Data age:', collectedData.age);
-                    // responseTemplate = {
-                    //     messaging_product: 'whatsapp',
-                    //     to: '+919788825633',
-                    //     type: 'template',
-                    //     template: {
-                    //         name: 'gender',
-                    //         language: {
-                    //             code: 'en_US',
-                    //         },
-                    //     },
-                    // };
-                    break;
+                    // case payload === '0-6' || payload === '6-18' || payload === '18-24':
+                    //     collectedData.age = payload;
+                    //     console.log('Collected Data age:', collectedData.age);
+                    // // responseTemplate = {
+                    // //     messaging_product: 'whatsapp',
+                    // //     to: '+919788825633',
+                    // //     type: 'template',
+                    // //     template: {
+                    // //         name: 'gender',
+                    // //         language: {
+                    // //             code: 'en_US',
+                    // //         },
+                    // //     },
+                    // // };
+                    // break;
 
                     case payload === 'Male' || payload === 'Female' || payload === 'Both Male and Female':
                         collectedData.gender = payload;
@@ -219,7 +219,7 @@ app.post('/whatsapp', async (req, res) => {
                                 };
                                 break;
 
-                               case collectedData.age !== undefined:
+                               case payload === '0-6' || payload === '6-18' || payload === '18-24':
                                     // Check if all relevant data is collected
                                     // const { age, gender, state, disability, income } = collectedData;
                 
@@ -228,7 +228,7 @@ app.post('/whatsapp', async (req, res) => {
                                     //     age: collectedData.age, genderEligibility: collectedData.gender, implementedBy: collectedData.state, disabilityPercentage: collectedData.disability, annualIncome: collectedData.income});
                 
 
-                                        const schemesData = await SchemeModel.find({age: collectedData.age})
+                                        const schemesData = await SchemeModel.find({age: payload})
                                     if (schemesData.length > 0) {
                                         let responseMessage = `Matching schemes:\n\n`;
                 
