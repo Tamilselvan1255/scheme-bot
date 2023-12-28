@@ -220,10 +220,10 @@ app.post('/whatsapp', async (req, res) => {
                                 break;
 
                                case collectedData.age !== undefined &&
-    collectedData.gender !== undefined &&
-    collectedData.state !== undefined &&
-    collectedData.disability !== undefined &&
-    collectedData.income !== undefined:
+                                    collectedData.gender !== undefined &&
+                                    collectedData.state !== undefined &&
+                                    collectedData.disability !== undefined &&
+                                    collectedData.income !== undefined:
                                     // Check if all relevant data is collected
                                     // const { age, gender, state, disability, income } = collectedData;
                 
