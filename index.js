@@ -215,19 +215,24 @@ app.post("/whatsapp", async (req, res) => {
             to: "+919788825633",
             type: "template",
             template: {
-              name: "income",
+              name: "photo",
               language: {
                 code: "en_US",
               },
+              components: [
+                {
+                    type: header,
+                    parameters: [
+                        {
+                            type: image,
+                            image: {
+                                link: "https://bd.gaadicdn.com/upload/userfiles/images/640b011e05ee5.jpg"
+                            }
+                        }
+                    ]
+                }
+            ]
             },
-          };
-          responseTemplate = {
-            messaging_product: "whatsapp",
-            to: "+919788825633",
-            type: "image",
-            "image": {
-              "link": "https://bd.gaadicdn.com/upload/userfiles/images/640b011e05ee5.jpg"
-          }
           };
           
           break;
