@@ -179,12 +179,26 @@ app.post("/whatsapp", async (req, res) => {
               // Process and send the response based on schemesData
               let responseMessage = `Matching schemes:\n\n`;
 
-              schemesData.forEach((scheme) => {
-                responseMessage +=
-                  `Implemented By: ${scheme.implementedBy || "Not available"}\n` +
-                  // ... (other details)
-                  `Email Address: ${scheme.emailAddress || "Not available"}\n\n`;
-              });
+                schemesData.forEach((scheme) => {
+                                  responseMessage +=
+                                    `Implemented By: ${scheme.implementedBy || "Not available"}\n` +
+                                    `Domain Description: ${
+                                      scheme.domainDescription || "Not available"
+                                    }\n` +
+                                    `Eligible Disabilities: ${
+                                      scheme.eligibleDisabilities || "Not available"
+                                    }\n` +
+                                    `Disability Percentage: ${
+                                      scheme.disabilityPercentage || "Not available"
+                                    }\n` +
+                                    `Age: ${scheme.age || "Not available"}\n` +
+                                    `Annual Income: ${scheme.annualIncome || "Not available"}\n` +
+                                    `Gender Eligibility: ${
+                                      scheme.genderEligibility || "Not available"
+                                    }\n` +
+                                    `Comments: ${scheme.comments || "Not available"}\n` +
+                                    `Email Address: ${scheme.emailAddress || "Not available"}\n\n`;
+                                });
 
               const truncatedMessage = responseMessage.substring(0, 4096);
 
