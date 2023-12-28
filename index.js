@@ -109,6 +109,21 @@ app.post("/whatsapp", async (req, res) => {
               language: {
                 code: "en_US",
               },
+            },
+          };
+          break;
+         
+
+        case payload === "Yes":
+          responseTemplate = {
+            messaging_product: "whatsapp",
+            to: "+919788825633",
+            type: "template",
+            template: {
+              name: "scheme_template",
+              language: {
+                code: "en_US",
+              },
               components: [
                 {
                   type: "header",
@@ -122,20 +137,6 @@ app.post("/whatsapp", async (req, res) => {
                   ],
                 },
               ],
-            },
-          };
-          break;
-
-        case payload === "Yes":
-          responseTemplate = {
-            messaging_product: "whatsapp",
-            to: "+919788825633",
-            type: "template",
-            template: {
-              name: "scheme_template",
-              language: {
-                code: "en_US",
-              },
             },
           };
           break;
