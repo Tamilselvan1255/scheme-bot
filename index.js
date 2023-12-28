@@ -197,9 +197,11 @@ try {
 const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
 console.log('Response:', response.data);
 res.status(200).send(response.data);
+return;
 } catch (error) {
 console.error('Error sending response:', error.message, error.response ? error.response.data : '');
 res.status(500).send(error.message);
+return;
 }
 } else {
 console.log('Response Template is undefined. No response sent.');
