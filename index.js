@@ -75,7 +75,6 @@ app.post('/whatsapp', async (req, res) => {
         const payload = message.button ? message.button.payload : undefined;
 
         console.log('message:', message);
-        console.log('msgBody:', msgBody);
 
         try {
             let responseTemplate;
@@ -141,17 +140,17 @@ app.post('/whatsapp', async (req, res) => {
                     case payload === '0-16' || payload === '6-18' || payload === '18-24':
                         collectedData.age = payload;
                         console.log('Collected Data age:', collectedData.age);
-                    responseTemplate = {
-                        messaging_product: 'whatsapp',
-                        to: '+919788825633',
-                        type: 'template',
-                        template: {
-                            name: 'gender',
-                            language: {
-                                code: 'en_US',
-                            },
-                        },
-                    };
+                    // responseTemplate = {
+                    //     messaging_product: 'whatsapp',
+                    //     to: '+919788825633',
+                    //     type: 'template',
+                    //     template: {
+                    //         name: 'gender',
+                    //         language: {
+                    //             code: 'en_US',
+                    //         },
+                    //     },
+                    // };
                     break;
 
                     case payload === 'Male' || payload === 'Female' || payload === 'Both Male and Female':
@@ -220,19 +219,16 @@ app.post('/whatsapp', async (req, res) => {
                                 };
                                 break;
 
-                               case collectedData.age !== undefined &&
-                                    collectedData.gender !== undefined &&
-                                    collectedData.state !== undefined &&
-                                    collectedData.disability !== undefined &&
-                                    collectedData.income !== undefined:
+                               case collectedData.age !== undefined:
                                     // Check if all relevant data is collected
                                     // const { age, gender, state, disability, income } = collectedData;
                 
                                     // Query the database to find matching records
-                                    const schemesData = await SchemeModel.find({
-                                        age: collectedData.age, genderEligibility: collectedData.gender, implementedBy: collectedData.state, disabilityPercentage: collectedData.disability, annualIncome: collectedData.income});
+                                    // const schemesData = await SchemeModel.find({
+                                    //     age: collectedData.age, genderEligibility: collectedData.gender, implementedBy: collectedData.state, disabilityPercentage: collectedData.disability, annualIncome: collectedData.income});
                 
 
+                                        const schemesData = await SchemeModel.find({age: collectedData.age})
                                     if (schemesData.length > 0) {
                                         let responseMessage = `Matching schemes:\n\n`;
                 
