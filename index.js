@@ -107,7 +107,7 @@ app.post("/whatsapp", async (req, res) => {
             template: {
               name: "greetings",
               language: {
-                code: "en_US",
+                code: "en_UK",
               },
             },
           };
