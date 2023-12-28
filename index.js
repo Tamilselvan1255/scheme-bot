@@ -215,24 +215,11 @@ app.post("/whatsapp", async (req, res) => {
             to: "+919788825633",
             type: "template",
             template: {
-              name: "photo",
+              name: "income",
               language: {
                 code: "en_US",
               },
-              components: [
-                {
-                    type: "header",
-                    parameters: [
-                        {
-                            type: "image",
-                            image: {
-                                link: "https://bd.gaadicdn.com/upload/userfiles/images/640b011e05ee5.jpg"
-                            }
-                        }
-                    ]
-                }
-            ]
-            },
+            },          
           };
           break;
 
@@ -383,3 +370,29 @@ app.post("/whatsapp", async (req, res) => {
 app.get("/", (req, res) => {
   res.status(200).send("Webhook setup for scheme!!");
 });
+
+
+// responseTemplate = {
+//   messaging_product: "whatsapp",
+//   to: "+919788825633",
+//   type: "template",
+//   template: {
+//     name: "photo",
+//     language: {
+//       code: "en_US",
+//     },
+//     components: [
+//       {
+//           type: "header",
+//           parameters: [
+//               {
+//                   type: "image",
+//                   image: {
+//                       link: "https://bd.gaadicdn.com/upload/userfiles/images/640b011e05ee5.jpg"
+//                   }
+//               }
+//           ]
+//       }
+//   ]
+//   },
+// };
