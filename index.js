@@ -40,14 +40,19 @@ let collectedData = {};
 const token = process.env.TOKEN;
 const myToken = process.env.MYTOKEN;
 
-// Filter function
 async function filterSchemes(age, gender, state, disability, income) {
   try {
-    const schemesData = await SchemeModel.find({ age, genderEligibility: gender, implementedBy: state, disabilityPercentage: disability, annualIncome: income });
+    const schemesData = await SchemeModel.find({
+      age,
+      genderEligibility: gender,
+      implementedBy: state,
+      disabilityPercentage: disability,
+      annualIncome: income,
+    });
     return schemesData;
   } catch (error) {
-    console.error('Error filtering schemes:', error.message);
-    throw error; // You may want to handle the error appropriately in your application
+    console.error("Error filtering schemes:", error.message);
+    throw error;
   }
 }
 
@@ -166,94 +171,102 @@ app.post("/whatsapp", async (req, res) => {
           };
           break;
 
-          case payload === "Male" ||
-                    payload === "Female" ||
-                    payload === "Both Male and Female":
-                    collectedData.gender = payload;
-                    console.log("Collected Data gender:", collectedData);
-                    responseTemplate = {
-                      messaging_product: "whatsapp",
-                      to: "+919788825633",
-                      type: "template",
-                      template: {
-                        name: "state",
-                        language: {
-                          code: "en_US",
-                        },
-                      },
-                    };
-                    break;
-          
-                  case payload === "TAMIL NADU" ||
-                    payload === "MAHARASHTRA" ||
-                    payload === "GOA":
-                    collectedData.state = payload;
-                    console.log("Collected Data:", collectedData);
-                    responseTemplate = {
-                      messaging_product: "whatsapp",
-                      to: "+919788825633",
-                      type: "template",
-                      template: {
-                        name: "disability",
-                        language: {
-                          code: "en_US",
-                        },
-                      },
-                    };
-                    break;
-          
-                  case payload === "Minimum 40%" || payload === "Minimum 90%":
-                    collectedData.disability = payload;
-                    console.log("Collected Data:", collectedData);
-                    responseTemplate = {
-                      messaging_product: "whatsapp",
-                      to: "+919788825633",
-                      type: "template",
-                      template: {
-                        name: "income",
-                        language: {
-                          code: "en_US",
-                        },
-                      },
-                    };
-                    break;
-          
-                  case payload === "1,25,000" ||
-                    payload === "1,75,000" ||
-                    payload === "No income limit":
-                    collectedData.income = payload;
-                    console.log("Collected Data:", collectedData);
-                          
+        case payload === "Male" ||
+          payload === "Female" ||
+          payload === "Both Male and Female":
+          collectedData.gender = payload;
+          console.log("Collected Data gender:", collectedData);
+          responseTemplate = {
+            messaging_product: "whatsapp",
+            to: "+919788825633",
+            type: "template",
+            template: {
+              name: "state",
+              language: {
+                code: "en_US",
+              },
+            },
+          };
+          break;
+
+        case payload === "TAMIL NADU" ||
+          payload === "MAHARASHTRA" ||
+          payload === "GOA":
+          collectedData.state = payload;
+          console.log("Collected Data:", collectedData);
+          responseTemplate = {
+            messaging_product: "whatsapp",
+            to: "+919788825633",
+            type: "template",
+            template: {
+              name: "disability",
+              language: {
+                code: "en_US",
+              },
+            },
+          };
+          break;
+
+        case payload === "Minimum 40%" || payload === "Minimum 90%":
+          collectedData.disability = payload;
+          console.log("Collected Data:", collectedData);
+          responseTemplate = {
+            messaging_product: "whatsapp",
+            to: "+919788825633",
+            type: "template",
+            template: {
+              name: "income",
+              language: {
+                code: "en_US",
+              },
+            },
+          };
+          break;
+
+        case payload === "1,25,000" ||
+          payload === "1,75,000" ||
+          payload === "No income limit":
+          collectedData.income = payload;
+          console.log("Collected Data:", collectedData);
 
           try {
-            const schemesData = await filterSchemes(collectedData.age, collectedData.gender, collectedData.state, collectedData.disability, collectedData.income);
+            const schemesData = await filterSchemes(
+              collectedData.age,
+              collectedData.gender,
+              collectedData.state,
+              collectedData.disability,
+              collectedData.income
+            );
 
-            const count = schemesData.length
+            const count = schemesData.length;
 
             if (schemesData.length > 0) {
-              // Process and send the response based on schemesData
               let responseMessage = `Matching schemes: ${count}\n\n`;
 
-                schemesData.forEach((scheme) => {
-                                  responseMessage +=
-                                    `Implemented By: ${scheme.implementedBy || "Not available"}\n` +
-                                    `Domain Description: ${
-                                      scheme.domainDescription || "Not available"
-                                    }\n` +
-                                    `Eligible Disabilities: ${
-                                      scheme.eligibleDisabilities || "Not available"
-                                    }\n` +
-                                    `Disability Percentage: ${
-                                      scheme.disabilityPercentage || "Not available"
-                                    }\n` +
-                                    `Age: ${scheme.age || "Not available"}\n` +
-                                    `Annual Income: ${scheme.annualIncome || "Not available"}\n` +
-                                    `Gender Eligibility: ${
-                                      scheme.genderEligibility || "Not available"
-                                    }\n` +
-                                    `Comments: ${scheme.comments || "Not available"}\n` +
-                                    `Email Address: ${scheme.emailAddress || "Not available"}\n\n`;
-                                });
+              schemesData.forEach((scheme) => {
+                responseMessage +=
+                  `Implemented By: ${
+                    scheme.implementedBy || "Not available"
+                  }\n` +
+                  `Domain Description: ${
+                    scheme.domainDescription || "Not available"
+                  }\n` +
+                  `Eligible Disabilities: ${
+                    scheme.eligibleDisabilities || "Not available"
+                  }\n` +
+                  `Disability Percentage: ${
+                    scheme.disabilityPercentage || "Not available"
+                  }\n` +
+                  `Age: ${scheme.age || "Not available"}\n` +
+                  `Annual Income: ${scheme.annualIncome || "Not available"}\n` +
+                  `Gender Eligibility: ${
+                    scheme.genderEligibility || "Not available"
+                  }\n` +
+                  `Comments: ${scheme.comments || "Not available"}\n` +
+                  `Email Address: ${
+                    scheme.emailAddress || "Not available"
+                  }\n\n`;
+              });
 
               const truncatedMessage = responseMessage.substring(0, 4096);
 
@@ -290,8 +303,7 @@ app.post("/whatsapp", async (req, res) => {
               );
             }
           } catch (error) {
-            // Handle the error (e.g., send an error response)
-            console.error('Error processing schemes:', error.message);
+            console.error("Error processing schemes:", error.message);
           }
 
           if (responseTemplate) {
@@ -358,7 +370,6 @@ app.post("/whatsapp", async (req, res) => {
 app.get("/", (req, res) => {
   res.status(200).send("Webhook setup for scheme!!");
 });
-
 
 // // with templates updated
 
