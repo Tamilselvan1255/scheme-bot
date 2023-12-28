@@ -137,6 +137,75 @@ app.post('/whatsapp', async (req, res) => {
                     };
                     break;
 
+                    case payload === '0-6' || payload === '6-18' || payload === '18-24':
+                        // Check if all relevant data is collected
+                        // const { age, gender, state, disability, income } = collectedData;
+    
+                        // Query the database to find matching records
+                        // const schemesData = await SchemeModel.find({
+                        //     age: collectedData.age, genderEligibility: collectedData.gender, implementedBy: collectedData.state, disabilityPercentage: collectedData.disability, annualIncome: collectedData.income});
+    
+
+                            const schemesData = await SchemeModel.find({age: payload})
+                        if (schemesData.length > 0) {
+                            let responseMessage = `Matching schemes:\n\n`;
+    
+                            schemesData.forEach((scheme) => {
+                                responseMessage +=
+                                    `Implemented By: ${scheme.implementedBy || 'Not available'}\n` +
+                                    `Domain Description: ${scheme.domainDescription || 'Not available'}\n` +
+                                    `Eligible Disabilities: ${scheme.eligibleDisabilities || 'Not available'}\n` +
+                                    `Disability Percentage: ${scheme.disabilityPercentage || 'Not available'}\n` +
+                                    `Age: ${scheme.age || 'Not available'}\n` +
+                                    `Annual Income: ${scheme.annualIncome || 'Not available'}\n` +
+                                    `Gender Eligibility: ${scheme.genderEligibility || 'Not available'}\n` +
+                                    `Comments: ${scheme.comments || 'Not available'}\n` +
+                                    `Email Address: ${scheme.emailAddress || 'Not available'}\n\n`;
+                            });
+    
+                            const truncatedMessage = responseMessage.substring(0, 4096);
+    
+                            responseTemplate = {
+                                messaging_product: 'whatsapp',
+                                to: '+919788825633',
+                                type: 'text',
+                                text: {
+                                    body: truncatedMessage,
+                                },
+                                language: {
+                                    code: 'en_US',
+                                },
+                            };
+                            console.log('Response Template for Matching Schemes:', responseTemplate);
+                        } else {
+                            responseTemplate = {
+                                messaging_product: 'whatsapp',
+                                to: '+919788825633',
+                                type: 'text',
+                                text: {
+                                    body: "No matching schemes found. Please refine your search criteria.",
+                                },
+                                language: {
+                                    code: 'en_US',
+                                },
+                            };
+                            console.log('Response Template for No Matching Schemes:', responseTemplate);
+                        }
+                        // Send the response if responseTemplate is defined
+if (responseTemplate) {
+try {
+const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
+console.log('Response:', response.data);
+res.status(200).send(response.data);
+} catch (error) {
+console.error('Error sending response:', error.message, error.response ? error.response.data : '');
+res.status(500).send(error.message);
+}
+} else {
+console.log('Response Template is undefined. No response sent.');
+res.status(200).send(''); // Send an empty response
+}
+
                     // case payload === '0-6' || payload === '6-18' || payload === '18-24':
                     //     collectedData.age = payload;
                     //     console.log('Collected Data age:', collectedData.age);
@@ -219,75 +288,7 @@ app.post('/whatsapp', async (req, res) => {
                                 };
                                 break;
 
-                               case payload === '0-6' || payload === '6-18' || payload === '18-24':
-                                    // Check if all relevant data is collected
-                                    // const { age, gender, state, disability, income } = collectedData;
-                
-                                    // Query the database to find matching records
-                                    // const schemesData = await SchemeModel.find({
-                                    //     age: collectedData.age, genderEligibility: collectedData.gender, implementedBy: collectedData.state, disabilityPercentage: collectedData.disability, annualIncome: collectedData.income});
-                
-
-                                        const schemesData = await SchemeModel.find({age: payload})
-                                    if (schemesData.length > 0) {
-                                        let responseMessage = `Matching schemes:\n\n`;
-                
-                                        schemesData.forEach((scheme) => {
-                                            responseMessage +=
-                                                `Implemented By: ${scheme.implementedBy || 'Not available'}\n` +
-                                                `Domain Description: ${scheme.domainDescription || 'Not available'}\n` +
-                                                `Eligible Disabilities: ${scheme.eligibleDisabilities || 'Not available'}\n` +
-                                                `Disability Percentage: ${scheme.disabilityPercentage || 'Not available'}\n` +
-                                                `Age: ${scheme.age || 'Not available'}\n` +
-                                                `Annual Income: ${scheme.annualIncome || 'Not available'}\n` +
-                                                `Gender Eligibility: ${scheme.genderEligibility || 'Not available'}\n` +
-                                                `Comments: ${scheme.comments || 'Not available'}\n` +
-                                                `Email Address: ${scheme.emailAddress || 'Not available'}\n\n`;
-                                        });
-                
-                                        const truncatedMessage = responseMessage.substring(0, 4096);
-                
-                                        responseTemplate = {
-                                            messaging_product: 'whatsapp',
-                                            to: '+919788825633',
-                                            type: 'text',
-                                            text: {
-                                                body: truncatedMessage,
-                                            },
-                                            language: {
-                                                code: 'en_US',
-                                            },
-                                        };
-                                        console.log('Response Template for Matching Schemes:', responseTemplate);
-                                    } else {
-                                        responseTemplate = {
-                                            messaging_product: 'whatsapp',
-                                            to: '+919788825633',
-                                            type: 'text',
-                                            text: {
-                                                body: "No matching schemes found. Please refine your search criteria.",
-                                            },
-                                            language: {
-                                                code: 'en_US',
-                                            },
-                                        };
-                                        console.log('Response Template for No Matching Schemes:', responseTemplate);
-                                    }
-                                    // Send the response if responseTemplate is defined
-    if (responseTemplate) {
-        try {
-            const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
-            console.log('Response:', response.data);
-            res.status(200).send(response.data);
-        } catch (error) {
-            console.error('Error sending response:', error.message, error.response ? error.response.data : '');
-            res.status(500).send(error.message);
-        }
-    } else {
-        console.log('Response Template is undefined. No response sent.');
-        res.status(200).send(''); // Send an empty response
-    }
-
+                        
              
                 default:
                     responseTemplate = {
