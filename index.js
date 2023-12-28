@@ -347,12 +347,12 @@ app.post("/whatsapp", async (req, res) => {
           responseTemplate = {
             messaging_product: "whatsapp",
             to: "+919788825633",
-            type: "text",
-            text: {
-              body: "Please enter valid message!",
-            },
-            language: {
-              code: "en_US",
+            type: "template",
+            template: {
+              name: "alert",
+              language: {
+                code: "en_US",
+              },
             },
           };
           console.log("Switch Case: Default");
