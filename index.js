@@ -105,7 +105,7 @@ app.post("/whatsapp", async (req, res) => {
             to: "+919788825633",
             type: "template",
             template: {
-              name: "scheme_template",
+              name: "greetings",
               language: {
                 code: "en_US",
               },
