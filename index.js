@@ -1,335 +1,374 @@
 // with templates updated
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const axios = require('axios');
-const mongoose = require('mongoose');
-require('dotenv').config();
+const express = require("express");
+const bodyParser = require("body-parser");
+const axios = require("axios");
+const mongoose = require("mongoose");
+require("dotenv").config();
 
 const app = express().use(bodyParser.json());
 
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 const db = mongoose.connection;
 
-db.on('error', (err) => {
-    console.error('MongoDB connection error:', err);
+db.on("error", (err) => {
+  console.error("MongoDB connection error:", err);
 });
 
-db.once('open', () => {
-    console.log('Connected to MongoDB');
+db.once("open", () => {
+  console.log("Connected to MongoDB");
 });
 
 const schemeSchema = new mongoose.Schema({
-    implementedBy: String,
-    domainDescription: String,
-    eligibleDisabilities: String,
-    disabilityPercentage: String,
-    age: String,
-    annualIncome: String,
-    genderEligibility: String,
-    comments: String,
-    emailAddress: String,
+  implementedBy: String,
+  domainDescription: String,
+  eligibleDisabilities: String,
+  disabilityPercentage: String,
+  age: String,
+  annualIncome: String,
+  genderEligibility: String,
+  comments: String,
+  emailAddress: String,
 });
 
+const SchemeModel = mongoose.model("Scheme", schemeSchema);
 
-const SchemeModel = mongoose.model('Scheme', schemeSchema);
-
-let collectedData = {}; 
+let collectedData = {};
 const token = process.env.TOKEN;
 const myToken = process.env.MYTOKEN;
 
 app.listen(process.env.PORT, () => {
-    console.log('Webhook is listening!!');
+  console.log("Webhook is listening!!");
 });
 
-app.get('/whatsapp', (req, res) => {
-    const mode = req.query['hub.mode'];
-    const challenge = req.query['hub.challenge'];
-    const verifyToken = req.query['hub.verify_token'];
+app.get("/whatsapp", (req, res) => {
+  const mode = req.query["hub.mode"];
+  const challenge = req.query["hub.challenge"];
+  const verifyToken = req.query["hub.verify_token"];
 
-    if (mode && verifyToken) {
-        if (mode === 'subscribe' && verifyToken === myToken) {
-            res.status(200).send(challenge);
-        } else {
-            res.status(403).send('Invalid verify token');
-        }
+  if (mode && verifyToken) {
+    if (mode === "subscribe" && verifyToken === myToken) {
+      res.status(200).send(challenge);
     } else {
-        res.status(400).send('Missing parameters');
+      res.status(403).send("Invalid verify token");
     }
+  } else {
+    res.status(400).send("Missing parameters");
+  }
 });
 
-app.post('/whatsapp', async (req, res) => {
-    const bodyParam = req.body;
-    console.log('Request Body:', bodyParam);
+app.post("/whatsapp", async (req, res) => {
+  const bodyParam = req.body;
+  console.log("Request Body:", bodyParam);
 
-    if (
-        bodyParam.object &&
-        bodyParam.entry &&
-        bodyParam.entry[0].changes &&
-        bodyParam.entry[0].changes[0].value.messages &&
-        bodyParam.entry[0].changes[0].value.messages[0]
-    ) {
-        const phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
-        const message = bodyParam.entry[0].changes[0].value.messages[0];
-        const msgBody = (message.text?.body || '').toLowerCase();
-        const payload = message.button ? message.button.payload : undefined;
+  if (
+    bodyParam.object &&
+    bodyParam.entry &&
+    bodyParam.entry[0].changes &&
+    bodyParam.entry[0].changes[0].value.messages &&
+    bodyParam.entry[0].changes[0].value.messages[0]
+  ) {
+    const phoneNumberId =
+      bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
+    const message = bodyParam.entry[0].changes[0].value.messages[0];
+    const msgBody = (message.text?.body || "").toLowerCase();
+    const payload = message.button ? message.button.payload : undefined;
 
-        console.log('message:', message);
+    console.log("message:", message);
 
-        try {
-            let responseTemplate;
+    try {
+      let responseTemplate;
 
-            switch (true) {
-                case msgBody.includes('hello') || msgBody.includes('hi'):
-                    responseTemplate = {
-                        messaging_product: 'whatsapp',
-                        to: '+919788825633',
-                        type: 'template',
-                        template: {
-                            name: 'scheme_template',
-                            language: {
-                                code: 'en_US',
-                            },
-                        },
-                    };
-                    break;
-                    
-                case payload === 'Yes':
-                    responseTemplate = {
-                        messaging_product: 'whatsapp',
-                        to: '+919788825633',
-                        type: 'template',
-                        template: {
-                            name: 'scheme_template',
-                            language: {
-                                code: 'en_US',
-                            },
-                        },
-                    };
-                    break;
+      switch (true) {
+        case msgBody.includes("hello") || msgBody.includes("hi"):
+          responseTemplate = {
+            messaging_product: "whatsapp",
+            to: "+919788825633",
+            type: "template",
+            template: {
+              name: "scheme_template",
+              language: {
+                code: "en_US",
+              },
+            },
+          };
+          break;
 
-                    case payload === 'Not Now':
-                    responseTemplate = {
-                        messaging_product: 'whatsapp',
-                        to: '+919788825633',
-                        type: 'text',
-                        text: {
-                            body: `I appreciate your consideration. Please feel free to reach out whenever you have a moment. When you're ready to continue, a simple "HI" or "HELLO" would be great. Thank you for your understanding. Have a wonderful day! 🌟`,
-                        },
-                        language: {
-                            code: 'en_US',
-                        },
-                    };
-                    break;
+        case payload === "Yes":
+          responseTemplate = {
+            messaging_product: "whatsapp",
+            to: "+919788825633",
+            type: "template",
+            template: {
+              name: "scheme_template",
+              language: {
+                code: "en_US",
+              },
+            },
+          };
+          break;
 
+        case payload === "Not Now":
+          responseTemplate = {
+            messaging_product: "whatsapp",
+            to: "+919788825633",
+            type: "text",
+            text: {
+              body: `I appreciate your consideration. Please feel free to reach out whenever you have a moment. When you're ready to continue, a simple "HI" or "HELLO" would be great. Thank you for your understanding. Have a wonderful day! 🌟`,
+            },
+            language: {
+              code: "en_US",
+            },
+          };
+          break;
 
-                case payload === 'Show Schemes':
-                    responseTemplate = {
-                        messaging_product: 'whatsapp',
-                        to: '+919788825633',
-                        type: 'template',
-                        template: {
-                            name: 'age',
-                            language: {
-                                code: 'en_US',
-                            },
-                        },
-                    };
-                    break;
+        case payload === "Show Schemes":
+          responseTemplate = {
+            messaging_product: "whatsapp",
+            to: "+919788825633",
+            type: "template",
+            template: {
+              name: "age",
+              language: {
+                code: "en_US",
+              },
+            },
+          };
+          break;
 
-                    case payload === '0-6' || payload === '6-18' || payload === '18-24':
-                        // Check if all relevant data is collected
-                        // const { age, gender, state, disability, income } = collectedData;
-    
-                        // Query the database to find matching records
-                        // const schemesData = await SchemeModel.find({
-                        //     age: collectedData.age, genderEligibility: collectedData.gender, implementedBy: collectedData.state, disabilityPercentage: collectedData.disability, annualIncome: collectedData.income});
-    
+        case payload === "0-6" || payload === "6-18" || payload === "18-24":
+          collectedData.age = payload;
+          console.log("Collected Data age:", collectedData.age);
+          responseTemplate = {
+            messaging_product: "whatsapp",
+            to: "+919788825633",
+            type: "template",
+            template: {
+              name: "gender",
+              language: {
+                code: "en_US",
+              },
+            },
+          };
+          break;
 
-                            const schemesData = await SchemeModel.find({age: payload})
-                        if (schemesData.length > 0) {
-                            let responseMessage = `Matching schemes:\n\n`;
-    
-                            schemesData.forEach((scheme) => {
-                                responseMessage +=
-                                    `Implemented By: ${scheme.implementedBy || 'Not available'}\n` +
-                                    `Domain Description: ${scheme.domainDescription || 'Not available'}\n` +
-                                    `Eligible Disabilities: ${scheme.eligibleDisabilities || 'Not available'}\n` +
-                                    `Disability Percentage: ${scheme.disabilityPercentage || 'Not available'}\n` +
-                                    `Age: ${scheme.age || 'Not available'}\n` +
-                                    `Annual Income: ${scheme.annualIncome || 'Not available'}\n` +
-                                    `Gender Eligibility: ${scheme.genderEligibility || 'Not available'}\n` +
-                                    `Comments: ${scheme.comments || 'Not available'}\n` +
-                                    `Email Address: ${scheme.emailAddress || 'Not available'}\n\n`;
-                            });
-    
-                            const truncatedMessage = responseMessage.substring(0, 4096);
-    
-                            responseTemplate = {
-                                messaging_product: 'whatsapp',
-                                to: '+919788825633',
-                                type: 'text',
-                                text: {
-                                    body: truncatedMessage,
-                                },
-                                language: {
-                                    code: 'en_US',
-                                },
-                            };
-                            console.log('Response Template for Matching Schemes:', responseTemplate);
-                        } else {
-                            responseTemplate = {
-                                messaging_product: 'whatsapp',
-                                to: '+919788825633',
-                                type: 'text',
-                                text: {
-                                    body: "No matching schemes found. Please refine your search criteria.",
-                                },
-                                language: {
-                                    code: 'en_US',
-                                },
-                            };
-                            console.log('Response Template for No Matching Schemes:', responseTemplate);
-                        }
-                        // Send the response if responseTemplate is defined
-if (responseTemplate) {
-try {
-const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
-console.log('Response:', response.data);
-res.status(200).send(response.data);
-return;
-} catch (error) {
-console.error('Error sending response:', error.message, error.response ? error.response.data : '');
-res.status(500).send(error.message);
-return;
-}
-} else {
-console.log('Response Template is undefined. No response sent.');
-res.status(200).send(''); // Send an empty response
-}
+        case payload === "Male" ||
+          payload === "Female" ||
+          payload === "Both Male and Female":
+          collectedData.gender = payload;
+          console.log("Collected Data gender:", collectedData.gender);
+          responseTemplate = {
+            messaging_product: "whatsapp",
+            to: "+919788825633",
+            type: "template",
+            template: {
+              name: "state",
+              language: {
+                code: "en_US",
+              },
+            },
+          };
+          break;
 
-                    // case payload === '0-6' || payload === '6-18' || payload === '18-24':
-                    //     collectedData.age = payload;
-                    //     console.log('Collected Data age:', collectedData.age);
-                    // // responseTemplate = {
-                    // //     messaging_product: 'whatsapp',
-                    // //     to: '+919788825633',
-                    // //     type: 'template',
-                    // //     template: {
-                    // //         name: 'gender',
-                    // //         language: {
-                    // //             code: 'en_US',
-                    // //         },
-                    // //     },
-                    // // };
-                    // break;
+        case payload === "0-6" || payload === "6-18" || payload === "18-24" && payload === "Male" || payload === "Female" || payload === "Both Male and Female":
+          const schemesData = await SchemeModel.find({ age: collectedData.age, genderEligibility: collectedData.gender });
+          if (schemesData.length > 0) {
+            let responseMessage = `Matching schemes:\n\n`;
 
-                    case payload === 'Male' || payload === 'Female' || payload === 'Both Male and Female':
-                        collectedData.gender = payload;
-                        console.log('Collected Data gender:', collectedData);
-                    responseTemplate = {
-                        messaging_product: 'whatsapp',
-                        to: '+919788825633',
-                        type: 'template',
-                        template: {
-                            name: 'state',
-                            language: {
-                                code: 'en_US',
-                            },
-                        },
-                    };
-                    break;
+            schemesData.forEach((scheme) => {
+              responseMessage +=
+                `Implemented By: ${scheme.implementedBy || "Not available"}\n` +
+                `Domain Description: ${
+                  scheme.domainDescription || "Not available"
+                }\n` +
+                `Eligible Disabilities: ${
+                  scheme.eligibleDisabilities || "Not available"
+                }\n` +
+                `Disability Percentage: ${
+                  scheme.disabilityPercentage || "Not available"
+                }\n` +
+                `Age: ${scheme.age || "Not available"}\n` +
+                `Annual Income: ${scheme.annualIncome || "Not available"}\n` +
+                `Gender Eligibility: ${
+                  scheme.genderEligibility || "Not available"
+                }\n` +
+                `Comments: ${scheme.comments || "Not available"}\n` +
+                `Email Address: ${scheme.emailAddress || "Not available"}\n\n`;
+            });
 
-                     
+            const truncatedMessage = responseMessage.substring(0, 4096);
 
-                        case payload === 'TAMIL NADU' || payload === 'MAHARASHTRA' || payload === 'GOA':
-                            collectedData.state = payload;
-                    console.log('Collected Data:', collectedData);
-                       responseTemplate = {
-                            messaging_product: 'whatsapp',
-                            to: '+919788825633',
-                            type: 'template',
-                            template: {
-                                name: 'disability',
-                                language: {
-                                    code: 'en_US',
-                                },
-                            },
-                        };
-                        break;
-                        
-                        case payload === 'Minimum 40%' || payload === 'Minimum 90%':
-                            collectedData.disability = payload;
-                            console.log('Collected Data:', collectedData);
-                            responseTemplate = {
-                                messaging_product: 'whatsapp',
-                                to: '+919788825633',
-                                type: 'template',
-                                template: {
-                                    name: 'income',
-                                    language: {
-                                        code: 'en_US',
-                                    },
-                                },
-                            };
-                            break;
-
-                            case payload === '1,25,000' || payload === '1,75,000' || payload === 'No income limit':
-                                collectedData.income = payload;
-                    console.log('Collected Data:', collectedData);
-                                responseTemplate = {
-                                    messaging_product: 'whatsapp',
-                                    to: '+919788825633',
-                                    type: 'template',
-                                    template: {
-                                        name: 'deals',
-                                        language: {
-                                            code: 'en_US',
-                                        },
-                                    },
-                                };
-                                break;
-
-                        
-             
-                default:
-                    responseTemplate = {
-                        messaging_product: 'whatsapp',
-                        to: '+919788825633',
-                        type: 'text',
-                        text: {
-                            body: "Please enter valid message!",
-                        },
-                        language: {
-                            code: 'en_US',
-                        },
-                    };
-                    console.log('Switch Case: Default');
-                    break;
+            responseTemplate = {
+              messaging_product: "whatsapp",
+              to: "+919788825633",
+              type: "text",
+              text: {
+                body: truncatedMessage,
+              },
+              language: {
+                code: "en_US",
+              },
+            };
+            console.log(
+              "Response Template for Matching Schemes:",
+              responseTemplate
+            );
+          } else {
+            responseTemplate = {
+              messaging_product: "whatsapp",
+              to: "+919788825633",
+              type: "text",
+              text: {
+                body: "No matching schemes found. Please refine your search criteria.",
+              },
+              language: {
+                code: "en_US",
+              },
+            };
+            console.log(
+              "Response Template for No Matching Schemes:",
+              responseTemplate
+            );
+          }
+          if (responseTemplate) {
+            try {
+              const response = await axios.post(
+                `https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`,
+                responseTemplate
+              );
+              console.log("Response:", response.data);
+              res.status(200).send(response.data);
+              return;
+            } catch (error) {
+              console.error(
+                "Error sending response:",
+                error.message,
+                error.response ? error.response.data : ""
+              );
+              res.status(500).send(error.message);
+              return;
             }
-            console.log('Final Response Template:', responseTemplate);
-            const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
-            console.log('Response:', response.data);
-            res.status(200).send(response.data);
-            return;
-        } catch (error) {
-            console.error('Error sending response:', error.message, error.response ? error.response.data : '');
-            res.status(500).send(error.message);
-            return;
-        }
-    } else {
-        res.status(404).send('Invalid request format');
-        return;
+          } else {
+            console.log("Response Template is undefined. No response sent.");
+            res.status(200).send("");
+          }
+
+        // case payload === "Male" ||
+        //   payload === "Female" ||
+        //   payload === "Both Male and Female":
+        //   collectedData.gender = payload;
+        //   console.log("Collected Data gender:", collectedData);
+        //   responseTemplate = {
+        //     messaging_product: "whatsapp",
+        //     to: "+919788825633",
+        //     type: "template",
+        //     template: {
+        //       name: "state",
+        //       language: {
+        //         code: "en_US",
+        //       },
+        //     },
+        //   };
+        //   break;
+
+        // case payload === "TAMIL NADU" ||
+        //   payload === "MAHARASHTRA" ||
+        //   payload === "GOA":
+        //   collectedData.state = payload;
+        //   console.log("Collected Data:", collectedData);
+        //   responseTemplate = {
+        //     messaging_product: "whatsapp",
+        //     to: "+919788825633",
+        //     type: "template",
+        //     template: {
+        //       name: "disability",
+        //       language: {
+        //         code: "en_US",
+        //       },
+        //     },
+        //   };
+        //   break;
+
+        // case payload === "Minimum 40%" || payload === "Minimum 90%":
+        //   collectedData.disability = payload;
+        //   console.log("Collected Data:", collectedData);
+        //   responseTemplate = {
+        //     messaging_product: "whatsapp",
+        //     to: "+919788825633",
+        //     type: "template",
+        //     template: {
+        //       name: "income",
+        //       language: {
+        //         code: "en_US",
+        //       },
+        //     },
+        //   };
+        //   break;
+
+        // case payload === "1,25,000" ||
+        //   payload === "1,75,000" ||
+        //   payload === "No income limit":
+        //   collectedData.income = payload;
+        //   console.log("Collected Data:", collectedData);
+        //   responseTemplate = {
+        //     messaging_product: "whatsapp",
+        //     to: "+919788825633",
+        //     type: "template",
+        //     template: {
+        //       name: "deals",
+        //       language: {
+        //         code: "en_US",
+        //       },
+        //     },
+        //   };
+        //   break;
+
+        default:
+          responseTemplate = {
+            messaging_product: "whatsapp",
+            to: "+919788825633",
+            type: "text",
+            text: {
+              body: "Please enter valid message!",
+            },
+            language: {
+              code: "en_US",
+            },
+          };
+          console.log("Switch Case: Default");
+          break;
+      }
+      console.log("Final Response Template:", responseTemplate);
+      const response = await axios.post(
+        `https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`,
+        responseTemplate
+      );
+      console.log("Response:", response.data);
+      res.status(200).send(response.data);
+      return;
+    } catch (error) {
+      console.error(
+        "Error sending response:",
+        error.message,
+        error.response ? error.response.data : ""
+      );
+      res.status(500).send(error.message);
+      return;
     }
+  } else {
+    res.status(404).send("Invalid request format");
+    return;
+  }
 });
 
-
-app.get('/', (req, res) => {
-    res.status(200).send('Webhook setup for scheme!!');
+app.get("/", (req, res) => {
+  res.status(200).send("Webhook setup for scheme!!");
 });
 
 // ----------------------
-
 
 // case payload === '0-6' || payload === '6-18' || payload === '18-24':
 //     try {
@@ -339,7 +378,7 @@ app.get('/', (req, res) => {
 //             let responseMessage = `Schemes for ${payload}:\n\n`;
 
 //          schemesData.forEach((scheme) => {
-//                 responseMessage += 
+//                 responseMessage +=
 //                     `Implemented By: ${scheme.implementedBy || 'Not available'}\n` +
 //                     `Domain Description: ${scheme.domainDescription || 'Not available'}\n` +
 //                     `Eligible Disabilities: ${scheme.eligibleDisabilities || 'Not available'}\n` +
@@ -391,16 +430,15 @@ app.get('/', (req, res) => {
 //     }
 //     break;
 
-
 //     case payload === 'Male' || payload === 'Female' || payload === 'Both Male and Female':
 //         try {
 //             // Assuming schemesData is an array of scheme objects
 //             const schemesData = await SchemeModel.find({ age: payload });
 //             if (schemesData.length > 0) {
 //                 let responseMessage = `Schemes for ${payload}:\n\n`;
-    
+
 //              schemesData.forEach((scheme) => {
-//                     responseMessage += 
+//                     responseMessage +=
 //                         `Implemented By: ${scheme.implementedBy || 'Not available'}\n` +
 //                         `Domain Description: ${scheme.domainDescription || 'Not available'}\n` +
 //                         `Eligible Disabilities: ${scheme.eligibleDisabilities || 'Not available'}\n` +
@@ -411,9 +449,9 @@ app.get('/', (req, res) => {
 //                         `Comments: ${scheme.comments || 'Not available'}\n` +
 //                         `Email Address: ${scheme.emailAddress || 'Not available'}\n\n`;
 //                 });
-    
+
 //                 const truncatedMessage = responseMessage.substring(0, 4096);
-    
+
 //                 const responseTemplate = {
 //                     messaging_product: 'whatsapp',
 //                     to: '+919788825633',
@@ -425,7 +463,7 @@ app.get('/', (req, res) => {
 //                         code: 'en_US',
 //                     },
 //                 };
-    
+
 //                 const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
 //                 console.log('Response:', response.data);
 //                 res.status(200).send(response.data);
@@ -441,7 +479,7 @@ app.get('/', (req, res) => {
 //                         code: 'en_US',
 //                     },
 //                 };
-    
+
 //                 const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
 //                 console.log('Response:', response.data);
 //                 res.status(200).send(response.data);
@@ -452,16 +490,15 @@ app.get('/', (req, res) => {
 //         }
 //         break;
 
-        
 //         case payload === 'TAMIL NADU' || payload === 'MAHARASHTRA' || payload === 'GOA':
 //             try {
 //                 // Assuming schemesData is an array of scheme objects
 //                 const schemesData = await SchemeModel.find({ age: payload });
 //                 if (schemesData.length > 0) {
 //                     let responseMessage = `Schemes for ${payload}:\n\n`;
-        
+
 //                  schemesData.forEach((scheme) => {
-//                         responseMessage += 
+//                         responseMessage +=
 //                             `Implemented By: ${scheme.implementedBy || 'Not available'}\n` +
 //                             `Domain Description: ${scheme.domainDescription || 'Not available'}\n` +
 //                             `Eligible Disabilities: ${scheme.eligibleDisabilities || 'Not available'}\n` +
@@ -472,9 +509,9 @@ app.get('/', (req, res) => {
 //                             `Comments: ${scheme.comments || 'Not available'}\n` +
 //                             `Email Address: ${scheme.emailAddress || 'Not available'}\n\n`;
 //                     });
-        
+
 //                     const truncatedMessage = responseMessage.substring(0, 4096);
-        
+
 //                     const responseTemplate = {
 //                         messaging_product: 'whatsapp',
 //                         to: '+919788825633',
@@ -486,7 +523,7 @@ app.get('/', (req, res) => {
 //                             code: 'en_US',
 //                         },
 //                     };
-        
+
 //                     const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
 //                     console.log('Response:', response.data);
 //                     res.status(200).send(response.data);
@@ -502,7 +539,7 @@ app.get('/', (req, res) => {
 //                             code: 'en_US',
 //                         },
 //                     };
-        
+
 //                     const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
 //                     console.log('Response:', response.data);
 //                     res.status(200).send(response.data);
@@ -513,16 +550,15 @@ app.get('/', (req, res) => {
 //             }
 //             break;
 
-            
 //             case payload === 'Minimum 40%' || payload === 'Minimum 90%':
 //                 try {
 //                     // Assuming schemesData is an array of scheme objects
 //                     const schemesData = await SchemeModel.find({ age: payload });
 //                     if (schemesData.length > 0) {
 //                         let responseMessage = `Schemes for ${payload}:\n\n`;
-            
+
 //                      schemesData.forEach((scheme) => {
-//                             responseMessage += 
+//                             responseMessage +=
 //                                 `Implemented By: ${scheme.implementedBy || 'Not available'}\n` +
 //                                 `Domain Description: ${scheme.domainDescription || 'Not available'}\n` +
 //                                 `Eligible Disabilities: ${scheme.eligibleDisabilities || 'Not available'}\n` +
@@ -533,9 +569,9 @@ app.get('/', (req, res) => {
 //                                 `Comments: ${scheme.comments || 'Not available'}\n` +
 //                                 `Email Address: ${scheme.emailAddress || 'Not available'}\n\n`;
 //                         });
-            
+
 //                         const truncatedMessage = responseMessage.substring(0, 4096);
-            
+
 //                         const responseTemplate = {
 //                             messaging_product: 'whatsapp',
 //                             to: '+919788825633',
@@ -547,7 +583,7 @@ app.get('/', (req, res) => {
 //                                 code: 'en_US',
 //                             },
 //                         };
-            
+
 //                         const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
 //                         console.log('Response:', response.data);
 //                         res.status(200).send(response.data);
@@ -563,7 +599,7 @@ app.get('/', (req, res) => {
 //                                 code: 'en_US',
 //                             },
 //                         };
-            
+
 //                         const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
 //                         console.log('Response:', response.data);
 //                         res.status(200).send(response.data);
@@ -574,16 +610,15 @@ app.get('/', (req, res) => {
 //                 }
 //                 break;
 
-                
 //                 case payload === '1,25,000' || payload === '1,75,000' || payload === 'No income limit':
 //                     try {
 //                         // Assuming schemesData is an array of scheme objects
 //                         const schemesData = await SchemeModel.find({ age: payload });
 //                         if (schemesData.length > 0) {
 //                             let responseMessage = `Schemes for ${payload}:\n\n`;
-                
+
 //                          schemesData.forEach((scheme) => {
-//                                 responseMessage += 
+//                                 responseMessage +=
 //                                     `Implemented By: ${scheme.implementedBy || 'Not available'}\n` +
 //                                     `Domain Description: ${scheme.domainDescription || 'Not available'}\n` +
 //                                     `Eligible Disabilities: ${scheme.eligibleDisabilities || 'Not available'}\n` +
@@ -594,9 +629,9 @@ app.get('/', (req, res) => {
 //                                     `Comments: ${scheme.comments || 'Not available'}\n` +
 //                                     `Email Address: ${scheme.emailAddress || 'Not available'}\n\n`;
 //                             });
-                
+
 //                             const truncatedMessage = responseMessage.substring(0, 4096);
-                
+
 //                             const responseTemplate = {
 //                                 messaging_product: 'whatsapp',
 //                                 to: '+919788825633',
@@ -608,7 +643,7 @@ app.get('/', (req, res) => {
 //                                     code: 'en_US',
 //                                 },
 //                             };
-                
+
 //                             const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
 //                             console.log('Response:', response.data);
 //                             res.status(200).send(response.data);
@@ -624,7 +659,7 @@ app.get('/', (req, res) => {
 //                                     code: 'en_US',
 //                                 },
 //                             };
-                
+
 //                             const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
 //                             console.log('Response:', response.data);
 //                             res.status(200).send(response.data);
@@ -635,75 +670,70 @@ app.get('/', (req, res) => {
 //                     }
 //                     break;
 
-  
+//                             case payload === '0-6' || payload === '6-18' || payload === '18-24':
+// try {
+//     // Assuming schemesData is an array of scheme objects
+//     const schemesData = await SchemeModel.find({ age: payload });
+//     if (schemesData.length > 0) {
+//         let responseMessage = `Schemes for ${payload}:\n\n`;
 
-    //                             case payload === '0-6' || payload === '6-18' || payload === '18-24':
-    // try {
-    //     // Assuming schemesData is an array of scheme objects
-    //     const schemesData = await SchemeModel.find({ age: payload });
-    //     if (schemesData.length > 0) {
-    //         let responseMessage = `Schemes for ${payload}:\n\n`;
+//      schemesData.forEach((scheme) => {
+//             responseMessage +=
+//                 `Implemented By: ${scheme.implementedBy || 'Not available'}\n` +
+//                 `Domain Description: ${scheme.domainDescription || 'Not available'}\n` +
+//                 `Eligible Disabilities: ${scheme.eligibleDisabilities || 'Not available'}\n` +
+//                 `Disability Percentage: ${scheme.disabilityPercentage || 'Not available'}\n` +
+//                 `Age: ${scheme.age || 'Not available'}\n` +
+//                 `Annual Income: ${scheme.annualIncome || 'Not available'}\n` +
+//                 `Gender Eligibility: ${scheme.genderEligibility || 'Not available'}\n` +
+//                 `Comments: ${scheme.comments || 'Not available'}\n` +
+//                 `Email Address: ${scheme.emailAddress || 'Not available'}\n\n`;
+//         });
 
-    //      schemesData.forEach((scheme) => {
-    //             responseMessage += 
-    //                 `Implemented By: ${scheme.implementedBy || 'Not available'}\n` +
-    //                 `Domain Description: ${scheme.domainDescription || 'Not available'}\n` +
-    //                 `Eligible Disabilities: ${scheme.eligibleDisabilities || 'Not available'}\n` +
-    //                 `Disability Percentage: ${scheme.disabilityPercentage || 'Not available'}\n` +
-    //                 `Age: ${scheme.age || 'Not available'}\n` +
-    //                 `Annual Income: ${scheme.annualIncome || 'Not available'}\n` +
-    //                 `Gender Eligibility: ${scheme.genderEligibility || 'Not available'}\n` +
-    //                 `Comments: ${scheme.comments || 'Not available'}\n` +
-    //                 `Email Address: ${scheme.emailAddress || 'Not available'}\n\n`;
-    //         });
+//         const truncatedMessage = responseMessage.substring(0, 4096);
 
-    //         const truncatedMessage = responseMessage.substring(0, 4096);
+//         const responseTemplate = {
+//             messaging_product: 'whatsapp',
+//             to: '+919788825633',
+//             type: 'text',
+//             text: {
+//                 body: truncatedMessage,
+//             },
+//             language: {
+//                 code: 'en_US',
+//             },
+//         };
 
-    //         const responseTemplate = {
-    //             messaging_product: 'whatsapp',
-    //             to: '+919788825633',
-    //             type: 'text',
-    //             text: {
-    //                 body: truncatedMessage,
-    //             },
-    //             language: {
-    //                 code: 'en_US',
-    //             },
-    //         };
+//         const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
+//         console.log('Response:', response.data);
+//         res.status(200).send(response.data);
+//     } else {
+//         const responseTemplate = {
+//             messaging_product: 'whatsapp',
+//             to: '+919788825633',
+//             type: 'text',
+//             text: {
+//                 body: `No schemes found for the selected age group (${payload}).`,
+//             },
+//             language: {
+//                 code: 'en_US',
+//             },
+//         };
 
-    //         const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
-    //         console.log('Response:', response.data);
-    //         res.status(200).send(response.data);
-    //     } else {
-    //         const responseTemplate = {
-    //             messaging_product: 'whatsapp',
-    //             to: '+919788825633',
-    //             type: 'text',
-    //             text: {
-    //                 body: `No schemes found for the selected age group (${payload}).`,
-    //             },
-    //             language: {
-    //                 code: 'en_US',
-    //             },
-    //         };
-
-    //         const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
-    //         console.log('Response:', response.data);
-    //         res.status(200).send(response.data);
-    //     }
-    // } catch (error) {
-    //     console.error('Error fetching data from the database:', error.message);
-    //     res.status(500).send('Internal Server Error');
-    // }
-    // break;
-
-    
-                                
+//         const response = await axios.post(`https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`, responseTemplate);
+//         console.log('Response:', response.data);
+//         res.status(200).send(response.data);
+//     }
+// } catch (error) {
+//     console.error('Error fetching data from the database:', error.message);
+//     res.status(500).send('Internal Server Error');
+// }
+// break;
 
 // else if (msgBody.toLowerCase().includes('show schemes')) {
 //     const showSchemesTemplate = {
 //         messaging_product: 'whatsapp',
-//         to: '+919788825633', 
+//         to: '+919788825633',
 //         type: 'template',
 //         template: {
 //             name: 'deals',
@@ -726,7 +756,6 @@ app.get('/', (req, res) => {
 // }
 
 // from database
-
 
 // const express = require('express');
 // const bodyParser = require('body-parser');
@@ -760,7 +789,6 @@ app.get('/', (req, res) => {
 //     comments: String,
 //     attachments: String,
 // });
-
 
 // // Create a Mongoose model based on the schema
 // const Scheme = mongoose.model('Scheme', schemeSchema);
@@ -802,14 +830,13 @@ app.get('/', (req, res) => {
 //             const keyword = msg_body.toLowerCase();
 //             const schemes = await Scheme.find({ schemeName: { $regex: keyword, $options: 'i' } });
 
-
 //             let responseMessage;
 
 //             if (schemes.length > 0) {
 //                 // Construct a response message based on the retrieved schemes
 //                 responseMessage = "Here are some schemes matching your query:\n";
 //                 schemes.forEach((scheme) => {
-//                     responseMessage += 
+//                     responseMessage +=
 //                     `*Scheme Name:* ${scheme.schemeName}\n*Description:* ${scheme.domainDescription}\n*Comments:* ${scheme.comments}\n*NIProvider:* ${scheme.niProvider}\n*State:* ${scheme.implementedBy}\n*Eligible Disabilities:* ${scheme.eligibleDisabilities}\n*Disability Percentage:* ${scheme.disabilityPercentage}\n*Age:* ${scheme.age}\n*Annual Income:* ${scheme.annualIncome}\n*Gender:* ${scheme.genderEligibility}\n*Attachments:* ${scheme.attachments}\n\n`;
 //                 });
 //             } else {
@@ -847,7 +874,6 @@ app.get('/', (req, res) => {
 // app.get("/", (req, res) => {
 //     res.status(200).send("Webhook setup for scheme!!");
 // });
-
 
 // ----------------------
 
@@ -904,7 +930,7 @@ app.get('/', (req, res) => {
 //                 },
 //                 "language": "en_US" // Add the language parameter
 //             };
-            
+
 //             let responseMessage;
 
 //             // Implement your chatbot logic here
