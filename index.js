@@ -75,6 +75,7 @@ app.post('/whatsapp', async (req, res) => {
         const payload = message.button ? message.button.payload : undefined;
 
         console.log('message:', message);
+        console.log('msgBody:', msgBody);
 
         try {
             let responseTemplate;
