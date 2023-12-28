@@ -226,7 +226,7 @@ app.post("/whatsapp", async (req, res) => {
                           
 
           try {
-            const schemesData = await filterSchemes(collectedData.age, collectedData.gender, collectedData.state, collectedData.disability, collectedData.income);
+            const schemesData = await filterSchemes(collectedData.age, collectedData.gender, collectedData.disability);
 
             const count = schemesData.length
 
