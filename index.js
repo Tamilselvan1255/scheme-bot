@@ -166,11 +166,64 @@ app.post("/whatsapp", async (req, res) => {
           };
           break;
 
-        case payload === "Male" ||
-          payload === "Female" ||
-          payload === "Both Male and Female":
-          collectedData.gender = payload;
-          console.log("Collected Data gender:", collectedData.gender);
+          case payload === "Male" ||
+                    payload === "Female" ||
+                    payload === "Both Male and Female":
+                    collectedData.gender = payload;
+                    console.log("Collected Data gender:", collectedData);
+                    responseTemplate = {
+                      messaging_product: "whatsapp",
+                      to: "+919788825633",
+                      type: "template",
+                      template: {
+                        name: "state",
+                        language: {
+                          code: "en_US",
+                        },
+                      },
+                    };
+                    break;
+          
+                  case payload === "TAMIL NADU" ||
+                    payload === "MAHARASHTRA" ||
+                    payload === "GOA":
+                    collectedData.state = payload;
+                    console.log("Collected Data:", collectedData);
+                    responseTemplate = {
+                      messaging_product: "whatsapp",
+                      to: "+919788825633",
+                      type: "template",
+                      template: {
+                        name: "disability",
+                        language: {
+                          code: "en_US",
+                        },
+                      },
+                    };
+                    break;
+          
+                  case payload === "Minimum 40%" || payload === "Minimum 90%":
+                    collectedData.disability = payload;
+                    console.log("Collected Data:", collectedData);
+                    responseTemplate = {
+                      messaging_product: "whatsapp",
+                      to: "+919788825633",
+                      type: "template",
+                      template: {
+                        name: "income",
+                        language: {
+                          code: "en_US",
+                        },
+                      },
+                    };
+                    break;
+          
+                  case payload === "1,25,000" ||
+                    payload === "1,75,000" ||
+                    payload === "No income limit":
+                    collectedData.income = payload;
+                    console.log("Collected Data:", collectedData);
+                          
 
           try {
             const schemesData = await filterSchemes(collectedData.age, collectedData.gender);
