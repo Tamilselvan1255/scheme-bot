@@ -41,9 +41,9 @@ const token = process.env.TOKEN;
 const myToken = process.env.MYTOKEN;
 
 // Filter function
-async function filterSchemes(age, gender) {
+async function filterSchemes(age, gender, state, disability, income) {
   try {
-    const schemesData = await SchemeModel.find({ age, genderEligibility: gender });
+    const schemesData = await SchemeModel.find({ age, genderEligibility: gender, implementedBy: state, disabilityPercentage: disability, annualIncome: income });
     return schemesData;
   } catch (error) {
     console.error('Error filtering schemes:', error.message);
@@ -226,7 +226,7 @@ app.post("/whatsapp", async (req, res) => {
                           
 
           try {
-            const schemesData = await filterSchemes(collectedData.age, collectedData.gender, collectedData.disability);
+            const schemesData = await filterSchemes(collectedData.age, collectedData.gender, collectedData.state, collectedData.disability, collectedData.income);
 
             const count = schemesData.length
 
