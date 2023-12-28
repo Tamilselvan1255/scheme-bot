@@ -99,7 +99,7 @@ app.post("/whatsapp", async (req, res) => {
       let responseTemplate;
 
       switch (true) {
-        case msgBody.includes("hello") || msgBody.includes("hi") || payload === "Go to Main Menu":
+        case msgBody.includes("hello") || msgBody.includes("hi"):
           responseTemplate = {
             messaging_product: "whatsapp",
             to: "+919788825633",
@@ -114,7 +114,7 @@ app.post("/whatsapp", async (req, res) => {
           break;
          
 
-        case payload === "Let's Explore":
+        case payload === "Let's Explore" || payload === "Go to Main Menu":
           responseTemplate = {
             messaging_product: "whatsapp",
             to: "+919788825633",
