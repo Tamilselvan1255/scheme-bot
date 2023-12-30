@@ -437,18 +437,18 @@ app.post("/whatsapp", async (req, res) => {
         responseTemplate
       );
       console.log("Response:", response.data);
-      if (!existingCustomer) {
-        try {
-          const savedCustomer = await CustomerModel.create(
-            collectedCustomer
-          );
-          console.log("Customer saved to MongoDB:", savedCustomer);
-        } catch (error) {
-          console.error("Error saving customer to MongoDB:", error.message);
-        }
-      } else {
-        console.log("Customer already exists in the database");
-      }
+       if (!existingCustomer) {
+            try {
+              const savedCustomer = await CustomerModel.create(
+                collectedCustomer
+              );
+              console.log("Customer saved to MongoDB:", savedCustomer);
+            } catch (error) {
+              console.error("Error saving customer to MongoDB:", error.message);
+            }
+          } else {
+            console.log("Customer already exists in the database");
+          }
       res.status(200).send(response.data);
       return;
     } catch (error) {
