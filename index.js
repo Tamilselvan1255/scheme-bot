@@ -121,7 +121,7 @@ app.post("/whatsapp", async (req, res) => {
           };
           break;
 
-        case payload === "Let's Explore" || payload === "Go to Main Menu":
+        case payload === "Let's Explore":
           responseTemplate = {
             messaging_product: "whatsapp",
             to: "+919788825633",
@@ -137,6 +137,8 @@ app.post("/whatsapp", async (req, res) => {
           break;
 
         case userState === "name" && /^[a-zA-Z]+$/.test(msgBody):
+          const name = msgBody;
+          console.log(name);
           responseTemplate = {
             messaging_product: "whatsapp",
             to: "+919788825633",
@@ -152,6 +154,8 @@ app.post("/whatsapp", async (req, res) => {
           break;
 
         case userState === "email" && isValidEmail(msgBody):
+          const email = msgBody;
+          console.log(email);
           responseTemplate = {
             messaging_product: "whatsapp",
             to: "+919788825633",
@@ -166,7 +170,9 @@ app.post("/whatsapp", async (req, res) => {
           userState = "phone"; // Update user state to "phone"
           break;
 
-        case userState === "phone" && /^\d{10}$/.test(msgBody):
+        case userState === "phone" && /^\d{10}$/.test(msgBody) || payload === "Go to Main Menu":
+          const phone = msgBody;
+          console.log(phone);
           responseTemplate = {
             messaging_product: "whatsapp",
             to: "+919788825633",
