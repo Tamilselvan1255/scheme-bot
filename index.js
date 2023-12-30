@@ -134,7 +134,7 @@ app.post("/whatsapp", async (req, res) => {
               to: "+919788825633",
               type: "template",
               template: {
-                name: "name",
+                name: "email",
                 language: {
                   code: "en_US",
                 },
