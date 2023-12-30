@@ -126,9 +126,11 @@ app.post("/whatsapp", async (req, res) => {
                 },
               },
             };
-            break;
+             // Set a flag or update msgBody after the "name" template
+  collectedData.nameProcessed = true; // Assuming collectedData is an object to store data
+  break;
 
-            case collectedData.name && typeof msgBody === 'string':
+            case collectedData.nameProcessed && typeof msgBody === 'string':
             responseTemplate = {
               messaging_product: "whatsapp",
               to: "+919788825633",
