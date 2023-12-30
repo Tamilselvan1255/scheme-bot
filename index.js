@@ -36,6 +36,13 @@ const schemeSchema = new mongoose.Schema({
 
 const SchemeModel = mongoose.model("Scheme", schemeSchema);
 
+const customerSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+  phone: String,
+});
+
+const CustomerModel = mongoose.model("Customer", customerSchema);
 
 let collectedData = {};
 let collectedCustomer = {};
@@ -178,6 +185,17 @@ app.post("/whatsapp", async (req, res) => {
           collectedCustomer.phone = msgBody;
           console.log("collectedCustomer phone:", collectedCustomer.phone);
           console.log("CollectedCustomer:", collectedCustomer);
+
+            // Create a new CustomerModel instance and save the data
+        const collectedCustomer = new CustomerModel({
+          name: collectedData.name,
+          email: collectedData.email,
+          phone: phone,
+        });
+
+        // Save the collectedCustomer data to MongoDB
+        await collectedCustomer.save();
+        
           responseTemplate = {
             messaging_product: "whatsapp",
             to: "+919788825633",
