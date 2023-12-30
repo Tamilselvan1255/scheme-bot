@@ -138,7 +138,7 @@ app.post("/whatsapp", async (req, res) => {
           collectedData.nameProcessed = true;
           break;
 
-          case collectedData.nameProcessed && typeof msgBody === "string":
+          case collectedData.nameProcessed === true && typeof msgBody === "string":
           const nameValidationResult = nameSchema.validate({ name: msgBody });
 
           if (nameValidationResult.error) {
@@ -174,7 +174,7 @@ app.post("/whatsapp", async (req, res) => {
           }
           break;
 
-          case collectedData.emailProcessed && typeof msgBody === "string":
+          case collectedData.emailProcessed === true && typeof msgBody === "string":
             const emailValidationResult = emailSchema.validate({ email: msgBody });
   
             if (emailValidationResult.error) {
@@ -190,7 +190,6 @@ app.post("/whatsapp", async (req, res) => {
                 },
               };
             } else {
-              // Validation successful
               collectedData.email = msgBody;
               collectedData.emailProcessed = true;
               console.log("collectedData.emailProcessed:", collectedData.emailProcessed);
@@ -209,39 +208,6 @@ app.post("/whatsapp", async (req, res) => {
               collectedData.phoneProcessed = true;
             }
             break;
-        // case collectedData.emailProcessed && typeof msgBody === "string":
-        //   const emailValidationResult = emailSchema.validate({ email: msgBody });
-
-        //   if (emailValidationResult.error) {
-        //     // Validation failed
-        //     responseTemplate = {
-        //       messaging_product: "whatsapp",
-        //       to: "+919788825633",
-        //       type: "text",
-        //       text: {
-        //         body: "Invalid email format. Please provide a valid email address.",
-        //       },
-        //       language: {
-        //         code: "en_US",
-        //       },
-        //     };
-        //   } else {
-        //     // Validation successful
-        //     collectedData.email = msgBody;
-        //     responseTemplate = {
-        //       messaging_product: "whatsapp",
-        //       to: "+919788825633",
-        //       type: "template",
-        //       template: {
-        //         name: "phone",
-        //         language: {
-        //           code: "en_US",
-        //         },
-        //       },
-        //     };
-        //     collectedData.phoneProcessed = true;
-        //   }
-        //   break;
 
         case payload === "Go to Main Menu":
           responseTemplate = {
