@@ -173,13 +173,25 @@ app.post("/whatsapp", async (req, res) => {
               to: "+919788825633",
               type: "template",
               template: {
-                name: "scheme_template", // Change template name to "scheme_template"
+                name: "scheme_template",
                 language: {
                   code: "en_US",
                 },
+                components: [
+                  {
+                    type: "header",
+                    parameters: [
+                      {
+                        type: "image",
+                        image: {
+                          link: " https://i.imgur.com/0uVWYeR.jpeg",
+                        },
+                      },
+                    ],
+                  },
+                ],
               },
             };
-            userState = "initial"; // Reset user state to "initial" after completing the process
             break;
 
         case payload === "Not now":
