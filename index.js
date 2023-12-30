@@ -22,19 +22,14 @@ db.once("open", () => {
   console.log("Connected to MongoDB");
 });
 
-const schemeSchema = new mongoose.Schema({
-  implementedBy: String,
-  domainDescription: String,
-  eligibleDisabilities: String,
-  disabilityPercentage: String,
-  age: String,
-  annualIncome: String,
-  genderEligibility: String,
-  comments: String,
-  emailAddress: String,
+// MongoDB model for user data
+const userSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+  phone: String,
 });
 
-const SchemeModel = mongoose.model("Scheme", schemeSchema);
+const UserModel = mongoose.model("User", userSchema);
 
 let collectedData = {};
 const token = process.env.TOKEN;
@@ -138,7 +133,10 @@ app.post("/whatsapp", async (req, res) => {
 
         case userState === "name" && /^[a-zA-Z]+$/.test(msgBody):
           const name = msgBody;
-          console.log(name);
+          console.log('name:', name);
+            // Save name to MongoDB
+            const userRecordName = new UserModel({ name });
+            userRecordName.save();
           responseTemplate = {
             messaging_product: "whatsapp",
             to: "+919788825633",
@@ -155,7 +153,10 @@ app.post("/whatsapp", async (req, res) => {
 
         case userState === "email" && isValidEmail(msgBody):
           const email = msgBody;
-          console.log(email);
+          console.log('email:', email);
+            // Save email to MongoDB
+            const userRecordEmail = new UserModel({ email });
+            userRecordEmail.save();
           responseTemplate = {
             messaging_product: "whatsapp",
             to: "+919788825633",
@@ -172,7 +173,10 @@ app.post("/whatsapp", async (req, res) => {
 
         case userState === "phone" && /^\d{10}$/.test(msgBody) || payload === "Go to Main Menu":
           const phone = msgBody;
-          console.log(phone);
+          console.log('phone:', phone);
+            // Save phone to MongoDB
+            const userRecordPhone = new UserModel({ phone });
+            userRecordPhone.save();
           responseTemplate = {
             messaging_product: "whatsapp",
             to: "+919788825633",
