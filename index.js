@@ -175,7 +175,7 @@ app.post("/whatsapp", async (req, res) => {
                 to: "+919788825633",
                 type: "template",
                 template: {
-                  name: "phone",
+                  name: "email",
                   language: {
                     code: "en_US",
                   },
@@ -198,7 +198,7 @@ app.post("/whatsapp", async (req, res) => {
             }
           }
           break;  
-
+          
         case payload === "Not now":
           responseTemplate = {
             messaging_product: "whatsapp",
