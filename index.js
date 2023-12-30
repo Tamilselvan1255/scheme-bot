@@ -95,7 +95,6 @@ app.post("/whatsapp", async (req, res) => {
   const bodyParam = req.body;
   console.log("Request Body:", bodyParam);
 
-  // let message; 
   if (
     bodyParam.object &&
     bodyParam.entry &&
@@ -103,10 +102,9 @@ app.post("/whatsapp", async (req, res) => {
     bodyParam.entry[0].changes[0].value.messages &&
     bodyParam.entry[0].changes[0].value.messages[0]
   ) {
-    // const phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
+    const phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
+    console.log(phoneNumberId);
     const message = bodyParam.entry[0].changes[0].value.messages[0];
-    console.log(message);
-    const phoneNumberId = message.from;
     const msgBody = (message.text?.body || "").toLowerCase();
     const payload = message.button ? message.button.payload : undefined;
 
@@ -119,7 +117,7 @@ app.post("/whatsapp", async (req, res) => {
         case msgBody.includes("hello") || msgBody.includes("hi"):
           responseTemplate = {
             messaging_product: "whatsapp",
-            to: phoneNumberId,
+            to: "+919788825633",
             type: "template",
             template: {
               name: "greet",
@@ -133,7 +131,7 @@ app.post("/whatsapp", async (req, res) => {
         case payload === "Let's Explore":
           responseTemplate = {
             messaging_product: "whatsapp",
-            to: phoneNumberId,
+            to: "+919788825633",
             type: "template",
             template: {
               name: "name", // Change template name to "name"
@@ -151,7 +149,7 @@ app.post("/whatsapp", async (req, res) => {
           // console.log('name:', name);
           responseTemplate = {
             messaging_product: "whatsapp",
-            to: phoneNumberId,
+            to: "+919788825633",
             type: "template",
             template: {
               name: "email", // Change template name to "email"
@@ -169,7 +167,7 @@ app.post("/whatsapp", async (req, res) => {
           // console.log('email:', email);
           responseTemplate = {
             messaging_product: "whatsapp",
-            to: phoneNumberId,
+            to: "+919788825633",
             type: "template",
             template: {
               name: "phone", // Change template name to "phone"
@@ -206,7 +204,7 @@ app.post("/whatsapp", async (req, res) => {
 
           responseTemplate = {
             messaging_product: "whatsapp",
-            to: phoneNumberId,
+            to: "+919788825633",
             type: "template",
             template: {
               name: "scheme_template",
@@ -233,7 +231,7 @@ app.post("/whatsapp", async (req, res) => {
         case payload === "Not now":
           responseTemplate = {
             messaging_product: "whatsapp",
-            to: phoneNumberId,
+            to: "+919788825633",
             type: "text",
             text: {
               body: `I appreciate your consideration. Please feel free to reach out whenever you have a moment. When you're ready to continue, a simple "HI" or "HELLO" would be great. Thank you for your understanding. Have a wonderful day! 🌟`,
@@ -247,7 +245,7 @@ app.post("/whatsapp", async (req, res) => {
         case payload === "Show Schemes":
           responseTemplate = {
             messaging_product: "whatsapp",
-            to: phoneNumberId,
+            to: "+919788825633",
             type: "template",
             template: {
               name: "age",
@@ -263,7 +261,7 @@ app.post("/whatsapp", async (req, res) => {
           console.log("Collected Data age:", collectedData.age);
           responseTemplate = {
             messaging_product: "whatsapp",
-            to: phoneNumberId,
+            to: "+919788825633",
             type: "template",
             template: {
               name: "gender",
@@ -281,7 +279,7 @@ app.post("/whatsapp", async (req, res) => {
           console.log("Collected Data gender:", collectedData);
           responseTemplate = {
             messaging_product: "whatsapp",
-            to: phoneNumberId,
+            to: "+919788825633",
             type: "template",
             template: {
               name: "state",
@@ -299,7 +297,7 @@ app.post("/whatsapp", async (req, res) => {
           console.log("Collected Data:", collectedData);
           responseTemplate = {
             messaging_product: "whatsapp",
-            to: phoneNumberId,
+            to: "+919788825633",
             type: "template",
             template: {
               name: "disability",
@@ -315,7 +313,7 @@ app.post("/whatsapp", async (req, res) => {
           console.log("Collected Data:", collectedData);
           responseTemplate = {
             messaging_product: "whatsapp",
-            to: phoneNumberId,
+            to: "+919788825633",
             type: "template",
             template: {
               name: "income",
@@ -375,7 +373,7 @@ app.post("/whatsapp", async (req, res) => {
 
               responseTemplate = {
                 messaging_product: "whatsapp",
-                to: phoneNumberId,
+                to: "+919788825633",
                 type: "text",
                 text: {
                   body: truncatedMessage,
@@ -391,7 +389,7 @@ app.post("/whatsapp", async (req, res) => {
             } else {
               responseTemplate = {
                 messaging_product: "whatsapp",
-                to: phoneNumberId,
+                to: "+919788825633",
                 type: "text",
                 text: {
                   body: "No matching schemes found. Please refine your search criteria.",
@@ -435,7 +433,7 @@ app.post("/whatsapp", async (req, res) => {
         default:
           responseTemplate = {
             messaging_product: "whatsapp",
-            to: phoneNumberId,
+            to: "+919788825633",
             type: "template",
             template: {
               name: "alert",
