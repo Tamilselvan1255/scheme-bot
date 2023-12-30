@@ -96,8 +96,8 @@ app.post("/whatsapp", async (req, res) => {
   console.log("Request Body:", bodyParam);
 
   // Log the incoming message
-  const incomingMessage = bodyParam.entry[0].changes[0].value.messages[0];
-  console.log("Incoming Message:", incomingMessage);
+  // const incomingMessage = bodyParam.entry[0].changes[0].value.messages[0];
+  // console.log("Incoming Message:", incomingMessage);
 
   if (
     bodyParam.object &&
@@ -108,6 +108,7 @@ app.post("/whatsapp", async (req, res) => {
   ) {
     const phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
     const message = bodyParam.entry[0].changes[0].value.messages[0];
+    console.log(message);
     const msgBody = (message.text?.body || "").toLowerCase();
     const payload = message.button ? message.button.payload : undefined;
 
