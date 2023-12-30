@@ -135,7 +135,7 @@ app.post("/whatsapp", async (req, res) => {
           collectedData.nameProcessed = true;
           break;
 
-          case collectedData.nameProcessed && typeof msgBody === "string":
+        case collectedData.nameProcessed && typeof msgBody === "string":
           responseTemplate = {
             messaging_product: "whatsapp",
             to: "+919788825633",
@@ -154,7 +154,7 @@ app.post("/whatsapp", async (req, res) => {
         case collectedData.emailProcessed && typeof msgBody === "string":
           const isValidEmail = validateEmail(msgBody);
           if (isValidEmail) {
-            collectedData.email = msgBody; 
+            collectedData.email = msgBody;
             responseTemplate = {
               messaging_product: "whatsapp",
               to: "+919788825633",
@@ -181,7 +181,7 @@ app.post("/whatsapp", async (req, res) => {
             };
           }
           // Continue with other cases or logic as needed
-        break;
+          break;
 
         case payload === "Go to Main Menu":
           responseTemplate = {
