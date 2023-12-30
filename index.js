@@ -141,7 +141,7 @@ app.post("/whatsapp", async (req, res) => {
             to: "+919788825633",
             type: "template",
             template: {
-              name: "email",
+              name: "scheme_template",
               language: {
                 code: "en_US",
               },
@@ -151,38 +151,7 @@ app.post("/whatsapp", async (req, res) => {
           collectedData.emailProcessed = true;
           break;
 
-        case collectedData.emailProcessed && typeof msgBody === "string":
-          const isValidEmail = validateEmail(msgBody);
-          if (isValidEmail) {
-            collectedData.email = msgBody;
-            responseTemplate = {
-              messaging_product: "whatsapp",
-              to: "+919788825633",
-              type: "template",
-              template: {
-                name: "email",
-                language: {
-                  code: "en_US",
-                },
-              },
-            };
-            collectedData.phoneProcessed = true;
-          } else {
-            responseTemplate = {
-              messaging_product: "whatsapp",
-              to: "+919788825633",
-              type: "text",
-              text: {
-                body: "Invalid email format. Please provide a valid email address.",
-              },
-              language: {
-                code: "en_US",
-              },
-            };
-          }
-          // Continue with other cases or logic as needed
-          break;
-
+        
         case payload === "Go to Main Menu":
           responseTemplate = {
             messaging_product: "whatsapp",
