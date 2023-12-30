@@ -84,20 +84,14 @@ app.get("/whatsapp", (req, res) => {
 });
 
 function isValidEmail(email) {
-  // Implement your email validation logic here
-  // For simplicity, a basic email validation is used
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-let userState = "initial"; // State variable to track user progress
+let userState = "initial"; 
 
 app.post("/whatsapp", async (req, res) => {
   const bodyParam = req.body;
   console.log("Request Body:", bodyParam);
-
-  // Log the incoming message
-  // const incomingMessage = bodyParam.entry[0].changes[0].value.messages[0];
-  // console.log("Incoming Message:", incomingMessage);
 
   if (
     bodyParam.object &&
@@ -139,49 +133,47 @@ app.post("/whatsapp", async (req, res) => {
             to: phoneNumber,
             type: "template",
             template: {
-              name: "name", // Change template name to "name"
+              name: "name", 
               language: {
                 code: "en_US",
               },
             },
           };
-          userState = "name"; // Update user state to "name"
+          userState = "name"; 
           break;
 
         case userState === "name" && /^[a-zA-Z]+$/.test(msgBody):
           collectedCustomer.name = msgBody;
           console.log("collectedCustomer name:", collectedCustomer.name);
-          // console.log('name:', name);
           responseTemplate = {
             messaging_product: "whatsapp",
             to: phoneNumber,
             type: "template",
             template: {
-              name: "email", // Change template name to "email"
+              name: "email", 
               language: {
                 code: "en_US",
               },
             },
           };
-          userState = "email"; // Update user state to "email"
+          userState = "email";
           break;
 
         case userState === "email" && isValidEmail(msgBody):
           collectedCustomer.email = msgBody;
           console.log("collectedCustomer email:", collectedCustomer.email);
-          // console.log('email:', email);
           responseTemplate = {
             messaging_product: "whatsapp",
             to: phoneNumber,
             type: "template",
             template: {
-              name: "phone", // Change template name to "phone"
+              name: "phone", 
               language: {
                 code: "en_US",
               },
             },
           };
-          userState = "phone"; // Update user state to "phone"
+          userState = "phone"; 
           break;
 
         case (userState === "phone" && /^\d{10}$/.test(msgBody)) ||
