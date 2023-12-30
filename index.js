@@ -193,8 +193,14 @@ app.post("/whatsapp", async (req, res) => {
     phone: collectedCustomer.phone,
   });
 
-        // Save the collectedCustomer data to MongoDB
-        await collectedCustomer.save();
+         // Save the newCustomer data to MongoDB
+  try {
+    await newCustomer.save();
+    console.log("Customer data saved to MongoDB");
+  } catch (error) {
+    console.error("Error saving customer data to MongoDB:", error.message);
+    // Handle the error appropriately
+  }
 
           responseTemplate = {
             messaging_product: "whatsapp",
