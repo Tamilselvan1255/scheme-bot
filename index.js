@@ -128,7 +128,7 @@ app.post("/whatsapp", async (req, res) => {
             };
             break;
 
-            case typeof msgBody === 'string':
+            case collectedData.name && typeof msgBody === 'string':
             responseTemplate = {
               messaging_product: "whatsapp",
               to: "+919788825633",
