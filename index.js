@@ -114,7 +114,36 @@ app.post("/whatsapp", async (req, res) => {
           break;
          
 
-        case payload === "Let's Explore" || payload === "Go to Main Menu":
+          case payload === "Let's Explore":
+            responseTemplate = {
+              messaging_product: "whatsapp",
+              to: "+919788825633",
+              type: "template",
+              template: {
+                name: "name",
+                language: {
+                  code: "en_US",
+                },
+              },
+            };
+            break;
+
+            case typeof namePayload === 'string':
+            responseTemplate = {
+              messaging_product: "whatsapp",
+              to: "+919788825633",
+              type: "template",
+              template: {
+                name: "name",
+                language: {
+                  code: "en_US",
+                },
+              },
+            };
+            break;
+
+
+        case payload === "Go to Main Menu":
           responseTemplate = {
             messaging_product: "whatsapp",
             to: "+919788825633",
