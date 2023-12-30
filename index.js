@@ -22,19 +22,13 @@ db.once("open", () => {
   console.log("Connected to MongoDB");
 });
 
-const schemeSchema = new mongoose.Schema({
-  implementedBy: String,
-  domainDescription: String,
-  eligibleDisabilities: String,
-  disabilityPercentage: String,
-  age: String,
-  annualIncome: String,
-  genderEligibility: String,
-  comments: String,
-  emailAddress: String,
+const customerSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+  phone: String,
 });
 
-const SchemeModel = mongoose.model("Scheme", schemeSchema);
+const CustomerModel = mongoose.model("Customer", customerSchema);
 
 let collectedData = {};
 const token = process.env.TOKEN;
@@ -151,6 +145,9 @@ app.post("/whatsapp", async (req, res) => {
             },
           };
           userState = "email"; // Update user state to "email"
+            // Save name to MongoDB
+        const customerRecord = new CustomerModel({ name });
+        customerRecord.save();
           break;
 
         case userState === "email" && isValidEmail(msgBody):
@@ -168,6 +165,10 @@ app.post("/whatsapp", async (req, res) => {
             },
           };
           userState = "phone"; // Update user state to "phone"
+           // Save email to MongoDB
+        const customer = await CustomerModel.findOne({ name });
+        customer.email = email;
+        customer.save();
           break;
 
         case userState === "phone" && /^\d{10}$/.test(msgBody) || payload === "Go to Main Menu":
@@ -197,6 +198,11 @@ app.post("/whatsapp", async (req, res) => {
               ],
             },
           };
+
+            // Save phone to MongoDB
+        const customers = await CustomerModel.findOne({ name, email });
+        customers.phone = phone;
+        customers.save();
           break;
 
         case payload === "Not now":
