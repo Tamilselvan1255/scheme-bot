@@ -56,6 +56,12 @@ async function filterSchemes(age, gender, state, disability, income) {
   }
 }
 
+// Function for basic email validation using regex
+function validateEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
 app.listen(process.env.PORT, () => {
   console.log("Webhook is listening!!");
 });
@@ -112,38 +118,68 @@ app.post("/whatsapp", async (req, res) => {
             },
           };
           break;
-         
 
-          case payload === "Let's Explore":
-            responseTemplate = {
-              messaging_product: "whatsapp",
-              to: "+919788825633",
-              type: "template",
-              template: {
-                name: "name",
-                language: {
-                  code: "en_US",
-                },
+        case payload === "Let's Explore":
+          responseTemplate = {
+            messaging_product: "whatsapp",
+            to: "+919788825633",
+            type: "template",
+            template: {
+              name: "name",
+              language: {
+                code: "en_US",
               },
-            };
-             // Set a flag or update msgBody after the "name" template
-  collectedData.nameProcessed = true; // Assuming collectedData is an object to store data
-  break;
+            },
+          };
 
-            case collectedData.nameProcessed && typeof msgBody === 'string':
-            responseTemplate = {
-              messaging_product: "whatsapp",
-              to: "+919788825633",
-              type: "template",
-              template: {
-                name: "email",
-                language: {
-                  code: "en_US",
-                },
+          collectedData.nameProcessed = true;
+          break;
+
+        case collectedData.nameProcessed && typeof msgBody === "string":
+          responseTemplate = {
+            messaging_product: "whatsapp",
+            to: "+919788825633",
+            type: "template",
+            template: {
+              name: "email",
+              language: {
+                code: "en_US",
               },
-            };
-            break;
+            },
+          };
+          const isValidEmail = validateEmail(msgBody);
+          break;
 
+        case isValidEmail:
+          collectedData.email = msgBody;
+          responseTemplate = {
+            messaging_product: "whatsapp",
+            to: "+919788825633",
+            type: "template",
+            template: {
+              name: "phone",
+              language: {
+                code: "en_US",
+              },
+            },
+          };
+          collectedData.emailProcessed = true;
+          break;
+
+        case !isValidEmail:
+          collectedData.email = msgBody;
+          responseTemplate = {
+            messaging_product: "whatsapp",
+            to: "+919788825633",
+            type: "text",
+            text: {
+              body: "Invalid email format. Please provide email address",
+            },
+            language: {
+              code: "en_US",
+            },
+          };
+          break;
 
         case payload === "Go to Main Menu":
           responseTemplate = {
