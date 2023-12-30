@@ -95,7 +95,7 @@ app.post("/whatsapp", async (req, res) => {
   const bodyParam = req.body;
   console.log("Request Body:", bodyParam);
 
-  let message; 
+  // let message; 
   if (
     bodyParam.object &&
     bodyParam.entry &&
