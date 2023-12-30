@@ -193,14 +193,20 @@ app.post("/whatsapp", async (req, res) => {
     phone: collectedCustomer.phone,
   });
 
-         // Save the newCustomer data to MongoDB
-  try {
-    await newCustomer.save();
-    console.log("Customer data saved to MongoDB");
-  } catch (error) {
-    console.error("Error saving customer data to MongoDB:", error.message);
-    // Handle the error appropriately
-  }
+ // Check if the customer already exists in the database
+ const existingCustomer = await CustomerModel.findOne({ phone: collectedCustomer.phone, name: collectedCustomer.name, email: collectedCustomer.email });
+
+ if (!existingCustomer) {
+   // If the customer doesn't exist, save the data to MongoDB
+   try {
+     const savedCustomer = await CustomerModel.create(collectedCustomer);
+     console.log("Customer saved to MongoDB:", savedCustomer);
+   } catch (error) {
+     console.error("Error saving customer to MongoDB:", error.message);
+   }
+ } else {
+   console.log("Customer already exists in the database. Skipping save.");
+ }
 
           responseTemplate = {
             messaging_product: "whatsapp",
