@@ -136,6 +136,7 @@ app.post("/whatsapp", async (req, res) => {
           break;
 
         case collectedData.nameProcessed && typeof msgBody === "string":
+          const isValidEmail = validateEmail(msgBody);
           if (isValidEmail) {
             collectedData.email = msgBody; 
             responseTemplate = {
