@@ -57,7 +57,7 @@ async function filterSchemes(age, gender, state, disability, income) {
 
 // Define Joi schema for input validation
 const nameSchema = Joi.object({
-  name: Joi.string().pattern(new RegExp("^[a-zA-Z]+$")).required(),
+  name: Joi.string().required(),
 });
 
 const emailSchema = Joi.object({
