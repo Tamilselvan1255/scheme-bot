@@ -63,7 +63,7 @@ const nameSchema = Joi.object({
 });
 
 const emailSchema = Joi.object({
-  email: Joi.string().email().required(),
+  email: Joi.string().email().regex(/^[^\s@]+@gmail\.com$/).required(),
 });
 app.listen(process.env.PORT, () => {
   console.log("Webhook is listening!!");
