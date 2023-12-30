@@ -156,6 +156,9 @@ app.post("/whatsapp", async (req, res) => {
           } else {
             // Validation successful
             collectedData.name = msgBody;
+            collectedData.nameProcessed = true;
+            console.log("collectedData.nameProcessed:", collectedData.nameProcessed);
+
             responseTemplate = {
               messaging_product: "whatsapp",
               to: "+919788825633",
@@ -189,6 +192,9 @@ app.post("/whatsapp", async (req, res) => {
             } else {
               // Validation successful
               collectedData.email = msgBody;
+              collectedData.emailProcessed = true;
+              console.log("collectedData.emailProcessed:", collectedData.emailProcessed);
+
               responseTemplate = {
                 messaging_product: "whatsapp",
                 to: "+919788825633",
