@@ -22,15 +22,23 @@ db.once("open", () => {
   console.log("Connected to MongoDB");
 });
 
-const customerSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  phone: String,
+const schemeSchema = new mongoose.Schema({
+  implementedBy: String,
+  domainDescription: String,
+  eligibleDisabilities: String,
+  disabilityPercentage: String,
+  age: String,
+  annualIncome: String,
+  genderEligibility: String,
+  comments: String,
+  emailAddress: String,
 });
 
-const CustomerModel = mongoose.model("Customer", customerSchema);
+const SchemeModel = mongoose.model("Scheme", schemeSchema);
+
 
 let collectedData = {};
+let collectedCustomer = {};
 const token = process.env.TOKEN;
 const myToken = process.env.MYTOKEN;
 
@@ -131,8 +139,9 @@ app.post("/whatsapp", async (req, res) => {
           break;
 
         case userState === "name" && /^[a-zA-Z]+$/.test(msgBody):
-          const name = msgBody;
-          console.log('name:', name);
+          collectedCustomer.name = msgBody;
+          console.log("collectedCustomer name:", collectedCustomer.name);
+          // console.log('name:', name);
           responseTemplate = {
             messaging_product: "whatsapp",
             to: "+919788825633",
@@ -145,14 +154,12 @@ app.post("/whatsapp", async (req, res) => {
             },
           };
           userState = "email"; // Update user state to "email"
-            // Save name to MongoDB
-        const customerRecord = new CustomerModel({ name });
-        customerRecord.save();
           break;
 
         case userState === "email" && isValidEmail(msgBody):
-          const email = msgBody;
-          console.log('email:', email);
+          collectedCustomer.email = msgBody;
+          console.log("collectedCustomer email:", collectedCustomer.email);
+          // console.log('email:', email);
           responseTemplate = {
             messaging_product: "whatsapp",
             to: "+919788825633",
@@ -165,15 +172,12 @@ app.post("/whatsapp", async (req, res) => {
             },
           };
           userState = "phone"; // Update user state to "phone"
-           // Save email to MongoDB
-        const customer = await CustomerModel.findOne({ name });
-        customer.email = email;
-        customer.save();
           break;
 
         case userState === "phone" && /^\d{10}$/.test(msgBody) || payload === "Go to Main Menu":
-          const phone = msgBody;
-          console.log('phone:', phone);
+          collectedCustomer.phone = msgBody;
+          console.log("collectedCustomer phone:", collectedCustomer.phone);
+          console.log("CollectedCustomer:", collectedCustomer);
           responseTemplate = {
             messaging_product: "whatsapp",
             to: "+919788825633",
@@ -198,11 +202,6 @@ app.post("/whatsapp", async (req, res) => {
               ],
             },
           };
-
-            // Save phone to MongoDB
-        const customers = await CustomerModel.findOne({ name, email });
-        customers.phone = phone;
-        customers.save();
           break;
 
         case payload === "Not now":
