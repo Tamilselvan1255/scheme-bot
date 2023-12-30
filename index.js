@@ -152,44 +152,24 @@ app.post("/whatsapp", async (req, res) => {
           collectedData.emailProcessed = true;
           break;
 
+          case collectedData.emailProcessed && typeof msgBody === "string":
+          collectedData.email = msgBody; 
+          responseTemplate = {
+            messaging_product: "whatsapp",
+            to: "+919788825633",
+            type: "template",
+            template: {
+              name: "phone",
+              language: {
+                code: "en_US",
+              },
+            },
+          };
 
-          case collectedData.emailProcessed && typeof msgBody === "string":          
-          if (collectedData.emailProcessed) {
-            // The "name" template has already been processed
-            if (validateEmail(msgBody)) {
-              collectedData.email = msgBody;
-        
-              // Validation successful, proceed to the next step (e.g., phone template)
-              responseTemplate = {
-                messaging_product: "whatsapp",
-                to: "+919788825633",
-                type: "template",
-                template: {
-                  name: "phone",
-                  language: {
-                    code: "en_US",
-                  },
-                },
-              };
-        
-              collectedData.phoneProcessed = true;
-            } else {
-              // Invalid email format, send a response
-              responseTemplate = {
-                messaging_product: "whatsapp",
-                to: "+919788825633",
-                type: "text",
-                text: {
-                  body: "Invalid email format. Please provide a valid email address.",
-                },
-                language: {
-                  code: "en_US",
-                },
-              };
-            }
-          }
+          collectedData.emailProcessed = true;
           break;
-        
+
+
         case payload === "Go to Main Menu":
           responseTemplate = {
             messaging_product: "whatsapp",
