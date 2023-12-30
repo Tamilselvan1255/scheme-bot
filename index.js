@@ -139,7 +139,7 @@ app.post("/whatsapp", async (req, res) => {
           break;
 
           case collectedData.nameProcessed && typeof msgBody === "string":
-          const nameValidationResult = nameSchema.validate({ nameProcessed: msgBody });
+          const nameValidationResult = nameSchema.validate({ name: msgBody });
 
           if (nameValidationResult.error) {
             responseTemplate = {
@@ -155,7 +155,7 @@ app.post("/whatsapp", async (req, res) => {
             };
           } else {
             // Validation successful
-            collectedData.nameProcessed = msgBody;
+            collectedData.name = msgBody;
             responseTemplate = {
               messaging_product: "whatsapp",
               to: "+919788825633",
@@ -172,7 +172,7 @@ app.post("/whatsapp", async (req, res) => {
           break;
 
         case collectedData.emailProcessed && typeof msgBody === "string":
-          const emailValidationResult = emailSchema.validate({ emailProcessed: msgBody });
+          const emailValidationResult = emailSchema.validate({ email: msgBody });
 
           if (emailValidationResult.error) {
             // Validation failed
@@ -189,7 +189,7 @@ app.post("/whatsapp", async (req, res) => {
             };
           } else {
             // Validation successful
-            collectedData.emailProcessed = msgBody;
+            collectedData.email = msgBody;
             responseTemplate = {
               messaging_product: "whatsapp",
               to: "+919788825633",
