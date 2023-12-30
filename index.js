@@ -154,9 +154,11 @@ app.post("/whatsapp", async (req, res) => {
 
 
           case collectedData.emailProcessed && typeof msgBody === "string":          
+          if (collectedData.emailProcessed) {
+            // The "name" template has already been processed
             if (validateEmail(msgBody)) {
               collectedData.email = msgBody;
-          
+        
               // Validation successful, proceed to the next step (e.g., phone template)
               responseTemplate = {
                 messaging_product: "whatsapp",
@@ -169,9 +171,10 @@ app.post("/whatsapp", async (req, res) => {
                   },
                 },
               };
-          
+        
               collectedData.phoneProcessed = true;
             } else {
+              // Invalid email format, send a response
               responseTemplate = {
                 messaging_product: "whatsapp",
                 to: "+919788825633",
@@ -184,7 +187,8 @@ app.post("/whatsapp", async (req, res) => {
                 },
               };
             }
-            break;
+          }
+          break;
         
         case payload === "Go to Main Menu":
           responseTemplate = {
