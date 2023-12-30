@@ -171,39 +171,71 @@ app.post("/whatsapp", async (req, res) => {
           }
           break;
 
-        case collectedData.emailProcessed && typeof msgBody === "string":
-          const emailValidationResult = emailSchema.validate({ email: msgBody });
-
-          if (emailValidationResult.error) {
-            // Validation failed
-            responseTemplate = {
-              messaging_product: "whatsapp",
-              to: "+919788825633",
-              type: "text",
-              text: {
-                body: "Invalid email format. Please provide a valid email address.",
-              },
-              language: {
-                code: "en_US",
-              },
-            };
-          } else {
-            // Validation successful
-            collectedData.email = msgBody;
-            responseTemplate = {
-              messaging_product: "whatsapp",
-              to: "+919788825633",
-              type: "template",
-              template: {
-                name: "phone",
+          case collectedData.emailProcessed && typeof msgBody === "string":
+            const emailValidationResult = emailSchema.validate({ email: msgBody });
+  
+            if (emailValidationResult.error) {
+              responseTemplate = {
+                messaging_product: "whatsapp",
+                to: "+919788825633",
+                type: "text",
+                text: {
+                  body: "Invalid email format. Please provide a valid email.",
+                },
                 language: {
                   code: "en_US",
                 },
-              },
-            };
-            collectedData.phoneProcessed = true;
-          }
-          break;
+              };
+            } else {
+              // Validation successful
+              collectedData.email = msgBody;
+              responseTemplate = {
+                messaging_product: "whatsapp",
+                to: "+919788825633",
+                type: "template",
+                template: {
+                  name: "phone",
+                  language: {
+                    code: "en_US",
+                  },
+                },
+              };
+              collectedData.phoneProcessed = true;
+            }
+            break;
+        // case collectedData.emailProcessed && typeof msgBody === "string":
+        //   const emailValidationResult = emailSchema.validate({ email: msgBody });
+
+        //   if (emailValidationResult.error) {
+        //     // Validation failed
+        //     responseTemplate = {
+        //       messaging_product: "whatsapp",
+        //       to: "+919788825633",
+        //       type: "text",
+        //       text: {
+        //         body: "Invalid email format. Please provide a valid email address.",
+        //       },
+        //       language: {
+        //         code: "en_US",
+        //       },
+        //     };
+        //   } else {
+        //     // Validation successful
+        //     collectedData.email = msgBody;
+        //     responseTemplate = {
+        //       messaging_product: "whatsapp",
+        //       to: "+919788825633",
+        //       type: "template",
+        //       template: {
+        //         name: "phone",
+        //         language: {
+        //           code: "en_US",
+        //         },
+        //       },
+        //     };
+        //     collectedData.phoneProcessed = true;
+        //   }
+        //   break;
 
         case payload === "Go to Main Menu":
           responseTemplate = {
