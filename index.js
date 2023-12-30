@@ -139,7 +139,7 @@ app.post("/whatsapp", async (req, res) => {
           break;
 
           case collectedData.nameProcessed && typeof msgBody === "string":
-          const nameValidationResult = nameSchema.validate({ name: msgBody });
+          const nameValidationResult = nameSchema.validate({ nameProcessed: msgBody });
 
           if (nameValidationResult.error) {
             responseTemplate = {
@@ -172,7 +172,7 @@ app.post("/whatsapp", async (req, res) => {
           break;
 
         case collectedData.emailProcessed && typeof msgBody === "string":
-          const emailValidationResult = emailSchema.validate({ email: msgBody });
+          const emailValidationResult = emailSchema.validate({ emailProcessed: msgBody });
 
           if (emailValidationResult.error) {
             // Validation failed
