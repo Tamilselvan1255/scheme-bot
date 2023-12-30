@@ -186,12 +186,6 @@ app.post("/whatsapp", async (req, res) => {
           console.log("collectedCustomer phone:", collectedCustomer.phone);
           console.log("CollectedCustomer:", collectedCustomer);
 
-  //       // Create a new CustomerModel instance and save the data
-  // const newCustomer = new CustomerModel({
-  //   name: collectedCustomer.name,
-  //   email: collectedCustomer.email,
-  //   phone: collectedCustomer.phone,
-  // });
 
  const existingCustomer = await CustomerModel.findOne({ phone: collectedCustomer.phone, name: collectedCustomer.name, email: collectedCustomer.email });
 
