@@ -137,38 +137,45 @@ app.post("/whatsapp", async (req, res) => {
           collectedData.emailProcessed = true;
           break;
 
-        case collectedData.emailProcessed && typeof msgBody === "string":
-          const nameValidationResult = nameSchema.validate({ name: msgBody });
-
-          if (nameValidationResult.error) {
-            responseTemplate = {
-              messaging_product: "whatsapp",
-              to: "+919788825633",
-              type: "text",
-              text: {
-                body: "Invalid name format. Please provide a valid name.",
-              },
-              language: {
-                code: "en_US",
-              },
-            };
-          } else {
-            collectedData.name = msgBody;
-
-            responseTemplate = {
-              messaging_product: "whatsapp",
-              to: "+919788825633",
-              type: "template",
-              template: {
-                name: "email",
+          case collectedData.emailProcessed && typeof msgBody === "string":
+            const nameValidationResult = nameSchema.validate({ name: msgBody });
+            console.log("Name Validation Result:", nameValidationResult);
+          
+            if (nameValidationResult.error) {
+              console.log("Invalid Name. Error:", nameValidationResult.error.message);
+          
+              responseTemplate = {
+                messaging_product: "whatsapp",
+                to: "+919788825633",
+                type: "text",
+                text: {
+                  body: "Invalid name format. Please provide a valid name.",
+                },
                 language: {
                   code: "en_US",
                 },
-              },
-            };
-            collectedData.phoneProcessed = true;
-          }
-          break;
+              };
+            } else {
+              console.log("Name Validation Successful");
+          
+              // Validation successful
+              collectedData.name = msgBody;
+          
+              responseTemplate = {
+                messaging_product: "whatsapp",
+                to: "+919788825633",
+                type: "template",
+                template: {
+                  name: "email",
+                  language: {
+                    code: "en_US",
+                  },
+                },
+              };
+              collectedData.phoneProcessed = true;
+            }
+            break;
+          
 
         case collectedData.phoneProcessed && typeof msgBody === "string":
           const emailValidationResult = emailSchema.validate({ email: msgBody });
