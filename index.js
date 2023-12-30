@@ -186,16 +186,16 @@ app.post("/whatsapp", async (req, res) => {
           console.log("collectedCustomer phone:", collectedCustomer.phone);
           console.log("CollectedCustomer:", collectedCustomer);
 
-            // Create a new CustomerModel instance and save the data
-        const collectedCustomer = new CustomerModel({
-          name: collectedData.name,
-          email: collectedData.email,
-          phone: phone,
-        });
+        // Create a new CustomerModel instance and save the data
+  const newCustomer = new CustomerModel({
+    name: collectedCustomer.name,
+    email: collectedCustomer.email,
+    phone: collectedCustomer.phone,
+  });
 
         // Save the collectedCustomer data to MongoDB
         await collectedCustomer.save();
-        
+
           responseTemplate = {
             messaging_product: "whatsapp",
             to: "+919788825633",
