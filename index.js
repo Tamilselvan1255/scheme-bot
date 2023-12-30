@@ -135,10 +135,10 @@ app.post("/whatsapp", async (req, res) => {
             },
           };
 
-          collectedData.nameProcessed = true;
+          collectedData.emailProcessed = true;
           break;
 
-          case collectedData.nameProcessed === true && typeof msgBody === "string":
+          case collectedData.emailProcessed && typeof msgBody === "string":
           const nameValidationResult = nameSchema.validate({ name: msgBody });
 
           if (nameValidationResult.error) {
@@ -156,8 +156,6 @@ app.post("/whatsapp", async (req, res) => {
           } else {
             // Validation successful
             collectedData.name = msgBody;
-            collectedData.nameProcessed = true;
-            console.log("collectedData.nameProcessed:", collectedData.nameProcessed);
 
             responseTemplate = {
               messaging_product: "whatsapp",
@@ -170,11 +168,11 @@ app.post("/whatsapp", async (req, res) => {
                 },
               },
             };
-            collectedData.emailProcessed = true;
+            collectedData.phoneProcessed = true;
           }
           break;
 
-          case collectedData.emailProcessed === true && typeof msgBody === "string":
+          case collectedData.phoneProcessed && typeof msgBody === "string":
             const emailValidationResult = emailSchema.validate({ email: msgBody });
   
             if (emailValidationResult.error) {
@@ -191,8 +189,6 @@ app.post("/whatsapp", async (req, res) => {
               };
             } else {
               collectedData.email = msgBody;
-              collectedData.emailProcessed = true;
-              console.log("collectedData.emailProcessed:", collectedData.emailProcessed);
 
               responseTemplate = {
                 messaging_product: "whatsapp",
@@ -205,7 +201,6 @@ app.post("/whatsapp", async (req, res) => {
                   },
                 },
               };
-              collectedData.phoneProcessed = true;
             }
             break;
 
