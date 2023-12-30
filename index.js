@@ -170,17 +170,17 @@ app.post("/whatsapp", async (req, res) => {
 
             if (emailValidationResult.value) {
               // If the input is an email address, use the phone template
-              responseTemplate = {
-                messaging_product: "whatsapp",
-                to: "+919788825633",
-                type: "template",
-                template: {
-                  name: "email",
-                  language: {
-                    code: "en_US",
-                  },
-                },
-              };
+              // responseTemplate = {
+              //   messaging_product: "whatsapp",
+              //   to: "+919788825633",
+              //   type: "template",
+              //   template: {
+              //     name: "email",
+              //     language: {
+              //       code: "en_US",
+              //     },
+              //   },
+              // };
             } else {
               // If the input is not an email address, use the email template
               responseTemplate = {
@@ -188,7 +188,7 @@ app.post("/whatsapp", async (req, res) => {
                 to: "+919788825633",
                 type: "template",
                 template: {
-                  name: "email",
+                  name: "phone",
                   language: {
                     code: "en_US",
                   },
