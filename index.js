@@ -76,6 +76,8 @@ app.get("/whatsapp", (req, res) => {
   }
 });
 
+let userState = "initial"; // State variable to track user progress
+
 app.post("/whatsapp", async (req, res) => {
   const bodyParam = req.body;
   console.log("Request Body:", bodyParam);
@@ -114,32 +116,65 @@ app.post("/whatsapp", async (req, res) => {
           break;
          
 
-        case payload === "Let's Explore" || payload === "Go to Main Menu":
-          responseTemplate = {
-            messaging_product: "whatsapp",
-            to: "+919788825633",
-            type: "template",
-            template: {
-              name: "scheme_template",
-              language: {
-                code: "en_US",
-              },
-              components: [
-                {
-                  type: "header",
-                  parameters: [
-                    {
-                      type: "image",
-                      image: {
-                        link: " https://i.imgur.com/0uVWYeR.jpeg",
-                      },
-                    },
-                  ],
+          case payload === "Let's Explore" || payload === "Go to Main Menu":
+            responseTemplate = {
+              messaging_product: "whatsapp",
+              to: "+919788825633",
+              type: "template",
+              template: {
+                name: "name", // Change template name to "name"
+                language: {
+                  code: "en_US",
                 },
-              ],
-            },
-          };
-          break;
+              },
+            };
+            userState = "name"; // Update user state to "name"
+            break;
+  
+          case userState === "name" && /^[a-zA-Z]+$/.test(msgBody):
+            responseTemplate = {
+              messaging_product: "whatsapp",
+              to: "+919788825633",
+              type: "template",
+              template: {
+                name: "email", // Change template name to "email"
+                language: {
+                  code: "en_US",
+                },
+              },
+            };
+            userState = "email"; // Update user state to "email"
+            break;
+  
+          case userState === "email" && isValidEmail(msgBody):
+            responseTemplate = {
+              messaging_product: "whatsapp",
+              to: "+919788825633",
+              type: "template",
+              template: {
+                name: "phone", // Change template name to "phone"
+                language: {
+                  code: "en_US",
+                },
+              },
+            };
+            userState = "phone"; // Update user state to "phone"
+            break;
+  
+          case userState === "phone" && /^\d{10}$/.test(msgBody):
+            responseTemplate = {
+              messaging_product: "whatsapp",
+              to: "+919788825633",
+              type: "template",
+              template: {
+                name: "scheme_template", // Change template name to "scheme_template"
+                language: {
+                  code: "en_US",
+                },
+              },
+            };
+            userState = "initial"; // Reset user state to "initial" after completing the process
+            break;
 
         case payload === "Not now":
           responseTemplate = {
