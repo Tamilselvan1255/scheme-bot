@@ -136,50 +136,35 @@ app.post("/whatsapp", async (req, res) => {
           break;
 
         case collectedData.nameProcessed && typeof msgBody === "string":
-          responseTemplate = {
-            messaging_product: "whatsapp",
-            to: "+919788825633",
-            type: "template",
-            template: {
-              name: "email",
+          if (isValidEmail) {
+            collectedData.email = msgBody; 
+            responseTemplate = {
+              messaging_product: "whatsapp",
+              to: "+919788825633",
+              type: "template",
+              template: {
+                name: "email",
+                language: {
+                  code: "en_US",
+                },
+              },
+            };
+            collectedData.emailProcessed = true;
+          } else {
+            responseTemplate = {
+              messaging_product: "whatsapp",
+              to: "+919788825633",
+              type: "text",
+              text: {
+                body: "Invalid email format. Please provide a valid email address.",
+              },
               language: {
                 code: "en_US",
               },
-            },
-          };
-          const isValidEmail = validateEmail(msgBody);
-          break;
-
-        case isValidEmail:
-          collectedData.email = msgBody;
-          responseTemplate = {
-            messaging_product: "whatsapp",
-            to: "+919788825633",
-            type: "template",
-            template: {
-              name: "phone",
-              language: {
-                code: "en_US",
-              },
-            },
-          };
-          collectedData.emailProcessed = true;
-          break;
-
-        case !isValidEmail:
-          collectedData.email = msgBody;
-          responseTemplate = {
-            messaging_product: "whatsapp",
-            to: "+919788825633",
-            type: "text",
-            text: {
-              body: "Invalid email format. Please provide email address",
-            },
-            language: {
-              code: "en_US",
-            },
-          };
-          break;
+            };
+          }
+          // Continue with other cases or logic as needed
+        break;
 
         case payload === "Go to Main Menu":
           responseTemplate = {
