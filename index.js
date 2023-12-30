@@ -107,67 +107,21 @@ app.post("/whatsapp", async (req, res) => {
       let responseTemplate;
 
       switch (true) {
-        // Existing cases...
-
-        case collectedData.emailProcessed && typeof msgBody === "string":
-          const nameValidationResult = nameSchema.validate({ name: msgBody });
-          console.log("Name Validation Result:", nameValidationResult);
-
-          if (nameValidationResult.error) {
-            console.log("Invalid Name. Error:", nameValidationResult.error.message);
-
-            responseTemplate = {
-              messaging_product: "whatsapp",
-              to: "+919788825633",
-              type: "text",
-              text: {
-                body: "Invalid name format. Please provide a valid name.",
-              },
+        case msgBody.includes("hello") || msgBody.includes("hi"):
+          responseTemplate = {
+            messaging_product: "whatsapp",
+            to: "+919788825633",
+            type: "template",
+            template: {
+              name: "greet",
               language: {
                 code: "en_US",
               },
-            };
-          } else {
-            console.log("Name Validation Successful");
-
-            // Validation successful
-            collectedData.name = msgBody;
-
-            // Check if the input is an email address
-            const emailValidationResult = emailSchema.validate({ email: collectedData.name });
-
-            if (emailValidationResult.value) {
-              // If the input is an email address, use the phone template
-              responseTemplate = {
-                messaging_product: "whatsapp",
-                to: "+919788825633",
-                type: "template",
-                template: {
-                  name: "phone",
-                  language: {
-                    code: "en_US",
-                  },
-                },
-              };
-            } else {
-              // If the input is not an email address, use the email template
-              responseTemplate = {
-                messaging_product: "whatsapp",
-                to: "+919788825633",
-                type: "template",
-                template: {
-                  name: "email",
-                  language: {
-                    code: "en_US",
-                  },
-                },
-              };
-              collectedData.phoneProcessed = true;
-            }
-          }
+            },
+          };
           break;
 
-        case payload === "Go to Main Menu":
+        case payload === "Let's Explore" || payload === "Go to Main Menu":
           responseTemplate = {
             messaging_product: "whatsapp",
             to: "+919788825633",
@@ -290,139 +244,118 @@ app.post("/whatsapp", async (req, res) => {
           };
           break;
 
-        case payload === "1,25,000" ||
-          payload === "1,75,000" ||
-          payload === "No income limit":
+        case payload === "Less than 1 Lakh" || payload === "More than 1 Lakh":
           collectedData.income = payload;
           console.log("Collected Data:", collectedData);
+          const filteredSchemes = await filterSchemes(
+            collectedData.age,
+            collectedData.gender,
+            collectedData.state,
+            collectedData.disability,
+            collectedData.income
+          );
+          console.log("Filtered Schemes:", filteredSchemes);
+          if (filteredSchemes.length > 0) {
+            // Display scheme information
+            let schemesText = "Here are some schemes based on your criteria:\n\n";
+            filteredSchemes.forEach((scheme) => {
+              schemesText += `Implemented By: ${scheme.implementedBy}\n`;
+              schemesText += `Domain Description: ${scheme.domainDescription}\n`;
+              schemesText += `Eligible Disabilities: ${scheme.eligibleDisabilities}\n`;
+              schemesText += `Disability Percentage: ${scheme.disabilityPercentage}\n`;
+              schemesText += `Age: ${scheme.age}\n`;
+              schemesText += `Annual Income: ${scheme.annualIncome}\n`;
+              schemesText += `Gender Eligibility: ${scheme.genderEligibility}\n`;
+              schemesText += `Comments: ${scheme.comments}\n\n`;
+            });
 
-          try {
-            const schemesData = await filterSchemes(
-              collectedData.age,
-              collectedData.gender,
-              collectedData.state,
-              collectedData.disability,
-              collectedData.income
-            );
-
-            const count = schemesData.length;
-
-            if (schemesData.length > 0) {
-              let responseMessage = `Matching schemes: ${count}\n\n`;
-
-              schemesData.forEach((scheme) => {
-                responseMessage +=
-                  `Implemented By: ${
-                    scheme.implementedBy || "Not available"
-                  }\n` +
-                  `Domain Description: ${
-                    scheme.domainDescription || "Not available"
-                  }\n` +
-                  `Eligible Disabilities: ${
-                    scheme.eligibleDisabilities || "Not available"
-                  }\n` +
-                  `Disability Percentage: ${
-                    scheme.disabilityPercentage || "Not available"
-                  }\n` +
-                  `Age: ${scheme.age || "Not available"}\n` +
-                  `Annual Income: ${scheme.annualIncome || "Not available"}\n` +
-                  `Gender Eligibility: ${
-                    scheme.genderEligibility || "Not available"
-                  }\n` +
-                  `Comments: ${scheme.comments || "Not available"}\n` +
-                  `Email Address: ${
-                    scheme.emailAddress || "Not available"
-                  }\n\n`;
-              });
-
-              const truncatedMessage = responseMessage.substring(0, 4096);
-
-              responseTemplate = {
-                messaging_product: "whatsapp",
-                to: "+919788825633",
-                type: "text",
-                text: {
-                  body: truncatedMessage,
-                },
-                language: {
-                  code: "en_US",
-                },
-              };
-              console.log(
-                "Response Template for Matching Schemes:",
-                responseTemplate
-              );
-            } else {
-              responseTemplate = {
-                messaging_product: "whatsapp",
-                to: "+919788825633",
-                type: "text",
-                text: {
-                  body: "No matching schemes found. Please refine your search criteria.",
-                },
-                language: {
-                  code: "en_US",
-                },
-              };
-              console.log(
-                "Response Template for No Matching Schemes:",
-                responseTemplate
-              );
-            }
-          } catch (error) {
-            console.error("Error processing schemes:", error.message);
-          }
-
-          if (responseTemplate) {
-            try {
-              const response = await axios.post(
-                `https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`,
-                responseTemplate
-              );
-              console.log("Response:", response.data);
-              res.status(200).send(response.data);
-              return;
-            } catch (error) {
-              console.error(
-                "Error sending response:",
-                error.message,
-                error.response ? error.response.data : ""
-              );
-              res.status(500).send(error.message);
-              return;
-            }
-          } else {
-            console.log("Response Template is undefined. No response sent.");
-            res.status(200).send("");
-          }
-          break;
-
-        // Inserted new case for photo template
-        case payload === "ShowPhoto":
-          responseTemplate = {
-            messaging_product: "whatsapp",
-            to: "+919788825633",
-            type: "template",
-            template: {
-              name: "photo",
+            responseTemplate = {
+              messaging_product: "whatsapp",
+              to: "+919788825633",
+              type: "text",
+              text: {
+                body: schemesText,
+              },
               language: {
                 code: "en_US",
               },
-              components: [
-                {
-                  type: "header",
-                  parameters: [
-                    {
-                      type: "image",
-                      image: {
-                        link: "https://bd.gaadicdn.com/upload/userfiles/images/640b011e05ee5.jpg",
-                      },
-                    },
-                  ],
+            };
+          } else {
+            // No schemes found
+            responseTemplate = {
+              messaging_product: "whatsapp",
+              to: "+919788825633",
+              type: "text",
+              text: {
+                body: "No schemes found based on your criteria. Please try again with different criteria.",
+              },
+              language: {
+                code: "en_US",
+              },
+            };
+          }
+          break;
+
+        case collectedData.emailProcessed && typeof msgBody === "string":
+          const nameValidationResult = nameSchema.validate({ name: msgBody });
+          console.log("Name Validation Result:", nameValidationResult);
+
+          if (nameValidationResult.error) {
+            console.log("Invalid Name. Error:", nameValidationResult.error.message);
+
+            responseTemplate = {
+              messaging_product: "whatsapp",
+              to: "+919788825633",
+              type: "text",
+              text: {
+                body: "Invalid name format. Please provide a valid name.",
+              },
+              language: {
+                code: "en_US",
+              },
+            };
+          } else {
+            console.log("Name Validation Successful");
+
+            // Validation successful
+            collectedData.name = msgBody;
+
+            // Check if the input is an email address
+            const emailValidationResult = emailSchema.validate({ email: collectedData.name });
+
+            if (emailValidationResult.value) {
+              // If the input is an email address, use the phone template
+              responseTemplate = {
+                messaging_product: "whatsapp",
+                to: "+919788825633",
+                type: "template",
+                template: {
+                  name: "phone",
+                  language: {
+                    code: "en_US",
+                  },
                 },
-              ],
-            },
-          };
+              };
+            } else {
+              // If the input is not an email address, use the email template
+              responseTemplate = {
+                messaging_product: "whatsapp",
+                to: "+919788825633",
+                type: "template",
+                template: {
+                  name: "email",
+                  language: {
+                    code: "en_US",
+                  },
+                },
+              };
+              collectedData.phoneProcessed = true;
+            }
+          }
+          break;
+
+        case collectedData.phoneProcessed && typeof msgBody === "string":
+          // Phone processing logic here
           break;
 
         default:
@@ -468,6 +401,8 @@ app.get("/", (req, res) => {
   res.status(200).send("Webhook setup for scheme!!");
 });
 
+
+// --------------------
 
 // // with templates updated
 
