@@ -121,7 +121,36 @@ app.post("/whatsapp", async (req, res) => {
           };
           break;
 
-        case payload === "Let's Explore" || payload === "Go to Main Menu":
+        case payload === "Let's Explore":
+          responseTemplate = {
+            messaging_product: "whatsapp",
+            to: "+919788825633",
+            type: "template",
+            template: {
+              name: "name",
+              language: {
+                code: "en_US",
+              },
+            },
+          };
+          collectedData.emailProcessed = true;
+          break;
+
+        case payload === "Not now":
+          responseTemplate = {
+            messaging_product: "whatsapp",
+            to: "+919788825633",
+            type: "text",
+            text: {
+              body: `I appreciate your consideration. Please feel free to reach out whenever you have a moment. When you're ready to continue, a simple "HI" or "HELLO" would be great. Thank you for your understanding. Have a wonderful day! 🌟`,
+            },
+            language: {
+              code: "en_US",
+            },
+          };
+          break;
+
+        case payload === "Show Schemes" || payload === "Go to Main Menu":
           responseTemplate = {
             messaging_product: "whatsapp",
             to: "+919788825633",
@@ -144,34 +173,6 @@ app.post("/whatsapp", async (req, res) => {
                   ],
                 },
               ],
-            },
-          };
-          break;
-
-        case payload === "Not now":
-          responseTemplate = {
-            messaging_product: "whatsapp",
-            to: "+919788825633",
-            type: "text",
-            text: {
-              body: `I appreciate your consideration. Please feel free to reach out whenever you have a moment. When you're ready to continue, a simple "HI" or "HELLO" would be great. Thank you for your understanding. Have a wonderful day! 🌟`,
-            },
-            language: {
-              code: "en_US",
-            },
-          };
-          break;
-
-        case payload === "Show Schemes":
-          responseTemplate = {
-            messaging_product: "whatsapp",
-            to: "+919788825633",
-            type: "template",
-            template: {
-              name: "age",
-              language: {
-                code: "en_US",
-              },
             },
           };
           break;
