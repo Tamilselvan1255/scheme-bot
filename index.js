@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const axios = require("axios");
 const mongoose = require("mongoose");
 require("dotenv").config();
+const Joi = require("joi");
 
 const app = express().use(bodyParser.json());
 
@@ -56,12 +57,14 @@ async function filterSchemes(age, gender, state, disability, income) {
   }
 }
 
-// Function for basic email validation using regex
-function validateEmail(email) {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-}
+// Define Joi schema for input validation
+const nameSchema = Joi.object({
+  name: Joi.string().required(),
+});
 
+const emailSchema = Joi.object({
+  email: Joi.string().email().required(),
+});
 app.listen(process.env.PORT, () => {
   console.log("Webhook is listening!!");
 });
@@ -135,40 +138,73 @@ app.post("/whatsapp", async (req, res) => {
           collectedData.nameProcessed = true;
           break;
 
-        case collectedData.nameProcessed && typeof msgBody === "string":
-          collectedData.name = msgBody; 
-          responseTemplate = {
-            messaging_product: "whatsapp",
-            to: "+919788825633",
-            type: "template",
-            template: {
-              name: "email",
+          case collectedData.nameProcessed && typeof msgBody === "string":
+          const nameValidationResult = nameSchema.validate({ name: msgBody });
+
+          if (nameValidationResult.error) {
+            // Validation failed
+            responseTemplate = {
+              messaging_product: "whatsapp",
+              to: "+919788825633",
+              type: "text",
+              text: {
+                body: "Invalid name format. Please provide a valid name.",
+              },
               language: {
                 code: "en_US",
               },
-            },
-          };
-
-          collectedData.emailProcessed = true;
+            };
+          } else {
+            // Validation successful
+            collectedData.name = msgBody;
+            responseTemplate = {
+              messaging_product: "whatsapp",
+              to: "+919788825633",
+              type: "template",
+              template: {
+                name: "email",
+                language: {
+                  code: "en_US",
+                },
+              },
+            };
+            collectedData.emailProcessed = true;
+          }
           break;
 
-          case collectedData.emailProcessed && typeof msgBody === "string":
-          collectedData.email = msgBody; 
-          responseTemplate = {
-            messaging_product: "whatsapp",
-            to: "+919788825633",
-            type: "template",
-            template: {
-              name: "phone",
+        case collectedData.emailProcessed && typeof msgBody === "string":
+          const emailValidationResult = emailSchema.validate({ email: msgBody });
+
+          if (emailValidationResult.error) {
+            // Validation failed
+            responseTemplate = {
+              messaging_product: "whatsapp",
+              to: "+919788825633",
+              type: "text",
+              text: {
+                body: "Invalid email format. Please provide a valid email address.",
+              },
               language: {
                 code: "en_US",
               },
-            },
-          };
-
-          collectedData.emailProcessed = true;
+            };
+          } else {
+            // Validation successful
+            collectedData.email = msgBody;
+            responseTemplate = {
+              messaging_product: "whatsapp",
+              to: "+919788825633",
+              type: "template",
+              template: {
+                name: "phone",
+                language: {
+                  code: "en_US",
+                },
+              },
+            };
+            collectedData.emailProcessed = true;
+          }
           break;
-
 
         case payload === "Go to Main Menu":
           responseTemplate = {
