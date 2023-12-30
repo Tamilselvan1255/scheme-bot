@@ -201,7 +201,7 @@ app.post("/whatsapp", async (req, res) => {
                 },
               },
             };
-            collectedData.emailProcessed = true;
+            collectedData.phoneProcessed = true;
           }
           break;
 
