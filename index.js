@@ -153,10 +153,8 @@ app.post("/whatsapp", async (req, res) => {
           break;
 
 
-          case collectedData.emailProcessed && typeof msgBody === "string":
-            const isValidEmail = validateEmail(msgBody);
-          
-            if (isValidEmail) {
+          case collectedData.emailProcessed && typeof msgBody === "string":          
+            if (validateEmail(msgBody)) {
               collectedData.email = msgBody;
           
               // Validation successful, proceed to the next step (e.g., phone template)
