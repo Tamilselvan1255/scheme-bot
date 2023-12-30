@@ -341,7 +341,7 @@ app.post("/whatsapp", async (req, res) => {
                 to: "+919788825633",
                 type: "text",
                 text: {
-                  body: truncatedMessage
+                  body: truncatedMessage, jlfkdsakleiu
                 },
                 language: {
                   code: "en_US",
