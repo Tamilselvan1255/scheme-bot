@@ -186,18 +186,16 @@ app.post("/whatsapp", async (req, res) => {
           console.log("collectedCustomer phone:", collectedCustomer.phone);
           console.log("CollectedCustomer:", collectedCustomer);
 
-        // Create a new CustomerModel instance and save the data
-  const newCustomer = new CustomerModel({
-    name: collectedCustomer.name,
-    email: collectedCustomer.email,
-    phone: collectedCustomer.phone,
-  });
+  //       // Create a new CustomerModel instance and save the data
+  // const newCustomer = new CustomerModel({
+  //   name: collectedCustomer.name,
+  //   email: collectedCustomer.email,
+  //   phone: collectedCustomer.phone,
+  // });
 
- // Check if the customer already exists in the database
- const existingCustomer = await CustomerModel.findOne({ phone: collectedCustomer.phone, name: collectedCustomer.name, email: collectedCustomer.email });
+ const existingCustomer = await CustomerModel.findOne({ phone: collectedCustomer.phone.trim(), name: collectedCustomer.name.trim(), email: collectedCustomer.email.trim() });
 
  if (!existingCustomer) {
-   // If the customer doesn't exist, save the data to MongoDB
    try {
      const savedCustomer = await CustomerModel.create(collectedCustomer);
      console.log("Customer saved to MongoDB:", savedCustomer);
@@ -205,7 +203,7 @@ app.post("/whatsapp", async (req, res) => {
      console.error("Error saving customer to MongoDB:", error.message);
    }
  } else {
-   console.log("Customer already exists in the database. Skipping save.");
+   console.log("Customer already exists in the database");
  }
 
           responseTemplate = {
