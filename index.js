@@ -76,6 +76,12 @@ app.get("/whatsapp", (req, res) => {
   }
 });
 
+function isValidEmail(email) {
+  // Implement your email validation logic here
+  // For simplicity, a basic email validation is used
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 let userState = "initial"; // State variable to track user progress
 
 app.post("/whatsapp", async (req, res) => {
