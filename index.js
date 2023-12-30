@@ -120,79 +120,78 @@ app.post("/whatsapp", async (req, res) => {
             },
           };
           break;
-         
 
-          case payload === "Let's Explore" || payload === "Go to Main Menu":
-            responseTemplate = {
-              messaging_product: "whatsapp",
-              to: "+919788825633",
-              type: "template",
-              template: {
-                name: "name", // Change template name to "name"
-                language: {
-                  code: "en_US",
-                },
+        case payload === "Let's Explore" || payload === "Go to Main Menu":
+          responseTemplate = {
+            messaging_product: "whatsapp",
+            to: "+919788825633",
+            type: "template",
+            template: {
+              name: "name", // Change template name to "name"
+              language: {
+                code: "en_US",
               },
-            };
-            userState = "name"; // Update user state to "name"
-            break;
-  
-          case userState === "name" && /^[a-zA-Z]+$/.test(msgBody):
-            responseTemplate = {
-              messaging_product: "whatsapp",
-              to: "+919788825633",
-              type: "template",
-              template: {
-                name: "email", // Change template name to "email"
-                language: {
-                  code: "en_US",
-                },
+            },
+          };
+          userState = "name"; // Update user state to "name"
+          break;
+
+        case userState === "name" && /^[a-zA-Z]+$/.test(msgBody):
+          responseTemplate = {
+            messaging_product: "whatsapp",
+            to: "+919788825633",
+            type: "template",
+            template: {
+              name: "email", // Change template name to "email"
+              language: {
+                code: "en_US",
               },
-            };
-            userState = "email"; // Update user state to "email"
-            break;
-  
-          case userState === "email" && isValidEmail(msgBody):
-            responseTemplate = {
-              messaging_product: "whatsapp",
-              to: "+919788825633",
-              type: "template",
-              template: {
-                name: "phone", // Change template name to "phone"
-                language: {
-                  code: "en_US",
-                },
+            },
+          };
+          userState = "email"; // Update user state to "email"
+          break;
+
+        case userState === "email" && isValidEmail(msgBody):
+          responseTemplate = {
+            messaging_product: "whatsapp",
+            to: "+919788825633",
+            type: "template",
+            template: {
+              name: "phone", // Change template name to "phone"
+              language: {
+                code: "en_US",
               },
-            };
-            userState = "phone"; // Update user state to "phone"
-            break;
-  
-          case userState === "phone" && /^\d{10}$/.test(msgBody):
-            responseTemplate = {
-              messaging_product: "whatsapp",
-              to: "+919788825633",
-              type: "template",
-              template: {
-                name: "scheme_template",
-                language: {
-                  code: "en_US",
-                },
-                components: [
-                  {
-                    type: "header",
-                    parameters: [
-                      {
-                        type: "image",
-                        image: {
-                          link: " https://i.imgur.com/0uVWYeR.jpeg",
-                        },
+            },
+          };
+          userState = "phone"; // Update user state to "phone"
+          break;
+
+        case userState === "phone" && /^\d{10}$/.test(msgBody):
+          responseTemplate = {
+            messaging_product: "whatsapp",
+            to: "+919788825633",
+            type: "template",
+            template: {
+              name: "scheme_template",
+              language: {
+                code: "en_US",
+              },
+              components: [
+                {
+                  type: "header",
+                  parameters: [
+                    {
+                      type: "image",
+                      image: {
+                        link: " https://i.imgur.com/0uVWYeR.jpeg",
                       },
-                    ],
-                  },
-                ],
-              },
-            };
-            break;
+                    },
+                  ],
+                },
+              ],
+            },
+          };
+          break;
 
         case payload === "Not now":
           responseTemplate = {
@@ -343,6 +342,7 @@ app.post("/whatsapp", async (req, res) => {
                 type: "text",
                 text: {
                   body: truncatedMessage,
+                  body: "jldfslkdsie"
                 },
                 language: {
                   code: "en_US",
@@ -463,9 +463,7 @@ app.get("/", (req, res) => {
 //   },
 // };
 
-
 // ----------------
-
 
 // // with templates updated
 
@@ -581,7 +579,6 @@ app.get("/", (req, res) => {
 //             },
 //           };
 //           break;
-         
 
 //         case payload === "Let's Explore" || payload === "Go to Main Menu":
 //           responseTemplate = {
