@@ -59,7 +59,7 @@ async function filterSchemes(age, gender, state, disability, income) {
 
 // Define Joi schema for input validation
 const nameSchema = Joi.object({
-  name: Joi.string().required(),
+  name: Joi.string().pattern(new RegExp("^[a-zA-Z]+$")).required(),
 });
 
 const emailSchema = Joi.object({
@@ -142,7 +142,6 @@ app.post("/whatsapp", async (req, res) => {
           const nameValidationResult = nameSchema.validate({ name: msgBody });
 
           if (nameValidationResult.error) {
-            // Validation failed
             responseTemplate = {
               messaging_product: "whatsapp",
               to: "+919788825633",
