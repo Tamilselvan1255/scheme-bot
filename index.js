@@ -122,23 +122,23 @@ app.post("/whatsapp", async (req, res) => {
           };
           break;
 
-        case payload === "Let's Explore":
-          responseTemplate = {
-            messaging_product: "whatsapp",
-            to: "+919788825633",
-            type: "template",
-            template: {
-              name: "name",
-              language: {
-                code: "en_US",
-              },
-            },
-          };
+        // case payload === "Let's Explore":
+        //   responseTemplate = {
+        //     messaging_product: "whatsapp",
+        //     to: "+919788825633",
+        //     type: "template",
+        //     template: {
+        //       name: "name",
+        //       language: {
+        //         code: "en_US",
+        //       },
+        //     },
+        //   };
 
-          collectedData.nameProcessed = true;
-          break;
+        //   collectedData.nameProcessed = true;
+        //   break;
 
-          case collectedData.nameProcessed && typeof msgBody === "string":
+          case collectedData.nameProcessed && typeof msgBody === "string" && payload === "Let's Explore":
           const nameValidationResult = nameSchema.validate({ name: msgBody });
 
           if (nameValidationResult.error) {
@@ -170,7 +170,7 @@ app.post("/whatsapp", async (req, res) => {
                 },
               },
             };
-            collectedData.emailProcessed = true;
+            collectedData.nameProcessed = true;
           }
           break;
 
@@ -206,7 +206,7 @@ app.post("/whatsapp", async (req, res) => {
                   },
                 },
               };
-              collectedData.phoneProcessed = true;
+              collectedData.emailProcessed = true;
             }
             break;
         // case collectedData.emailProcessed && typeof msgBody === "string":
