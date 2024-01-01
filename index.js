@@ -241,7 +241,6 @@ app.post("/whatsapp", async (req, res) => {
             },
           };
           break;
-          
 
         case payload === "0-6" || payload === "6-18" || payload === "18-24":
           collectedData.age = payload;
@@ -402,24 +401,6 @@ app.post("/whatsapp", async (req, res) => {
               );
               console.log("Response:", response.data);
               res.status(200).send(response.data);
-              
-              feedbackTemplate = {
-                messaging_product: "whatsapp",
-                to: phoneNumber,
-                type: "template",
-                template: {
-                  name: "feedback",
-                  language: {
-                    code: "en_US",
-                  },
-                },
-              };
-              const feedback = await axios.post(
-                `https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`,
-                feedbackTemplate
-              );
-              console.log("Response:", response.data);
-
               return;
             } catch (error) {
               console.error(
@@ -435,7 +416,7 @@ app.post("/whatsapp", async (req, res) => {
             res.status(200).send("");
           }
 
-          default:
+        default:
           responseTemplate = {
             messaging_product: "whatsapp",
             to: phoneNumber,
@@ -456,7 +437,6 @@ app.post("/whatsapp", async (req, res) => {
         responseTemplate
       );
       console.log("Response:", response.data);
-      
        if (!existingCustomer) {
             try {
               const savedCustomer = await CustomerModel.create(
