@@ -149,6 +149,7 @@ app.post("/whatsapp", async (req, res) => {
             },
           };
           userState = "name";
+          console.log("Setting userState to 'name'");
           break;
 
         case userState === "name" && /^[a-zA-Z]+$/.test(msgBody):
@@ -166,6 +167,7 @@ app.post("/whatsapp", async (req, res) => {
             },
           };
           userState = "email";
+          console.log("Setting userState to 'email'");
           break;
 
         case userState === "email" && isValidEmail(msgBody):
@@ -462,8 +464,15 @@ app.post("/whatsapp", async (req, res) => {
   
         console.log("Final Response Template:", responseTemplate);
   
+      
+  
         if (!existingCustomer) {
-          await saveCustomerToDatabase();
+          try {
+            const savedCustomer = await CustomerModel.create(collectedCustomer);
+            console.log("Customer saved to MongoDB:", savedCustomer);
+          } catch (error) {
+            console.error("Error saving customer to MongoDB:", error.message);
+          }
         } else {
           console.log("Customer already exists in the database");
         }
