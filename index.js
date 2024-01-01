@@ -436,26 +436,19 @@ app.post("/whatsapp", async (req, res) => {
               console.log("collectedCustomer feedback:", collectedCustomer.feedback);
               // Store the payload in the collectedCustomer object
             
-              const existingCustomers = await CustomerModel.findOne({
-                phone: collectedCustomer.phone,
-              });
-              if (existingCustomers) {
-                // Update the existing customer with the new feedback
-                try {
-                  const updatedCustomer = await CustomerModel.findOneAndUpdate(
-                    { phone: collectedCustomer.phone },
-                    { $set: { Feedback: collectedCustomer.feedback } },
-                    { new: true }
-                  );
-
-                  console.log("Customer updated:", updatedCustomer);
-                } catch (error) {
-                  console.error("Error updating customer:", error.message);
-                }
+              const updatedCustomer = await CustomerModel.findOneAndUpdate(
+                { phone: collectedCustomer.phone },
+                { $set: { Feedback: collectedCustomer.feedback } },
+                { new: true }
+              );
+              
+              console.log("Customer updated:", updatedCustomer);
+              
+              if (!updatedCustomer) {
+                console.log("Customer not found for update. Phone:", collectedCustomer.phone);
               } else {
-                console.log("Customer does not exist in the database.");
+                console.log("Customer updated successfully:", updatedCustomer);
               }
-
               return;
             } catch (error) {
               console.error(
