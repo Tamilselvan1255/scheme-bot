@@ -432,32 +432,30 @@ app.post("/whatsapp", async (req, res) => {
                 feedbackTemplate
               );
 
-              console.log("Feedback:", feedback.data);
-
               // Store the payload in the collectedCustomer object
-              // collectedCustomer.Feedback = payload;
-              // const Feedbacks = collectedCustomer.Feedback;
-              // console.log("Feedback:", Feedbacks);
-              // // Check if the customer already exists
-              // const existingCustomers = await CustomerModel.findOne({
-              //   phone: collectedCustomer.phone,
-              // });
-              // if (existingCustomers) {
-              //   // Update the existing customer with the new feedback
-              //   try {
-              //     const updatedCustomer = await CustomerModel.findOneAndUpdate(
-              //       { phone: collectedCustomer.phone },
-              //       { $set: { Feedback: Feedbacks } },
-              //       { new: true }
-              //     );
+              collectedCustomer.feedback = payload;
+              // const rating = collectedCustomer.feedback;
+              console.log(collectedCustomer.feedback);
+              // Check if the customer already exists
+              const existingCustomers = await CustomerModel.findOne({
+                phone: collectedCustomer.phone,
+              });
+              if (existingCustomers) {
+                // Update the existing customer with the new feedback
+                try {
+                  const updatedCustomer = await CustomerModel.findOneAndUpdate(
+                    { phone: collectedCustomer.phone },
+                    { $set: { Feedback: collectedCustomer.feedback } },
+                    { new: true }
+                  );
 
-              //     console.log("Customer updated:", updatedCustomer);
-              //   } catch (error) {
-              //     console.error("Error updating customer:", error.message);
-              //   }
-              // } else {
-              //   console.log("Customer does not exist in the database.");
-              // }
+                  console.log("Customer updated:", updatedCustomer);
+                } catch (error) {
+                  console.error("Error updating customer:", error.message);
+                }
+              } else {
+                console.log("Customer does not exist in the database.");
+              }
 
               return;
             } catch (error) {
