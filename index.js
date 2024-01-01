@@ -407,7 +407,7 @@ app.post("/whatsapp", async (req, res) => {
                 to: phoneNumber,
                 type: "template",
                 template: {
-                  name: "feedback",
+                  name: "feedbacks",
                   language: {
                     code: "en_US",
                   },
@@ -427,66 +427,66 @@ app.post("/whatsapp", async (req, res) => {
                         },
                       ],
                     },
-                    {
-                      type: "button",
-                      parameters: [
-                        {
-                          type: "text",
-                          text: {
-                            body: "🌟🌟",
-                          },
-                        },
-                        {
-                          type: "payload",
-                          payload: "2 STAR",
-                        },
-                      ],
-                    },
-                    {
-                      type: "button",
-                      parameters: [
-                        {
-                          type: "text",
-                          text: {
-                            body: "🌟🌟🌟",
-                          },
-                        },
-                        {
-                          type: "payload",
-                          payload: "3 STAR",
-                        },
-                      ],
-                    },
-                    {
-                      type: "button",
-                      parameters: [
-                        {
-                          type: "text",
-                          text: {
-                            body: "🌟🌟🌟🌟",
-                          },
-                        },
-                        {
-                          type: "payload",
-                          payload: "4 STAR",
-                        },
-                      ],
-                    },
-                    {
-                      type: "button",
-                      parameters: [
-                        {
-                          type: "text",
-                          text: {
-                            body: "🌟🌟🌟🌟🌟",
-                          },
-                        },
-                        {
-                          type: "payload",
-                          payload: "5 STAR",
-                        },
-                      ],
-                    },
+                    // {
+                    //   type: "button",
+                    //   parameters: [
+                    //     {
+                    //       type: "text",
+                    //       text: {
+                    //         body: "🌟🌟",
+                    //       },
+                    //     },
+                    //     {
+                    //       type: "payload",
+                    //       payload: "2 STAR",
+                    //     },
+                    //   ],
+                    // },
+                    // {
+                    //   type: "button",
+                    //   parameters: [
+                    //     {
+                    //       type: "text",
+                    //       text: {
+                    //         body: "🌟🌟🌟",
+                    //       },
+                    //     },
+                    //     {
+                    //       type: "payload",
+                    //       payload: "3 STAR",
+                    //     },
+                    //   ],
+                    // },
+                    // {
+                    //   type: "button",
+                    //   parameters: [
+                    //     {
+                    //       type: "text",
+                    //       text: {
+                    //         body: "🌟🌟🌟🌟",
+                    //       },
+                    //     },
+                    //     {
+                    //       type: "payload",
+                    //       payload: "4 STAR",
+                    //     },
+                    //   ],
+                    // },
+                    // {
+                    //   type: "button",
+                    //   parameters: [
+                    //     {
+                    //       type: "text",
+                    //       text: {
+                    //         body: "🌟🌟🌟🌟🌟",
+                    //       },
+                    //     },
+                    //     {
+                    //       type: "payload",
+                    //       payload: "5 STAR",
+                    //     },
+                    //   ],
+                    // },
                   ],
                 },
               };
