@@ -445,12 +445,6 @@ app.post("/whatsapp", async (req, res) => {
               );
               
               console.log("Customer updated:", updatedCustomer);
-              
-              if (!updatedCustomer) {
-                console.log("Customer not found for update. Phone:", collectedCustomer.phone);
-              } else {
-                console.log("Customer updated successfully:", updatedCustomer);
-              }
               return;
             } catch (error) {
               console.error(
