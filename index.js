@@ -416,21 +416,6 @@ app.post("/whatsapp", async (req, res) => {
             res.status(200).send("");
           }
 
-          case count >= 1: 
-          responseTemplate = {
-            messaging_product: "whatsapp",
-            to: phoneNumber,
-            type: "template",
-            template: {
-              name: "feedback",
-              language: {
-                code: "en_US",
-              },
-            },
-          };
-          console.log("Feedback sended");
-          break;
-
         default:
           responseTemplate = {
             messaging_product: "whatsapp",
@@ -452,6 +437,7 @@ app.post("/whatsapp", async (req, res) => {
         responseTemplate
       );
       console.log("Response:", response.data);
+
        if (!existingCustomer) {
             try {
               const savedCustomer = await CustomerModel.create(
@@ -463,9 +449,39 @@ app.post("/whatsapp", async (req, res) => {
             }
           } else {
             console.log("Customer already exists in the database");
-          }
-      res.status(200).send(response.data);
-      return;
+          } // Send feedback template
+      const feedbackTemplate = {
+        messaging_product: "whatsapp",
+        to: phoneNumber,
+        type: "template",
+        template: {
+          name: "feedback",
+          language: {
+            code: "en_US",
+          },
+        },
+      };
+      console.log("Feedback template sent");
+
+      // Send response
+      try {
+        const feedbackResponse = await axios.post(
+          `https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`,
+          feedbackTemplate
+        );
+        console.log("Feedback Response:", feedbackResponse.data);
+
+        res.status(200).send(response.data);
+        return;
+      } catch (error) {
+        console.error(
+          "Error sending feedback response:",
+          error.message,
+          error.response ? error.response.data : ""
+        );
+        res.status(500).send(error.message);
+        return;
+      }
     } catch (error) {
       console.error(
         "Error sending response:",
