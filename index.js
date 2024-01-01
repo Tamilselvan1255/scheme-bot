@@ -432,7 +432,7 @@ console.log("Payload:", payload);
                 feedbackTemplate
               );
                // Store the payload in the collectedCustomer object
-    collectedCustomer.Feedback = payload;
+    collectedCustomer.feedback = payload;
     const Feedback = collectedCustomer.feedback;
     console.log("Feedback:",  Feedback);
       // Check if the customer already exists
