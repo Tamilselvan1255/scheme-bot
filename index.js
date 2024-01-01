@@ -431,7 +431,7 @@ console.log("Payload:", payload);
                 `https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`,
                 feedbackTemplate
               );
-              console.log("Feedback:", feedback.data);
+              console.log("Feedback:", payload);
 
               return;
             } catch (error) {
