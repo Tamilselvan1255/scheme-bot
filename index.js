@@ -38,6 +38,7 @@ const customerSchema = new mongoose.Schema({
   name: String,
   email: String,
   phone: String,
+  feedback: String,
 });
 
 const CustomerModel = mongoose.model("Customer", customerSchema);
@@ -438,7 +439,7 @@ app.post("/whatsapp", async (req, res) => {
             
               const updatedCustomer = await CustomerModel.findOneAndUpdate(
                 { phone: collectedCustomer.phone },
-                { $set: { Feedback: collectedCustomer.feedback } },
+                { $set: { feedback: collectedCustomer.feedback } },
                 { new: true }
               );
               
