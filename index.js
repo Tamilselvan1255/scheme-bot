@@ -389,22 +389,6 @@ app.post("/whatsapp", async (req, res) => {
                 responseTemplate
               );
             }
-
-
-            if (schemesData.length >= 1) {
-              responseTemplate = {
-                messaging_product: "whatsapp",
-                to: phoneNumber,
-                type: "template",
-                template: {
-                  name: "feedback",
-                  language: {
-                    code: "en_US",
-                  },
-                },
-              };
-              console.log("Feedback sended");
-            }
           } catch (error) {
             console.error("Error processing schemes:", error.message);
           }
