@@ -433,7 +433,7 @@ app.post("/whatsapp", async (req, res) => {
                 feedbackTemplate
               );
 
-              collectedCustomer.feedback = payload;
+              collectedCustomer.feedback = msgBody;
               console.log("collectedCustomer feedback:", collectedCustomer.feedback);
               // Store the payload in the collectedCustomer object
             
