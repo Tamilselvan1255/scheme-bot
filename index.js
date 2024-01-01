@@ -414,6 +414,7 @@ app.post("/whatsapp", async (req, res) => {
           } else {
             console.log("Response Template is undefined. No response sent.");
             res.status(200).send("");
+            return;
           }
 
         default:
