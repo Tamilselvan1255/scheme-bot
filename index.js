@@ -193,7 +193,7 @@ app.post("/whatsapp", async (req, res) => {
           console.log("collectedCustomer phone:", collectedCustomer.phone);
           console.log("CollectedCustomer:", collectedCustomer);
 
-          var existingCustomer = await CustomerModel.findOne({
+          const existingCustomer = await CustomerModel.findOne({
             phone: collectedCustomer.phone,
           });
 
