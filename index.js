@@ -472,7 +472,7 @@ app.post("/whatsapp", async (req, res) => {
     if (isSuccessTemplate) {
         // Additional logic for successful response
         console.log("Success template sent");
-
+        console.log("Before sending feedback template");
         // Send the feedback template
         const feedbackResponse = await axios.post(
             `https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`,
