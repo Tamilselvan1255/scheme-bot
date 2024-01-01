@@ -431,7 +431,10 @@ console.log("Payload:", payload);
                 `https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`,
                 feedbackTemplate
               );
-              console.log("Feedback:", payload);
+               // Store the payload in the collectedCustomer object
+    collectedCustomer.Feedback = payload;
+    console.log("Feedback:",  collectedCustomer.Feedback);
+
 
               return;
             } catch (error) {
