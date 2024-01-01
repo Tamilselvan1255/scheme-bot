@@ -93,8 +93,6 @@ app.post("/whatsapp", async (req, res) => {
   const bodyParam = req.body;
   console.log("Request Body:", bodyParam);
 
-  let existingCustomer;
-  
   if (
     bodyParam.object &&
     bodyParam.entry &&
@@ -184,7 +182,7 @@ app.post("/whatsapp", async (req, res) => {
           console.log("collectedCustomer phone:", collectedCustomer.phone);
           console.log("CollectedCustomer:", collectedCustomer);
 
-          const existingCustomer = await CustomerModel.findOne({
+          var existingCustomer = await CustomerModel.findOne({
             phone: collectedCustomer.phone,
           });
 
