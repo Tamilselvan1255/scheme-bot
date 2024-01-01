@@ -455,6 +455,41 @@ app.post("/whatsapp", async (req, res) => {
         responseTemplate
       );
       console.log("Response:", response.data);
+
+      // Assuming the user's payload is stored in `message.text.body`
+      const userPayload = message.text?.body;
+
+      // Update the existing customer document with the new payload
+      try {
+        await CustomerModel.updateOne(
+          { phone: collectedCustomer.phone },
+          { $set: { userPayload: userPayload } }
+        );
+
+        console.log("User payload updated in MongoDB");
+      } catch (error) {
+        console.error("Error updating user payload:", error.message);
+      }
+
+      // After sending the response, send the feedback template
+      const feedbackTemplate = {
+        messaging_product: "whatsapp",
+        to: phoneNumber,
+        type: "template",
+        template: {
+          name: "feedback",
+          language: {
+            code: "en_US",
+          },
+        },
+      };
+
+      const feedback = await axios.post(
+        `https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`,
+        feedbackTemplate
+      );
+
+      console.log("Feedback:", feedback.data);
       
        if (!existingCustomer) {
             try {
