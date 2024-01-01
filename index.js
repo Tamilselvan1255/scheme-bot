@@ -417,7 +417,7 @@ app.post("/whatsapp", async (req, res) => {
           }
 
 
-        console.log("Collected Data:", collectedData);
+        console.log("Data:", collectedData);
         default:
           responseTemplate = {
             messaging_product: "whatsapp",
