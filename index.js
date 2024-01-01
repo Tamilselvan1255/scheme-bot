@@ -437,8 +437,7 @@ app.post("/whatsapp", async (req, res) => {
         responseTemplate
       );
       console.log("Response:", response.data);
-
-
+      
        if (!existingCustomer) {
             try {
               const savedCustomer = await CustomerModel.create(
@@ -451,40 +450,6 @@ app.post("/whatsapp", async (req, res) => {
           } else {
             console.log("Customer already exists in the database");
           }
-
-           // Check if the responseTemplate is for success or failure
-    const isSuccessTemplate = responseTemplate.type === "text" && responseTemplate.text.body.includes("Matching schemes") ||
-    responseTemplate.type === "text" && responseTemplate.text.body.includes("No matching schemes found. Please refine your search criteria.");
-
-    // Send feedback template
-    const feedbackTemplate = {
-        messaging_product: "whatsapp",
-        to: phoneNumber,
-        type: "template",
-        template: {
-            name: "feedback",
-            language: {
-                code: "en_US",
-            },
-        },
-    };
-
-    if (isSuccessTemplate) {
-        // Additional logic for successful response
-        console.log("Success template sent");
-        console.log("Before sending feedback template");
-        // Send the feedback template
-        const feedbackResponse = await axios.post(
-            `https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`,
-            feedbackTemplate
-        );
-        console.log("Feedback template sent:", feedbackResponse.data);
-    } else {
-        // Additional logic for failure response
-        console.log("Failure template sent");
-    }
-
-    // Continue with any other logic or responses
       res.status(200).send(response.data);
       return;
     } catch (error) {
