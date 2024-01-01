@@ -433,9 +433,9 @@ app.post("/whatsapp", async (req, res) => {
               );
 
               // Store the payload in the collectedCustomer object
-              collectedCustomer.feedback = payload;
-              // const rating = collectedCustomer.feedback;
-              console.log(collectedCustomer.feedback);
+              collectedCustomer.Feedback = payload;
+              const Feedbacks = collectedCustomer.Feedback;
+              console.log("Feedback:", Feedbacks);
               // Check if the customer already exists
               const existingCustomers = await CustomerModel.findOne({
                 phone: collectedCustomer.phone,
@@ -445,7 +445,7 @@ app.post("/whatsapp", async (req, res) => {
                 try {
                   const updatedCustomer = await CustomerModel.findOneAndUpdate(
                     { phone: collectedCustomer.phone },
-                    { $set: { Feedback: collectedCustomer.feedback } },
+                    { $set: { Feedback: Feedbacks } },
                     { new: true }
                   );
 
