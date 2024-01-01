@@ -63,6 +63,15 @@ async function filterSchemes(age, gender, state, disability, income) {
   }
 }
 
+async function saveCustomerToDatabase() {
+  try {
+    const savedCustomer = await CustomerModel.create(collectedCustomer);
+    console.log("Customer saved to MongoDB:", savedCustomer);
+  } catch (error) {
+    console.error("Error saving customer to MongoDB:", error.message);
+  }
+}
+
 app.listen(process.env.PORT, () => {
   console.log("Webhook is listening!!");
 });
@@ -453,15 +462,8 @@ app.post("/whatsapp", async (req, res) => {
   
         console.log("Final Response Template:", responseTemplate);
   
-      
-  
         if (!existingCustomer) {
-          try {
-            const savedCustomer = await CustomerModel.create(collectedCustomer);
-            console.log("Customer saved to MongoDB:", savedCustomer);
-          } catch (error) {
-            console.error("Error saving customer to MongoDB:", error.message);
-          }
+          await saveCustomerToDatabase();
         } else {
           console.log("Customer already exists in the database");
         }
