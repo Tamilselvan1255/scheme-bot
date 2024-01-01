@@ -103,13 +103,11 @@ app.post("/whatsapp", async (req, res) => {
     const phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
     const message = bodyParam.entry[0].changes[0].value.messages[0];
     const phoneNumber = message.from;
-    // const feedbacks = message.button.payload;
-    // console.log("Feedback Button:", feedbacks);
-    // Access the text property to log the text
 const msgText = message.button.text;
 console.log("Message Text:", msgText);
     const msgBody = (message.text?.body || "").toLowerCase();
     const payload = message.button ? message.button.payload : undefined;
+console.log("Payload:", payload);
 
     console.log("message:", message);
 
