@@ -416,6 +416,8 @@ app.post("/whatsapp", async (req, res) => {
             res.status(200).send("");
           }
 
+
+        console.log("Collected Data:", collectedData);
         default:
           responseTemplate = {
             messaging_product: "whatsapp",
@@ -437,6 +439,7 @@ app.post("/whatsapp", async (req, res) => {
         responseTemplate
       );
       console.log("Response:", response.data);
+      
        if (!existingCustomer) {
             try {
               const savedCustomer = await CustomerModel.create(
