@@ -197,6 +197,18 @@ app.post("/whatsapp", async (req, res) => {
             phone: collectedCustomer.phone,
           });
 
+          
+        if (!existingCustomer) {
+          try {
+            const savedCustomer = await CustomerModel.create(collectedCustomer);
+            console.log("Customer saved to MongoDB:", savedCustomer);
+          } catch (error) {
+            console.error("Error saving customer to MongoDB:", error.message);
+          }
+        } else {
+          console.log("Customer already exists in the database");
+        }
+
          
 
           responseTemplate = {
@@ -466,16 +478,6 @@ app.post("/whatsapp", async (req, res) => {
   
       
   
-        if (!existingCustomer) {
-          try {
-            const savedCustomer = await CustomerModel.create(collectedCustomer);
-            console.log("Customer saved to MongoDB:", savedCustomer);
-          } catch (error) {
-            console.error("Error saving customer to MongoDB:", error.message);
-          }
-        } else {
-          console.log("Customer already exists in the database");
-        }
 
         const response = await axios.post(
           `https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`,
