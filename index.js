@@ -417,9 +417,7 @@ app.post("/whatsapp", async (req, res) => {
                       parameters: [
                         {
                           type: "text",
-                          text: {
-                            body: "🌟",
-                          },
+                          text: "🌟",  // Fix: Make sure the text is a string
                         },
                         {
                           type: "payload",
