@@ -434,12 +434,13 @@ app.post("/whatsapp", async (req, res) => {
               );
 
               collectedCustomer.feedback = payload;
-              console.log("collectedCustomer feedback:", collectedCustomer.feedback);
+              const feedbackCustomer = collectedCustomer.feedback
+              console.log("collectedCustomer feedback:", feedbackCustomer);
               // Store the payload in the collectedCustomer object
             
               const updatedCustomer = await CustomerModel.findOneAndUpdate(
                 { phone: collectedCustomer.phone },
-                { $set: { feedback: collectedCustomer.feedback } },
+                { $set: { feedback: feedbackCustomer } },
                 { new: true }
               );
               
