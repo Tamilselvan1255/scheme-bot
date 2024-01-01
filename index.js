@@ -87,7 +87,7 @@ function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-let userState = "initial"; 
+let userState = "initial";
 
 app.post("/whatsapp", async (req, res) => {
   const bodyParam = req.body;
@@ -100,12 +100,13 @@ app.post("/whatsapp", async (req, res) => {
     bodyParam.entry[0].changes[0].value.messages &&
     bodyParam.entry[0].changes[0].value.messages[0]
   ) {
-    const phoneNumberId = bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
+    const phoneNumberId =
+      bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
     const message = bodyParam.entry[0].changes[0].value.messages[0];
     const phoneNumber = message.from;
     const msgBody = (message.text?.body || "").toLowerCase();
     const payload = message.button ? message.button.payload : undefined;
-console.log("Payload:", payload);
+    console.log("Payload:", payload);
 
     console.log("message:", message);
 
@@ -151,7 +152,7 @@ console.log("Payload:", payload);
             to: phoneNumber,
             type: "template",
             template: {
-              name: "email", 
+              name: "email",
               language: {
                 code: "en_US",
               },
@@ -169,13 +170,13 @@ console.log("Payload:", payload);
             to: phoneNumber,
             type: "template",
             template: {
-              name: "phone", 
+              name: "phone",
               language: {
                 code: "en_US",
               },
             },
           };
-          userState = "phone"; 
+          userState = "phone";
           break;
 
         case (userState === "phone" && /^\d{10}$/.test(msgBody)) ||
@@ -188,18 +189,18 @@ console.log("Payload:", payload);
             phone: collectedCustomer.phone,
           });
 
-          
-        if (!existingCustomer) {
-          try {
-            const savedCustomer = await CustomerModel.create(collectedCustomer);
-            console.log("Customer saved to MongoDB:", savedCustomer);
-          } catch (error) {
-            console.error("Error saving customer to MongoDB:", error.message);
+          if (!existingCustomer) {
+            try {
+              const savedCustomer = await CustomerModel.create(
+                collectedCustomer
+              );
+              console.log("Customer saved to MongoDB:", savedCustomer);
+            } catch (error) {
+              console.error("Error saving customer to MongoDB:", error.message);
+            }
+          } else {
+            console.log("Customer already exists in the database");
           }
-        } else {
-          console.log("Customer already exists in the database");
-        }
-
 
           responseTemplate = {
             messaging_product: "whatsapp",
@@ -254,7 +255,6 @@ console.log("Payload:", payload);
             },
           };
           break;
-          
 
         case payload === "0-6" || payload === "6-18" || payload === "18-24":
           collectedData.age = payload;
@@ -415,7 +415,7 @@ console.log("Payload:", payload);
               );
               console.log("Response:", response.data);
               res.status(200).send(response.data);
-              
+
               feedbackTemplate = {
                 messaging_product: "whatsapp",
                 to: phoneNumber,
@@ -431,29 +431,33 @@ console.log("Payload:", payload);
                 `https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`,
                 feedbackTemplate
               );
-               // Store the payload in the collectedCustomer object
-    collectedCustomer.Feedback = payload;
-    const Feedbacks = collectedCustomer.Feedback;
-    console.log("Feedback:",  Feedbacks);
-      // Check if the customer already exists
-      const existingCustomers = await CustomerModel.findOne({ phone: collectedCustomer.phone });
-      if (existingCustomers) {
-        // Update the existing customer with the new feedback
-        try {
-          const updatedCustomer = await CustomerModel.findOneAndUpdate(
-            { phone: collectedCustomer.phone },
-            { $set: { Feedback: Feedbacks } },
-            { new: true }
-          );
-  
-          console.log("Customer updated:", updatedCustomer);
-        } catch (error) {
-          console.error("Error updating customer:", error.message);
-        }
-      } else {
-        console.log("Customer does not exist in the database.");
-      }
 
+              console.log("Feedback:", feedback.data);
+
+              // Store the payload in the collectedCustomer object
+              // collectedCustomer.Feedback = payload;
+              // const Feedbacks = collectedCustomer.Feedback;
+              // console.log("Feedback:", Feedbacks);
+              // // Check if the customer already exists
+              // const existingCustomers = await CustomerModel.findOne({
+              //   phone: collectedCustomer.phone,
+              // });
+              // if (existingCustomers) {
+              //   // Update the existing customer with the new feedback
+              //   try {
+              //     const updatedCustomer = await CustomerModel.findOneAndUpdate(
+              //       { phone: collectedCustomer.phone },
+              //       { $set: { Feedback: Feedbacks } },
+              //       { new: true }
+              //     );
+
+              //     console.log("Customer updated:", updatedCustomer);
+              //   } catch (error) {
+              //     console.error("Error updating customer:", error.message);
+              //   }
+              // } else {
+              //   console.log("Customer does not exist in the database.");
+              // }
 
               return;
             } catch (error) {
@@ -470,50 +474,47 @@ console.log("Payload:", payload);
             res.status(200).send("");
           }
 
-          default:
-            console.log("Switch Case: Default");
-            responseTemplate = {
-              messaging_product: "whatsapp",
-              to: phoneNumber,
-              type: "template",
-              template: {
-                name: "alert",
-                language: {
-                  code: "en_US",
-                },
+        default:
+          console.log("Switch Case: Default");
+          responseTemplate = {
+            messaging_product: "whatsapp",
+            to: phoneNumber,
+            type: "template",
+            template: {
+              name: "alert",
+              language: {
+                code: "en_US",
               },
-            };
-            break;
-        }
-  
-        console.log("Final Response Template:", responseTemplate);
-  
-      
-  
-
-        const response = await axios.post(
-          `https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`,
-          responseTemplate
-        );
-  
-        console.log("Response:", response.data);
-  
-        res.status(200).send(response.data);
-        return;
-      } catch (error) {
-        console.error(
-          "Error sending response:",
-          error.message,
-          error.response ? error.response.data : ""
-        );
-        res.status(500).send(error.message);
-        return;
+            },
+          };
+          break;
       }
-    } else {
-      res.status(404).send("Invalid request format");
+
+      console.log("Final Response Template:", responseTemplate);
+
+      const response = await axios.post(
+        `https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`,
+        responseTemplate
+      );
+
+      console.log("Response:", response.data);
+
+      res.status(200).send(response.data);
+      return;
+    } catch (error) {
+      console.error(
+        "Error sending response:",
+        error.message,
+        error.response ? error.response.data : ""
+      );
+      res.status(500).send(error.message);
       return;
     }
-  });
+  } else {
+    res.status(404).send("Invalid request format");
+    return;
+  }
+});
 
 app.get("/", (req, res) => {
   res.status(200).send("Webhook setup for scheme!!");
