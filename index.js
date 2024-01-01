@@ -432,9 +432,9 @@ console.log("Payload:", payload);
                 feedbackTemplate
               );
                // Store the payload in the collectedCustomer object
-    collectedCustomer.feedback = payload;
-    const Feedback = collectedCustomer.feedback;
-    console.log("Feedback:",  Feedback);
+    collectedCustomer.Feedback = payload;
+    const Feedbacks = collectedCustomer.Feedback;
+    console.log("Feedback:",  Feedbacks);
       // Check if the customer already exists
       const existingCustomers = await CustomerModel.findOne({ phone: collectedCustomer.phone });
       if (existingCustomers) {
@@ -442,7 +442,7 @@ console.log("Payload:", payload);
         try {
           const updatedCustomer = await CustomerModel.findOneAndUpdate(
             { phone: collectedCustomer.phone },
-            { $set: { Feedback: Feedback } },
+            { $set: { Feedback: Feedbacks } },
             { new: true }
           );
   
