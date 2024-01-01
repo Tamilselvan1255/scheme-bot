@@ -411,6 +411,83 @@ app.post("/whatsapp", async (req, res) => {
                   language: {
                     code: "en_US",
                   },
+                  components: [
+                    {
+                      type: "button",
+                      parameters: [
+                        {
+                          type: "text",
+                          text: {
+                            body: "🌟",
+                          },
+                        },
+                        {
+                          type: "payload",
+                          payload: "1 STAR",
+                        },
+                      ],
+                    },
+                    {
+                      type: "button",
+                      parameters: [
+                        {
+                          type: "text",
+                          text: {
+                            body: "🌟🌟",
+                          },
+                        },
+                        {
+                          type: "payload",
+                          payload: "2 STAR",
+                        },
+                      ],
+                    },
+                    {
+                      type: "button",
+                      parameters: [
+                        {
+                          type: "text",
+                          text: {
+                            body: "🌟🌟🌟",
+                          },
+                        },
+                        {
+                          type: "payload",
+                          payload: "3 STAR",
+                        },
+                      ],
+                    },
+                    {
+                      type: "button",
+                      parameters: [
+                        {
+                          type: "text",
+                          text: {
+                            body: "🌟🌟🌟🌟",
+                          },
+                        },
+                        {
+                          type: "payload",
+                          payload: "4 STAR",
+                        },
+                      ],
+                    },
+                    {
+                      type: "button",
+                      parameters: [
+                        {
+                          type: "text",
+                          text: {
+                            body: "🌟🌟🌟🌟🌟",
+                          },
+                        },
+                        {
+                          type: "payload",
+                          payload: "5 STAR",
+                        },
+                      ],
+                    },
+                  ],
                 },
               };
               const feedback = await axios.post(
