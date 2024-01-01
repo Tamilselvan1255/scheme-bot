@@ -431,7 +431,7 @@ app.post("/whatsapp", async (req, res) => {
                 `https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`,
                 feedbackTemplate
               );
-              console.log("Response:", response.data);
+              console.log("Feedback:", feedback.data);
 
               return;
             } catch (error) {
