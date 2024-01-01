@@ -111,7 +111,6 @@ app.post("/whatsapp", async (req, res) => {
 
     try {
       let responseTemplate;
-      let feedbackTemplate;
 
       switch (true) {
         case msgBody.includes("hello") || msgBody.includes("hi"):
@@ -369,20 +368,6 @@ app.post("/whatsapp", async (req, res) => {
                   code: "en_US",
                 },
               };
-
-                 // Add feedback template
-            feedbackTemplate = {
-              messaging_product: "whatsapp",
-              to: phoneNumber,
-              type: "template",
-              template: {
-                name: "feedback",
-                language: {
-                  code: "en_US",
-                },
-              },
-            };
-            
               console.log(
                 "Response Template for Matching Schemes:",
                 responseTemplate
@@ -424,23 +409,6 @@ app.post("/whatsapp", async (req, res) => {
                 error.response ? error.response.data : ""
               );
               res.status(500).send(error.message);
-
-              if (feedbackTemplate) {
-                try {
-                  // Send the feedback template
-                  const feedbackResponse = await axios.post(
-                    `https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`,
-                    feedbackTemplate
-                  );
-                  console.log("Feedback Response:", feedbackResponse.data);
-                } catch (error) {
-                  console.error(
-                    "Error sending feedback template:",
-                    error.message,
-                    error.response ? error.response.data : ""
-                  );
-                }
-              }
               return;
             }
           } else {
@@ -469,7 +437,6 @@ app.post("/whatsapp", async (req, res) => {
         responseTemplate
       );
       console.log("Response:", response.data);
-
        if (!existingCustomer) {
             try {
               const savedCustomer = await CustomerModel.create(
