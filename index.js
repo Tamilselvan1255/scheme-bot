@@ -160,7 +160,7 @@ app.post("/whatsapp", async (req, res) => {
           };
           break;
 
-        case payload === "Show Schemes":
+        case payload === "Show Schemes" || payload === "Go to Main Menu":
           responseTemplate = {
             messaging_product: "whatsapp",
             to: phoneNumber,
