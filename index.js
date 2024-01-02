@@ -34,17 +34,7 @@ const schemeSchema = new mongoose.Schema({
 
 const SchemeModel = mongoose.model("Scheme", schemeSchema);
 
-const customerSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  phone: String,
-  feedback: String,
-});
-
-const CustomerModel = mongoose.model("Customer", customerSchema);
-
 let collectedData = {};
-let collectedCustomer = {};
 const token = process.env.TOKEN;
 const myToken = process.env.MYTOKEN;
 
@@ -134,79 +124,6 @@ app.post("/whatsapp", async (req, res) => {
             to: phoneNumber,
             type: "template",
             template: {
-              name: "name",
-              language: {
-                code: "en_US",
-              },
-            },
-          };
-          userState = "name";
-          console.log("Setting userState to 'name'");
-          break;
-
-        case userState === "name" && /^[a-zA-Z]+$/.test(msgBody):
-          collectedCustomer.name = msgBody;
-          console.log("collectedCustomer name:", collectedCustomer.name);
-          responseTemplate = {
-            messaging_product: "whatsapp",
-            to: phoneNumber,
-            type: "template",
-            template: {
-              name: "email",
-              language: {
-                code: "en_US",
-              },
-            },
-          };
-          userState = "email";
-          console.log("Setting userState to 'email'");
-          break;
-
-        case userState === "email" && isValidEmail(msgBody):
-          collectedCustomer.email = msgBody;
-          console.log("collectedCustomer email:", collectedCustomer.email);
-          responseTemplate = {
-            messaging_product: "whatsapp",
-            to: phoneNumber,
-            type: "template",
-            template: {
-              name: "phone",
-              language: {
-                code: "en_US",
-              },
-            },
-          };
-          userState = "phone";
-          break;
-
-        case (userState === "phone" && /^\d{10}$/.test(msgBody)) ||
-          payload === "Go to Main Menu":
-          collectedCustomer.phone = msgBody;
-          console.log("collectedCustomer phone:", collectedCustomer.phone);
-          console.log("CollectedCustomer:", collectedCustomer);
-
-          const existingCustomer = await CustomerModel.findOne({
-            phone: collectedCustomer.phone,
-          });
-
-          if (!existingCustomer) {
-            try {
-              const savedCustomer = await CustomerModel.create(
-                collectedCustomer
-              );
-              console.log("Customer saved to MongoDB:", savedCustomer);
-            } catch (error) {
-              console.error("Error saving customer to MongoDB:", error.message);
-            }
-          } else {
-            console.log("Customer already exists in the database");
-          }
-
-          responseTemplate = {
-            messaging_product: "whatsapp",
-            to: phoneNumber,
-            type: "template",
-            template: {
               name: "scheme_template",
               language: {
                 code: "en_US",
@@ -228,6 +145,7 @@ app.post("/whatsapp", async (req, res) => {
           };
           break;
 
+        
         case payload === "Not now":
           responseTemplate = {
             messaging_product: "whatsapp",
@@ -415,25 +333,7 @@ app.post("/whatsapp", async (req, res) => {
               );
               console.log("Response:", response.data);
               res.status(200).send(response.data);
-
-              feedbackTemplate = {
-                messaging_product: "whatsapp",
-                to: phoneNumber,
-                type: "template",
-                template: {
-                  name: "feedback",
-                  language: {
-                    code: "en_US",
-                  },
-                },
-              };
-              // Sending the feedback template
-              const feedbackResponse = await axios.post(
-                `https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`,
-                feedbackTemplate
-              );
-
-              return;
+                  return;
             } catch (error) {
               console.error(
                 "Error sending response:",
