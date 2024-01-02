@@ -390,12 +390,12 @@ app.post("/whatsapp", async (req, res) => {
               responseTemplate = {
                 messaging_product: "whatsapp",
                 to: phoneNumber,
-                type: "text",
-                text: {
-                  body: "No matching schemes found. Please refine your search criteria.",
-                },
-                language: {
-                  code: "en_US",
+                type: "template",
+                template: {
+                  name: "not_found",
+                  language: {
+                    code: "en_US",
+                  },
                 },
               };
               console.log(
@@ -466,7 +466,7 @@ app.post("/whatsapp", async (req, res) => {
             type: "text",
             text: {
               body: `Thank you, *${collectedCustomer.name}*!
-               Your feedback has been recorded successfully. We value your input!! ❤️`,
+Your feedback has been recorded successfully. We value your input!! ❤️`,
             },
             language: {
               code: "en_US",
@@ -477,17 +477,17 @@ app.post("/whatsapp", async (req, res) => {
 
         default:
           console.log("Switch Case: Default");
-          responseTemplate = {
-            messaging_product: "whatsapp",
-            to: phoneNumber,
-            type: "template",
-            template: {
-              name: "alert",
-              language: {
-                code: "en_US",
+            responseTemplate = {
+              messaging_product: "whatsapp",
+              to: phoneNumber,
+              type: "template",
+              template: {
+                name: "alert",
+                language: {
+                  code: "en_US",
+                },
               },
-            },
-          };
+            };
           break;
       }
 
