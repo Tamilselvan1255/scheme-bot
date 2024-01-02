@@ -429,39 +429,41 @@ app.post("/whatsapp", async (req, res) => {
                 },
               };
               // Sending the feedback template
-        const feedbackResponse = await axios.post(
-          `https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`,
-          feedbackTemplate
-      );
-
-        return;
-    } catch (error) {
-        console.error(
-            "Error sending response:",
-            error.message,
-            error.response ? error.response.data : ""
-        );
-        res.status(500).send(error.message);
-        return;
-    }
-} else {
-    console.log("Response Template is undefined. No response sent.");
-    res.status(200).send("");
-}
-
-
-
-            // Inside the switch statement
-            case payload === "5" || "4" || "3" || "2" || "1":
-              collectedCustomer.feedback = payload;
-              const updatedCustomer = await CustomerModel.findOneAndUpdate(
-                { phone: collectedCustomer.phone },
-                { $set: { feedback: collectedCustomer.feedback } },
-                { new: true }
+              const feedbackResponse = await axios.post(
+                `https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`,
+                feedbackTemplate
               );
-            
-              console.log("Customer updated:", updatedCustomer);
+
               return;
+            } catch (error) {
+              console.error(
+                "Error sending response:",
+                error.message,
+                error.response ? error.response.data : ""
+              );
+              res.status(500).send(error.message);
+              return;
+            }
+          } else {
+            console.log("Response Template is undefined. No response sent.");
+            res.status(200).send("");
+          }
+
+        // Inside the switch statement
+        case payload === "5" ||
+          payload === "4" ||
+          payload === "3" ||
+          payload === "2" ||
+          payload === "1":
+          collectedCustomer.feedback = payload;
+          const updatedCustomer = await CustomerModel.findOneAndUpdate(
+            { phone: collectedCustomer.phone },
+            { $set: { feedback: collectedCustomer.feedback } },
+            { new: true }
+          );
+
+          console.log("Customer updated:", updatedCustomer);
+          return;
         default:
           console.log("Switch Case: Default");
           responseTemplate = {
