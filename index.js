@@ -333,7 +333,25 @@ app.post("/whatsapp", async (req, res) => {
               );
               console.log("Response:", response.data);
               res.status(200).send(response.data);
-                  return;
+
+              feedbackTemplate = {
+                messaging_product: "whatsapp",
+                to: phoneNumber,
+                type: "template",
+                template: {
+                  name: "feedback",
+                  language: {
+                    code: "en_US",
+                  },
+                },
+              };
+              // Sending the feedback template
+              const feedbackResponse = await axios.post(
+                `https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`,
+                feedbackTemplate
+              );
+
+              return;
             } catch (error) {
               console.error(
                 "Error sending response:",
