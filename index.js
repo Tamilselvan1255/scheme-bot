@@ -434,15 +434,6 @@ app.post("/whatsapp", async (req, res) => {
           feedbackTemplate
       );
 
-              // Update the feedback field in the database
-        collectedCustomer.feedback = payload;
-        const updatedCustomer = await CustomerModel.findOneAndUpdate(
-            { phone: collectedCustomer.phone },
-            { $set: { feedback: collectedCustomer.feedback } },
-            { new: true }
-        );
-
-        console.log("Customer updated:", updatedCustomer);
         return;
     } catch (error) {
         console.error(
@@ -458,6 +449,19 @@ app.post("/whatsapp", async (req, res) => {
     res.status(200).send("");
 }
 
+
+
+            // Inside the switch statement
+            case payload === "5" || "4" || "3" || "2" || "`1":
+              collectedCustomer.feedback = payload;
+              const updatedCustomer = await CustomerModel.findOneAndUpdate(
+                { phone: collectedCustomer.phone },
+                { $set: { feedback: collectedCustomer.feedback } },
+                { new: true }
+              );
+            
+              console.log("Customer updated:", updatedCustomer);
+              return;
         default:
           console.log("Switch Case: Default");
           responseTemplate = {
