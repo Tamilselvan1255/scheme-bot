@@ -465,7 +465,8 @@ app.post("/whatsapp", async (req, res) => {
             to: phoneNumber,
             type: "text",
             text: {
-              body: `Thank you, *${collectedCustomer.name}* ! Your feedback has been recorded successfully. We value your input! ❤️`,
+              body: `Thank you, *${collectedCustomer.name}*!
+               Your feedback has been recorded successfully. We value your input!! ❤️`,
             },
             language: {
               code: "en_US",
