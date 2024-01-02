@@ -428,37 +428,35 @@ app.post("/whatsapp", async (req, res) => {
                   },
                 },
               };
-              const feedback = await axios.post(
-                `https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`,
-                feedbackTemplate
-              );
+              // Sending the feedback template
+        const feedbackResponse = await axios.post(
+          `https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`,
+          feedbackTemplate
+      );
 
-              collectedCustomer.feedback = payload;
-              const feedbackCustomer = collectedCustomer.feedback
-              console.log("collectedCustomer feedback:", feedbackCustomer);
-              // Store the payload in the collectedCustomer object
-            
-              const updatedCustomer = await CustomerModel.findOneAndUpdate(
-                { phone: collectedCustomer.phone },
-                { $set: { feedback: feedbackCustomer } },
-                { new: true }
-              );
-              
-              console.log("Customer updated:", updatedCustomer);
-              return;
-            } catch (error) {
-              console.error(
-                "Error sending response:",
-                error.message,
-                error.response ? error.response.data : ""
-              );
-              res.status(500).send(error.message);
-              return;
-            }
-          } else {
-            console.log("Response Template is undefined. No response sent.");
-            res.status(200).send("");
-          }
+              // Update the feedback field in the database
+        collectedCustomer.feedback = payload;
+        const updatedCustomer = await CustomerModel.findOneAndUpdate(
+            { phone: collectedCustomer.phone },
+            { $set: { feedback: collectedCustomer.feedback } },
+            { new: true }
+        );
+
+        console.log("Customer updated:", updatedCustomer);
+        return;
+    } catch (error) {
+        console.error(
+            "Error sending response:",
+            error.message,
+            error.response ? error.response.data : ""
+        );
+        res.status(500).send(error.message);
+        return;
+    }
+} else {
+    console.log("Response Template is undefined. No response sent.");
+    res.status(200).send("");
+}
 
         default:
           console.log("Switch Case: Default");
