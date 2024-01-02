@@ -107,7 +107,6 @@ app.post("/whatsapp", async (req, res) => {
     const phoneNumber = message.from;
     const msgBody = (message.text?.body || "").toLowerCase();
     const payload = message.button ? message.button.payload : undefined;
-    console.log("Payload:", payload);
 
     console.log("message:", message);
 
@@ -461,9 +460,20 @@ app.post("/whatsapp", async (req, res) => {
             { $set: { feedback: collectedCustomer.feedback } },
             { new: true }
           );
-
+          responseTemplate = {
+            messaging_product: "whatsapp",
+            to: phoneNumber,
+            type: "text",
+            text: {
+              body: `Thank you, ${collectedCustomer.name}! Your feedback has been recorded successfully. We value your input! 🌟`,
+            },
+            language: {
+              code: "en_US",
+            },
+          };
           console.log("Customer updated:", updatedCustomer);
-          return;
+          break;
+
         default:
           console.log("Switch Case: Default");
           responseTemplate = {
