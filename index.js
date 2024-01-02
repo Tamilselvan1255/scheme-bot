@@ -1,3 +1,5 @@
+// with templates updated
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const axios = require("axios");
@@ -34,17 +36,7 @@ const schemeSchema = new mongoose.Schema({
 
 const SchemeModel = mongoose.model("Scheme", schemeSchema);
 
-const customerSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  phone: String,
-  feedback: String,
-});
-
-const CustomerModel = mongoose.model("Customer", customerSchema);
-
 let collectedData = {};
-let collectedCustomer = {};
 const token = process.env.TOKEN;
 const myToken = process.env.MYTOKEN;
 
@@ -84,12 +76,6 @@ app.get("/whatsapp", (req, res) => {
   }
 });
 
-function isValidEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-let userState = "initial";
-
 app.post("/whatsapp", async (req, res) => {
   const bodyParam = req.body;
   console.log("Request Body:", bodyParam);
@@ -104,7 +90,6 @@ app.post("/whatsapp", async (req, res) => {
     const phoneNumberId =
       bodyParam.entry[0].changes[0].value.metadata.phone_number_id;
     const message = bodyParam.entry[0].changes[0].value.messages[0];
-    const phoneNumber = message.from;
     const msgBody = (message.text?.body || "").toLowerCase();
     const payload = message.button ? message.button.payload : undefined;
 
@@ -117,121 +102,35 @@ app.post("/whatsapp", async (req, res) => {
         case msgBody.includes("hello") || msgBody.includes("hi"):
           responseTemplate = {
             messaging_product: "whatsapp",
-            to: phoneNumber,
-            type: "template",
-            template: {
-              name: "greet",
-              language: {
-                code: "en_US",
-              },
-            },
-          };
-          break;
-
-        case payload === "Let's Explore":
-          responseTemplate = {
-            messaging_product: "whatsapp",
-            to: phoneNumber,
-            type: "template",
-            template: {
-              name: "name",
-              language: {
-                code: "en_US",
-              },
-            },
-          };
-          userState = "name";
-          console.log("Setting userState to 'name'");
-          break;
-
-        case userState === "name" && /^[a-zA-Z]+$/.test(msgBody):
-          collectedCustomer.name = msgBody;
-          console.log("collectedCustomer name:", collectedCustomer.name);
-          responseTemplate = {
-            messaging_product: "whatsapp",
-            to: phoneNumber,
-            type: "template",
-            template: {
-              name: "email",
-              language: {
-                code: "en_US",
-              },
-            },
-          };
-          userState = "email";
-          console.log("Setting userState to 'email'");
-          break;
-
-        case userState === "email" && isValidEmail(msgBody):
-          collectedCustomer.email = msgBody;
-          console.log("collectedCustomer email:", collectedCustomer.email);
-          responseTemplate = {
-            messaging_product: "whatsapp",
-            to: phoneNumber,
-            type: "template",
-            template: {
-              name: "phone",
-              language: {
-                code: "en_US",
-              },
-            },
-          };
-          userState = "phone";
-          break;
-
-        case (userState === "phone" && /^\d{10}$/.test(msgBody)) ||
-          payload === "Go to Main Menu":
-          collectedCustomer.phone = msgBody;
-          console.log("collectedCustomer phone:", collectedCustomer.phone);
-          console.log("CollectedCustomer:", collectedCustomer);
-
-          const existingCustomer = await CustomerModel.findOne({
-            phone: collectedCustomer.phone,
-          });
-
-          if (!existingCustomer) {
-            try {
-              const savedCustomer = await CustomerModel.create(
-                collectedCustomer
-              );
-              console.log("Customer saved to MongoDB:", savedCustomer);
-            } catch (error) {
-              console.error("Error saving customer to MongoDB:", error.message);
-            }
-          } else {
-            console.log("Customer already exists in the database");
-          }
-
-          responseTemplate = {
-            messaging_product: "whatsapp",
-            to: phoneNumber,
+            to: "+919788825633",
             type: "template",
             template: {
               name: "scheme_template",
               language: {
                 code: "en_US",
               },
-              components: [
-                {
-                  type: "header",
-                  parameters: [
-                    {
-                      type: "image",
-                      image: {
-                        link: " https://i.imgur.com/0uVWYeR.jpeg",
-                      },
-                    },
-                  ],
-                },
-              ],
             },
           };
           break;
 
-        case payload === "Not now":
+        case payload === "Yes":
           responseTemplate = {
             messaging_product: "whatsapp",
-            to: phoneNumber,
+            to: "+919788825633",
+            type: "template",
+            template: {
+              name: "scheme_template",
+              language: {
+                code: "en_US",
+              },
+            },
+          };
+          break;
+
+        case payload === "Not Now":
+          responseTemplate = {
+            messaging_product: "whatsapp",
+            to: "+919788825633",
             type: "text",
             text: {
               body: `I appreciate your consideration. Please feel free to reach out whenever you have a moment. When you're ready to continue, a simple "HI" or "HELLO" would be great. Thank you for your understanding. Have a wonderful day! 🌟`,
@@ -245,7 +144,7 @@ app.post("/whatsapp", async (req, res) => {
         case payload === "Show Schemes":
           responseTemplate = {
             messaging_product: "whatsapp",
-            to: phoneNumber,
+            to: "+919788825633",
             type: "template",
             template: {
               name: "age",
@@ -261,7 +160,7 @@ app.post("/whatsapp", async (req, res) => {
           console.log("Collected Data age:", collectedData.age);
           responseTemplate = {
             messaging_product: "whatsapp",
-            to: phoneNumber,
+            to: "+919788825633",
             type: "template",
             template: {
               name: "gender",
@@ -279,7 +178,7 @@ app.post("/whatsapp", async (req, res) => {
           console.log("Collected Data gender:", collectedData);
           responseTemplate = {
             messaging_product: "whatsapp",
-            to: phoneNumber,
+            to: "+919788825633",
             type: "template",
             template: {
               name: "state",
@@ -297,7 +196,7 @@ app.post("/whatsapp", async (req, res) => {
           console.log("Collected Data:", collectedData);
           responseTemplate = {
             messaging_product: "whatsapp",
-            to: phoneNumber,
+            to: "+919788825633",
             type: "template",
             template: {
               name: "disability",
@@ -313,7 +212,7 @@ app.post("/whatsapp", async (req, res) => {
           console.log("Collected Data:", collectedData);
           responseTemplate = {
             messaging_product: "whatsapp",
-            to: phoneNumber,
+            to: "+919788825633",
             type: "template",
             template: {
               name: "income",
@@ -373,7 +272,7 @@ app.post("/whatsapp", async (req, res) => {
 
               responseTemplate = {
                 messaging_product: "whatsapp",
-                to: phoneNumber,
+                to: "+919788825633",
                 type: "text",
                 text: {
                   body: truncatedMessage,
@@ -389,13 +288,13 @@ app.post("/whatsapp", async (req, res) => {
             } else {
               responseTemplate = {
                 messaging_product: "whatsapp",
-                to: phoneNumber,
-                type: "template",
-                template: {
-                  name: "not_found",
-                  language: {
-                    code: "en_US",
-                  },
+                to: "+919788825633",
+                type: "text",
+                text: {
+                  body: "No matching schemes found. Please refine your search criteria.",
+                },
+                language: {
+                  code: "en_US",
                 },
               };
               console.log(
@@ -415,24 +314,6 @@ app.post("/whatsapp", async (req, res) => {
               );
               console.log("Response:", response.data);
               res.status(200).send(response.data);
-
-              feedbackTemplate = {
-                messaging_product: "whatsapp",
-                to: phoneNumber,
-                type: "template",
-                template: {
-                  name: "feedback",
-                  language: {
-                    code: "en_US",
-                  },
-                },
-              };
-              // Sending the feedback template
-              const feedbackResponse = await axios.post(
-                `https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`,
-                feedbackTemplate
-              );
-
               return;
             } catch (error) {
               console.error(
@@ -448,58 +329,27 @@ app.post("/whatsapp", async (req, res) => {
             res.status(200).send("");
           }
 
-        // Inside the switch statement
-        case payload === "5" ||
-          payload === "4" ||
-          payload === "3" ||
-          payload === "2" ||
-          payload === "1":
-          collectedCustomer.feedback = payload;
-          const updatedCustomer = await CustomerModel.findOneAndUpdate(
-            { phone: collectedCustomer.phone },
-            { $set: { feedback: collectedCustomer.feedback } },
-            { new: true }
-          );
+        default:
           responseTemplate = {
             messaging_product: "whatsapp",
-            to: phoneNumber,
+            to: "+919788825633",
             type: "text",
             text: {
-              body: `Thank you, *${collectedCustomer.name}*!
-Your feedback has been recorded successfully. We value your input!! ❤️`,
+              body: "Please enter valid message!",
             },
             language: {
               code: "en_US",
             },
           };
-          console.log("Customer updated:", updatedCustomer);
-          break;
-
-        default:
           console.log("Switch Case: Default");
-            responseTemplate = {
-              messaging_product: "whatsapp",
-              to: phoneNumber,
-              type: "template",
-              template: {
-                name: "alert",
-                language: {
-                  code: "en_US",
-                },
-              },
-            };
           break;
       }
-
       console.log("Final Response Template:", responseTemplate);
-
       const response = await axios.post(
         `https://graph.facebook.com/v17.0/${phoneNumberId}/messages?access_token=${token}`,
         responseTemplate
       );
-
       console.log("Response:", response.data);
-
       res.status(200).send(response.data);
       return;
     } catch (error) {
